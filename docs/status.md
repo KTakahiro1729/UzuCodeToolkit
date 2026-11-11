@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 11:25 UTC
+Last checked: 2026-11-11 11:38 UTC
 
 ## Waiting on the owner
 
@@ -11,6 +11,7 @@ No open decisions. No CI checks are configured.
 | What | Kind | Notes |
 |---|---|---|
 | [#8](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/8) Current line takes the advance button's colour | Review, merge | Ready. |
+| [#9](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/9) Reset and rotate buttons in the dev harness | Review, merge | Ready. Independent of #8. |
 
 ## Done
 
