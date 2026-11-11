@@ -1,21 +1,22 @@
 /**
- * 読み合わせ: 台本を 1 行ずつ、 話者の役のプレイヤーが声に出して読み、 自分で次へ送る。
+ * Read-through: players read the script aloud one line at a time, and the speaker of
+ * each line advances it themselves.
  *
- * 状態を変える関数は渡された progress を直接書き換える (SDK の action handler は
- * live な state を書き換える形なので、 そのまま呼べる)。 弾くときは Error を投げる。
+ * Mutating functions change the given progress in place, so they can be called directly
+ * from SDK action handlers (which mutate live state). Rejected operations throw.
  */
 
 export interface DialogueLine {
-  /** 読む役の ID。 */
+  /** Role ID of the reader. */
   speaker: string;
   text: string;
 }
 
-/** 共有 state に置く進み具合。 */
+/** Progress kept in shared state. */
 export interface DialogueProgress {
-  /** いま読んでいる行。 */
+  /** Line currently being read. */
   index: number;
-  /** 最後の行を送り終えたら true。 */
+  /** True once the last line has been advanced. */
   finished: boolean;
 }
 
@@ -23,14 +24,15 @@ export function startDialogue(): DialogueProgress {
   return { index: 0, finished: false };
 }
 
-/** いまの行。 読み終えていれば null。 */
+/** The current line, or null when finished. */
 export function currentLine(lines: readonly DialogueLine[], p: DialogueProgress): DialogueLine | null {
   return p.finished ? null : (lines[p.index] ?? null);
 }
 
 /**
- * 次の行へ送る。 送れるのはいまの行の話者だけ。
- * `seenIndex` は押した人が見ていた行で、 遅れて届いた二重タップが 2 行進めるのを防ぐ。
+ * Advance to the next line. Only the current line's speaker may advance.
+ * `seenIndex` is the line the player was looking at; it stops a late duplicate tap
+ * from advancing two lines.
  */
 export function advanceDialogue(
   lines: readonly DialogueLine[],
@@ -39,9 +41,9 @@ export function advanceDialogue(
   seenIndex: number,
 ): void {
   const line = currentLine(lines, p);
-  if (!line) throw new Error('読み終えています');
-  if (seenIndex !== p.index) throw new Error('もう次の行へ進んでいます');
-  if (line.speaker !== roleId) throw new Error('この行を送るのは話者です');
+  if (!line) throw new Error('dialogue already finished');
+  if (seenIndex !== p.index) throw new Error('line already advanced');
+  if (line.speaker !== roleId) throw new Error('only the speaker can advance this line');
   if (p.index + 1 < lines.length) p.index += 1;
   else p.finished = true;
 }

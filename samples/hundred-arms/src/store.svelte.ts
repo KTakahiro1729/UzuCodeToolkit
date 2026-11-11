@@ -1,4 +1,4 @@
-/** SDK から届いた共有 state と送信口を画面へ渡す。 */
+/** Hands the shared state and the action sender from the SDK to the view. */
 
 import type { State } from './logic';
 

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "UZU Code の読み合わせと配役の部品 (UI 非依存)。",
+  "description": "Read-through and role assignment helpers for UZU Code (UI independent).",
   "exports": {
     ".": "./src/index.ts"
   },

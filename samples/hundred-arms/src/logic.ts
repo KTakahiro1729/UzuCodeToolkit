@@ -1,6 +1,6 @@
 /**
- * サーバー権威のロジック (manifest.json の serverActionLogicPath)。
- * actions はクライアントの先読みとサーバーの両方で走るので決定的に書く。
+ * Server-authoritative logic (manifest.json serverActionLogicPath).
+ * Actions run both in client prediction and on the server, so keep them deterministic.
  */
 
 import { advanceDialogue, assignRoles, type DialogueProgress, startDialogue } from '@uzu-toolkit/kit';
@@ -8,7 +8,7 @@ import type { ActionArgs, GameLogic } from '@uzuhq/code-sdk';
 import { LINES, ROLE_IDS } from './scenario';
 
 export interface State {
-  /** 席 ID → 役 ID。 */
+  /** Seat ID -> role ID. */
   roles: Record<string, string>;
   dialogue: DialogueProgress;
 }

@@ -6,8 +6,8 @@ import { END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../src/scenario';
 
 const ctx = {} as never;
 
-describe('百本腕と勇者', () => {
-  it('script.json は原文 (original.txt) と一字一句同じ', () => {
+describe('hundred-arms sample', () => {
+  it('script.json matches original.txt character for character', () => {
     const original = readFileSync(new URL('../script/original.txt', import.meta.url), 'utf8');
     const rebuilt = [
       TITLE,
@@ -20,7 +20,7 @@ describe('百本腕と勇者', () => {
     expect(rebuilt).toBe(original);
   });
 
-  it('勇と百が交互に送り、 最後まで読める', () => {
+  it('the two speakers alternate and reach the end', () => {
     const players = [
       { id: 'seat-a', nickname: 'A', iconUrl: '' },
       { id: 'seat-b', nickname: 'B', iconUrl: '' },

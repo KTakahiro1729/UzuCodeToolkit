@@ -1,42 +1,52 @@
 # CLAUDE.md
 
-UZU Code (`@uzuhq/code-sdk` の `run()`) でマーダーミステリーを作るための Toolkit。 参照: https://docs.code.uzu-app.com/
+Toolkit for making murder-mystery games with UZU Code (`run()` from `@uzuhq/code-sdk`). Docs: https://docs.code.uzu-app.com/
 
-## 作成方針
+## Design policy (owner's words)
 
-- **過剰設計を避ける。** サンプル作品 (`samples/`) が使わないものは作らない (YAGNI)。 kit に足すのは、 サンプルで要るようになったときだけ。
-- **文字に頼る UI は極小に。** 画面の文字は台本などの作品本文だけにし、 「〇〇の番です」のような説明文やヒントで状態を伝えない。
-- **線を減らす。** 枠線・区切り線を使わず、 余白と背景色で区別する (例: 自分の番は行の背景を明るくする)。
+> 過剰設計をさける。具体的にはサンプルプロジェクトに不要なものはYAGNIと考える
+> 文字に頼るUIは極小に
+> 余白や背景色を利用し、線が多すぎるUIは減らす
 
-## 構成 (npm workspaces)
+In practice:
 
-| パス | 役割 |
+- Build only what `samples/` uses. Add to the kit when the sample needs it.
+- Screen text is the work's own text (the script). Do not explain state with sentences or hints.
+- No borders or rules; separate things with spacing and background colour.
+
+## Language
+
+Write code, comments, docs, tests and error messages in English. UI strings come only from keys or data. Japanese goes into the repo only as the owner's own text quoted verbatim (e.g. the script, the policy above), rule text from specs, or proper nouns.
+
+## Layout (npm workspaces)
+
+| Path | Role |
 |---|---|
-| `packages/kit` | UI 非依存の部品。 読み合わせ (`advanceDialogue` ほか) と配役 (`assignRoles`)。 server の action と画面の両方から同じ関数を呼ぶ |
-| `samples/hundred-arms` | サンプル作品『百本腕と勇者』。 2 人・横画面。 Svelte 5 |
+| `packages/kit` | UI-independent helpers: read-through (`advanceDialogue` etc.) and role assignment (`assignRoles`). Called from both server actions and the view |
+| `samples/hundred-arms` | Sample work 百本腕と勇者. Two players, Svelte 5 |
 
-## コマンド (リポジトリ直下から)
+## Commands (from the repo root)
 
-| 目的 | コマンド |
+| Purpose | Command |
 |---|---|
-| 依存を入れる | `npm ci` (lockfile 無しの `npm install` は npm 10 で落ちることがあるので npm 11 を使う) |
-| 単体テスト | `npm test` |
-| 型 | `npm run typecheck` |
-| dev harness (2 席を並べて動かす) | `npm run harness` → 起動ログの URL |
+| Install | `npm ci` (npm 10's `npm install` without a lockfile can crash; use npm 11) |
+| Unit tests | `npm test` |
+| Types | `npm run typecheck` |
+| Dev harness | `npm run harness`, then the URL in the log. `npx uzu dev --orientation portrait` (in the sample) for portrait |
 
-`npm run dev` (vite 単体) は SDK につながらない。 動作確認は harness で行う。 server のロジックを変えたら harness を再起動する。
+`npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Restart the harness after changing server logic.
 
-## 書き方
+## Writing code
 
-- ロジックの actions はクライアントの先読みとサーバーの両方で走るので決定的に書く (乱数・実時刻を state に書かない)。 弾く操作は Error を投げる。
-- 寸法は em (基準は画面の短辺に比例)。 Safe Area と UZU の HUD は `main.ts` が CSS 変数 (`--safe-*` / `--hud-y`) に流す。
-- 認証要件 (https://docs.code.uzu-app.com/certification): `firstFrameReady()` 必須、 相対パス、 ファイル名は英数字と `_` `-` `.` のみ。
+- Actions run both in client prediction and on the server: keep them deterministic (no random or wall-clock values in state). Reject by throwing.
+- Sizes in em, based on the screen's short side. `main.ts` exposes the safe area and the UZU HUD as CSS variables (`--safe-*`, `--hud-y`).
+- Certification (https://docs.code.uzu-app.com/certification): call `firstFrameReady()`, use relative paths, file names only `[A-Za-z0-9_.-]`, no external network access.
 
-## フォント
+## Font
 
-`samples/hundred-arms/src/fonts/` に Google Fonts の しっぽり明朝 (Shippori Mincho、 OFL 1.1) を、 台本に出る文字だけへサブセットした woff2 で置いている (約 19 KB)。 外部 CDN は使わない (認証要件で外部との通信が禁止)。 Regular だけなので太字は使わない。
+`samples/hundred-arms/src/fonts/` holds Shippori Mincho (Google Fonts, OFL 1.1) as a woff2 subset to the script's characters (~19 KB). No CDN: certification forbids external network access. Regular only, so no bold.
 
-台本の文字が変わったら作り直す ([fonttools](https://github.com/fonttools/fonttools) が要る):
+Rebuild it when the script's characters change (needs [fonttools](https://github.com/fonttools/fonttools)):
 
 ```bash
 curl -LO https://raw.githubusercontent.com/google/fonts/main/ofl/shipporimincho/ShipporiMincho-Regular.ttf
@@ -45,9 +55,9 @@ pyftsubset ShipporiMincho-Regular.ttf --text-file=chars.txt --flavor=woff2 --lay
   --output-file=samples/hundred-arms/src/fonts/ShipporiMincho-Regular.subset.woff2
 ```
 
-## ライセンス
+## Licenses
 
-- コード: MIT (`LICENSE`)
-- 台本の文章 (`samples/hundred-arms/script/`): CC BY 4.0、 著作者 あろすてりっく (`script/LICENSE.md`)。 台本は一字一句変えない (`original.txt` と `script.json` の一致をテストが確かめる)
-- フォント (`samples/hundred-arms/src/fonts/`): SIL Open Font License 1.1 (`OFL.txt`)
-- 公式サンプル densetsu-no-tantei はライセンス表示が無いので、 コードを写さない
+- Code: MIT (`LICENSE`)
+- Script text (`samples/hundred-arms/script/`): CC BY 4.0, author あろすてりっく (`script/LICENSE.md`). Never change the script's wording; a test checks `script.json` against `original.txt`.
+- Font (`samples/hundred-arms/src/fonts/`): SIL Open Font License 1.1 (`OFL.txt`)
+- The official sample densetsu-no-tantei has no license notice, so do not copy its code.

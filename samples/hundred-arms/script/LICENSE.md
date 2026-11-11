@@ -1,17 +1,17 @@
-# 台本のライセンス
+# Script license
 
-このフォルダ (`samples/hundred-arms/script/`) にある台本『百本腕と勇者』の文章は
-[クリエイティブ・コモンズ 表示 4.0 国際 (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.ja) で提供します。
+The text of the script 百本腕と勇者 in this folder (`samples/hundred-arms/script/`) is licensed under
+[Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
-- 作品名: 百本腕と勇者
-- 著作者: あろすてりっく
-- ライセンス: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+- Title: 百本腕と勇者
+- Author: あろすてりっく
+- License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
-使うときは、 作品名・著作者名・ライセンスへのリンクを表示し、 改変したならその旨を書いてください。
+When you reuse it, credit the title, the author and the license, and say if you changed it.
 
-このフォルダの外にあるコード (画面・ロジック・設定ファイル) はリポジトリ直下の [LICENSE](../../../LICENSE) のとおり MIT です。
+Code outside this folder (views, logic, configuration) is MIT, per the repository [LICENSE](../../../LICENSE).
 
-| ファイル | 中身 |
+| File | Content |
 |---|---|
-| `original.txt` | 台本の原文 |
-| `script.json` | 原文を読み合わせの部品が読める形にしたもの (文言は原文のまま) |
+| `original.txt` | The script as written |
+| `script.json` | The same text in the shape the read-through code reads (wording unchanged) |

@@ -1,12 +1,13 @@
 /**
- * 配役: 席 (SDK の Seat) → 役 (manifest の characters[].id)。
- * キャラ選択の characterId を優先し、 選ばれていない席や重なった席には残りの役を席順に割り当てる。
+ * Role assignment: seat (SDK Seat) -> role (manifest characters[].id).
+ * A seat's chosen characterId wins; seats without a choice, or with a taken one,
+ * get the remaining roles in seat order.
  */
 export function assignRoles(
   seats: readonly { id: string; characterId?: string }[],
   roleIds: readonly string[],
 ): Record<string, string> {
-  if (seats.length > roleIds.length) throw new Error('役より席が多いです');
+  if (seats.length > roleIds.length) throw new Error('more seats than roles');
   const roles: Record<string, string> = {};
   const rest = [...roleIds];
   const pending: string[] = [];
