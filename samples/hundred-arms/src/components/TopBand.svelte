@@ -1,7 +1,7 @@
 <!--
   The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
-  Left: the game's phase, in the faint text colour. Right: both roles, the other left and yours right as in the chat.
-  During the read-through the role whose line is current is at full strength; otherwise both are.
+  Left: the game's phase, in the quieter text colour. Right: both roles as icon and name, the other
+  left and yours right as in the chat. It does not signal the turn; the current line does.
 -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
@@ -9,8 +9,7 @@
   // UI strings by key. The values are the owner's words for the band, quoted verbatim.
   import STRINGS from '../strings.json';
 
-  let { myRole, speaker, finished }: { myRole: string | undefined; speaker: string | undefined; finished: boolean } =
-    $props();
+  let { myRole, finished }: { myRole: string | undefined; finished: boolean } = $props();
 
   const roles = $derived(myRole ? [...ROLE_IDS.filter((r) => r !== myRole), myRole] : ROLE_IDS);
   const phase = $derived(STRINGS[finished ? 'phase.review' : 'phase.reading']);
@@ -24,7 +23,7 @@
     {/key}
   </div>
   {#each roles as role (role)}
-    <span class="who" data-faint={!finished && role !== speaker}>
+    <span class="who">
       <img src={`./assets/icon-${role}.webp`} alt="" />{SPEAKER_NAMES[role]}
     </span>
   {/each}
@@ -56,11 +55,6 @@
     display: flex;
     align-items: center;
     gap: 0.4em;
-    transition: color 0.2s;
-  }
-  /* Faint by text colour, not opacity, so the icon stays whole and the name keeps AA contrast. */
-  .who[data-faint='true'] {
-    color: var(--color-text-read);
   }
   img {
     width: 1.5em;
