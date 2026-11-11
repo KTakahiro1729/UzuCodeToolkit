@@ -4,7 +4,7 @@
 [クリエイティブ・コモンズ 表示 4.0 国際 (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.ja) で提供します。
 
 - 作品名: 百本腕と勇者
-- 著作者: KTakahiro1729
+- 著作者: あろすてりっく
 - ライセンス: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
 使うときは、 作品名・著作者名・ライセンスへのリンクを表示し、 改変したならその旨を書いてください。
