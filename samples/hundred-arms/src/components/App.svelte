@@ -2,7 +2,7 @@
   Chat-style read-through. The only text on screen is the script.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
   each with the speaker's icon. On your current line the bubble turns dark and
-  a tap anywhere advances. Earlier lines are a little dimmer.
+  a tap anywhere advances. Lines already read get a lighter bubble and grey text.
   After the last line, the title and end mark show, then give way to the author's afterword
   for the post-game talk.
 -->
@@ -94,15 +94,10 @@
     align-items: flex-end;
     gap: 0.45em;
     max-width: 90%;
-    opacity: 0.6;
-    transition: opacity 0.2s;
   }
   li[data-side='right'] {
     flex-direction: row-reverse;
     align-self: flex-end;
-  }
-  li[data-current='true'] {
-    opacity: 1;
   }
   img {
     flex: none;
@@ -117,6 +112,11 @@
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
     background: var(--color-bubble);
+    color: var(--color-text-read);
+    transition: background 0.2s, color 0.2s;
+  }
+  li[data-current='true'] p {
+    background: var(--color-bubble-current);
     color: var(--color-bubble-text);
   }
   /* Your own current line turns dark: the cue to read and tap. */
@@ -124,7 +124,7 @@
     background: var(--color-mine);
     color: var(--color-mine-text);
   }
-  /* The end mark holds for a moment, then crossfades into the afterword. */
+  /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
   .end {
     margin: auto;
     display: grid;
@@ -137,23 +137,18 @@
   }
   .closing {
     line-height: 2.4;
-    animation: fade-out 1s 2.5s both;
+    animation: hide 0s 3s both;
   }
   .afterword {
     line-height: 2;
     /* If it wraps (portrait), break between phrases and keep the lines even. */
     word-break: auto-phrase;
     text-wrap: balance;
-    animation: fade-in 1s 3.5s both;
+    animation: hide 0s 3s reverse both;
   }
-  @keyframes fade-out {
+  @keyframes hide {
     to {
-      opacity: 0;
-    }
-  }
-  @keyframes fade-in {
-    from {
-      opacity: 0;
+      visibility: hidden;
     }
   }
 </style>
