@@ -2,13 +2,14 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 09:38 UTC
+Last checked: 2026-11-11 09:40 UTC
 
 ## Waiting on the owner
 
 | What | Kind | Notes |
 |---|---|---|
-| [#3](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/3) Design policy in docs/design.md | Review, merge | Ready. Docs only. Base still points at #2's branch; to be retargeted to `main`. |
+| [#6](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/6) Colour rework: light theme, shared tokens, readable contrast | Review, merge | Ready. Carries the light-theme and contrast commits that missed #2. |
+| [#3](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/3) Design policy in docs/design.md | Review, merge | Ready. Merge after #6; its diff also shows #6's colour commits until #6 is in `main`. |
 
 No open decisions.
 
@@ -19,9 +20,8 @@ No open decisions.
 | [#4](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/4) Afterword screen | Being retargeted to `main` and re-checked. |
 | [#5](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/5) Minimal animation | Reworking: new lines push up from below. Stacked on #4. |
 | Header band (no PR yet) | Stacked on #5. |
-| Colour rework (no PR yet) | New PR from `main`, shared colour tokens only. |
 
-Merge order: #3, #4, #5, header. The colour PR is independent of that order. No CI checks are configured.
+Merge order: #6, #3, #4, #5, header. No CI checks are configured.
 
 ## Done
 
