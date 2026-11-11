@@ -40,8 +40,8 @@ on cards.
   advance button right under it.
 - When you read, the line being read takes the button's blue, so line and
   button read as one cue. The other role's lines are always white.
-- Both players see the button. It is filled for whoever reads now and greyed
-  for the other, so each player knows at a glance whether to read or to wait.
+- Every player sees the button. It is filled for whoever reads now and greyed
+  for the others, so each player knows at a glance whether to read or to wait.
   Nothing else on screen signals the turn.
 - The button is always there during the read-through, so it never moves the
   lines. It carries a short label from a key (read, then tap) until your first
@@ -52,6 +52,8 @@ on cards.
   speaker's icon and by the speaker's name above the bubble. Your role's
   bubbles are tinted; the other role's are white. All lines keep full text
   contrast.
+- A player may read several roles (a part). Every line of those roles counts
+  as yours: right side, tint, and the button when it is current.
 
 ### Text
 
@@ -96,7 +98,7 @@ on cards.
 
 Decoration is out of scope, but it must not break the rules above:
 
-- Colours are tokens in `samples/hundred-arms/src/theme.css`; screens use the
+- Colours are tokens in `packages/reader/src/theme.css`; screens use the
   variables, never raw colours.
 - Every text colour meets WCAG AA (4.5:1) on its background.
 - No gradients, edge fades, shadows or glows.
@@ -109,7 +111,8 @@ Decoration is out of scope, but it must not break the rules above:
   speaker names, the advance button) in BIZ UDPGothic (`--font-ui`), a
   universal-design gothic made for telling characters apart, so short labels
   stay legible at small sizes. Both are bundled subsets; no system fonts.
-- No text below 16px.
+- No text below 16px, except ruby: it gives the reading of the word under it
+  at half the text size.
 
 ## Components
 
@@ -123,8 +126,9 @@ Decoration is out of scope, but it must not break the rules above:
   HUD. A quarter or less (landscape and tablets, under a fifth), the band
   shares the HUD's row with the HUD over its empty left part, so the chat
   keeps the height. Nothing else shares a row with the HUD.
-- Shows both players as icon and role name, ordered like the chat: the other
-  player left, you right. Each name sits under its icon. Your role's icon has a
+- Shows every player as icon and part name, ordered like the chat: the other
+  players left (in the script's order), you right. A part that reads several
+  roles shows its first role's icon. Each name sits under its icon. Your role's icon has a
   double circle (a ring around it), since order alone does not say which one
   is yours. Band text is
   bold.
@@ -133,7 +137,8 @@ Decoration is out of scope, but it must not break the rules above:
 - It does not signal the turn; the current line does.
 - Shows the current phase of the game (read-through, afterword, or other) as a
   short label from a key, in every phase (owner's decision), centred on the
-  screen.
+  screen. When the players need more than the right half (several players on
+  an upright phone), the label gives way to the left, keeping a gap.
 
 ### Dialogue line (read-through only)
 
@@ -141,13 +146,25 @@ Decoration is out of scope, but it must not break the rules above:
   lines on the right, the other role's on the left.
 - Only the button advances; tapping elsewhere does nothing, so a stray tap
   never skips a line.
+- A line spoken together shows the speakers' names joined (`name.and`) and the
+  first speaker's icon; that speaker reads it. A line marked as continuing the
+  previous speech shows no name.
+- Ruby from the script (Aozora notation) shows above its word.
+
+### Stage direction and scene heading
+
+- A stage direction is read aloud like a line, by the player whose part holds
+  it, but it is no one's speech: it spans the chat column, with no icon or
+  name, and takes the same colours as a line (yours tinted, current yours blue).
+- A scene heading sits centred above the line that opens the scene, in the
+  quieter text colour, since it stands for what follows.
 
 ### End screen
 
-- The title and the end mark, centred, nothing else.
+- The title and the end mark (when the script has one), centred, nothing else.
 - After a moment the post-game screen replaces it: a centred greeting
   (`review.heading`) and under it an area (a white block) labelled
-  `review.afterword` holding the author's afterword. The end screen fades out,
+  `review.afterword` holding the author's afterword, when the script has one. The end screen fades out,
   then the post-game screen fades in, so the two never show through each
   other. The band's phase changes as the post-game screen comes in.
 

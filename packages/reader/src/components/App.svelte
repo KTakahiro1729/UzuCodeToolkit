@@ -1,26 +1,33 @@
 <!--
   Chat-style read-through.
-  Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
-  each with the speaker's icon and name. Right under the newest line, both players see the
-  advance button: active for whoever reads now, greyed for the other.
-  After the last line, the title and end mark show, then give way to the author's afterword
-  for the post-game talk. The top band, its own row under the UZU HUD, shows both roles and the phase.
+  Lines appear as bubbles as they are read: lines of the roles you read on the right, others on
+  the left, each with the speaker's icon and name. Stage directions span the column without a
+  speaker; a scene heading sits centred above the line that opens the scene. Right under the
+  newest line, every player sees the advance button: active for whoever reads now, greyed for
+  the others. After the last line, the title and end mark show, then give way to the post-game
+  screen (with the author's afterword, if any). The top band shows every player and the phase.
 -->
 <script lang="ts">
-  import { currentLine } from '@uzu-toolkit/kit';
+  import { currentLine, parseRuby, readerOf } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
-  import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
-  import { game, sendAction } from '../store.svelte';
+  import type { Line } from '../script';
+  import { game, getScenario, sendAction } from '../store.svelte';
   import TopBand from './TopBand.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
+  const { script, rolesOf, isDirection, nameOf } = getScenario();
+  const LINES = script.lines;
+
   const dialogue = $derived(game.state?.dialogue);
-  const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
+  const myPart = $derived(game.me ? game.state?.parts[game.me] : undefined);
+  // The roles you read: several when your part doubles roles.
+  const myRoles = $derived(rolesOf(myPart));
+  const isMine = (l: Line): boolean => myRoles.includes(readerOf(l));
   const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
-  const mine = $derived(!!line && line.speaker === myRole);
+  const mine = $derived(!!line && isMine(line));
   // The button says what it does until your first line is read; after that the mark alone.
-  const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex((l) => l.speaker === myRole));
+  const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex(isMine));
   // On the last line the button ends the read-through, so it says so instead of the next mark.
   const last = $derived(!!line && dialogue?.index === LINES.length - 1);
 
@@ -77,28 +84,40 @@
 
 <main>
   {#if dialogue}
-    <TopBand {myRole} finished={review} />
+    <TopBand {myPart} finished={review} />
   {/if}
   {#if dialogue?.finished}
     <div class="end">
-      <p class="closing">{TITLE}<br />{END_MARK}</p>
+      <p class="closing">{script.title}{#if script.end}<br />{script.end}{/if}</p>
       <section class="review">
         <h1>{STRINGS['review.heading']}</h1>
-        <div class="afterword">
-          <h2>{STRINGS['review.afterword']}</h2>
-          <p>{AFTERWORD}</p>
-        </div>
+        {#if script.afterword}
+          <div class="afterword">
+            <h2>{STRINGS['review.afterword']}</h2>
+            <p>{script.afterword}</p>
+          </div>
+        {/if}
       </section>
     </div>
   {:else}
     <div class="read" out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
       <ol class="chat" bind:this={chat}>
         {#each shown as l, i}
-          <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
-            <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
-            <div class="body">
-              <span class="name">{SPEAKER_NAMES[l.speaker]}</span>
-              <p>{l.text}</p>
+          <li
+            in:push
+            data-side={isMine(l) ? 'right' : 'left'}
+            data-current={i === dialogue?.index}
+            data-direction={isDirection(l)}
+          >
+            {#if l.scene}<h3>{l.scene}</h3>{/if}
+            <div class="row">
+              {#if !isDirection(l)}
+                <img src={`./assets/icon-${readerOf(l)}.webp`} alt={nameOf(l, STRINGS['name.and'])} />
+              {/if}
+              <div class="body">
+                {#if !isDirection(l) && !l.cont}<span class="name">{nameOf(l, STRINGS['name.and'])}</span>{/if}
+                <p>{#each parseRuby(l.text) as seg}{#if seg.ruby}<ruby>{seg.text}<rt>{seg.ruby}</rt></ruby>{:else}{seg.text}{/if}{/each}</p>
+              </div>
             </div>
           </li>
         {/each}
@@ -162,15 +181,38 @@
     overflow-y: auto;
     scrollbar-width: none;
   }
+  /* One line, with the heading of the scene it opens above it. */
   li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+  }
+  .row {
     display: flex;
     align-items: flex-start;
     gap: 0.45em;
     max-width: 90%;
   }
-  li[data-side='right'] {
+  li[data-side='right'] .row {
     flex-direction: row-reverse;
     align-self: flex-end;
+  }
+  /* Stage directions are no one's speech: the full column, no icon or name. */
+  li[data-direction='true'] .row {
+    max-width: none;
+    align-self: stretch;
+  }
+  li[data-direction='true'] .body {
+    flex: 1;
+    align-items: stretch;
+  }
+  /* A scene heading stands for what follows, so it is centred. */
+  h3 {
+    margin: 0.4em 0 0;
+    align-self: center;
+    color: var(--color-text-quiet);
+    font-weight: 400;
+    font-size: 1em;
   }
   img {
     flex: none;
@@ -203,6 +245,14 @@
     /* Break between phrases, never mid-word. */
     word-break: auto-phrase;
     background: var(--color-bubble);
+  }
+  /* Room above each line for ruby. */
+  li p:has(ruby) {
+    line-height: 1.9;
+  }
+  /* Ruby gives the reading of the word under it: half size, the one text below 16px. */
+  rt {
+    font-size: 0.5em;
   }
   /* Your role's lines, as in chat apps. */
   li[data-side='right'] p {

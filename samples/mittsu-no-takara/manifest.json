@@ -1,0 +1,31 @@
+{
+  "id": "uzu-toolkit-mittsu-no-takara",
+  "build": "npm run build",
+  "output": "dist",
+  "playerCount": 3,
+  "orientation": "landscape",
+  "serverActionLogicPath": "./src/logic.ts",
+  "characters": [
+    {
+      "id": "prince",
+      "name": "王子",
+      "description": "王子",
+      "icon": "./public/assets/icon-prince.webp"
+    },
+    {
+      "id": "princess",
+      "name": "王女",
+      "description": "王女、第一の盗人、第三の盗人、宿屋の主人、ト書き",
+      "icon": "./public/assets/icon-princess.webp"
+    },
+    {
+      "id": "king",
+      "name": "黒ん坊の王",
+      "description": "黒ん坊の王、第二の盗人、第一の農夫、第二の農夫、一同",
+      "icon": "./public/assets/icon-king.webp"
+    }
+  ],
+  "dev": {
+    "command": "npm run dev"
+  }
+}

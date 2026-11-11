@@ -1,14 +1,16 @@
-// Runs `uzu dev` and restarts it whenever the server logic changes, so logic
+// Runs `uzu dev` in the current sample and restarts it whenever the server logic changes, so logic
 // edits show up without a manual restart. Screen code (Svelte, CSS) needs no
 // restart: vite swaps it in place. The /harness page (dev-harness.ts) puts the
 // game state back after a restart.
 import { spawn } from 'node:child_process';
 import { watch } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Run from a sample's folder. Everything its src/logic.ts imports: the sample's logic and
+// script, and the reader and kit packages.
 const here = (path) => fileURLToPath(new URL(path, import.meta.url));
-// Everything src/logic.ts imports.
-const WATCHED = [here('./src/logic.ts'), here('./src/scenario.ts'), here('./script'), here('../../packages/kit/src')];
+const WATCHED = [resolve('src/logic.ts'), resolve('script'), here('./src'), here('../kit/src')];
 const WINDOWS = process.platform === 'win32';
 
 let child = null;

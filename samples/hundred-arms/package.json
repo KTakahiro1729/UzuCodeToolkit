@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "harness": "node harness.mjs",
+    "harness": "node ../../packages/reader/harness.mjs",
     "build": "tsc --noEmit && vite build",
     "publish": "uzu publish",
     "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@uzu-toolkit/kit": "^0.1.0",
+    "@uzu-toolkit/reader": "^0.1.0",
     "@uzuhq/code-sdk": "^0.9.12"
   },
   "devDependencies": {
