@@ -35,7 +35,7 @@
 
   /**
    * A new line enters at full size from below and pushes the earlier lines up.
-   * Easing is Material 3's "standard" curve; 300 ms is its medium2 duration.
+   * Opacity and transform only, 200 ms ease-out (docs/design.md, Motion).
    */
   function push(node: HTMLElement) {
     const list = node.parentElement;
@@ -48,8 +48,8 @@
       const now = new DOMMatrix(getComputedStyle(li).transform).m42;
       li.getAnimations().forEach((a) => a.cancel());
       li.animate([{ transform: `translateY(${now + shift}px)` }, { transform: 'none' }], {
-        duration: 300,
-        easing: 'cubic-bezier(0.2, 0, 0, 1)',
+        duration: 200,
+        easing: 'cubic-bezier(0, 0, 0.2, 1)',
       });
     }
     return {};
@@ -70,7 +70,7 @@
       <p class="afterword">{AFTERWORD}</p>
     </div>
   {:else}
-    <ol class="chat" bind:this={chat} out:fade={{ duration: 300 }}>
+    <ol class="chat" bind:this={chat} out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
       {#each shown as l, i}
         <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
           <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
@@ -162,9 +162,6 @@
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
     background: var(--dim);
-    transition:
-      background-color 0.2s,
-      color 0.2s;
   }
   /* Your own current line turns light: the cue to read and tap. */
   main[data-mine='true'] li[data-current='true'] p {
@@ -186,7 +183,7 @@
     line-height: 2.4;
     /* Comes in as the chat goes out, so the screen does not cut. */
     animation:
-      fade-in 0.4s 0.2s both,
+      fade-in 0.2s ease-out both,
       hide 0s 3s both;
   }
   .afterword {
@@ -195,6 +192,11 @@
     word-break: auto-phrase;
     text-wrap: balance;
     animation: hide 0s 3s reverse both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .closing {
+      animation: hide 0s 3s both;
+    }
   }
   @keyframes fade-in {
     from {
