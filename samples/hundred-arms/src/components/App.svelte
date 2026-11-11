@@ -46,10 +46,11 @@
     margin: 0;
   }
   main {
-    --bg: #17151d;
-    --paper: #f1e9dc;
-    --ink: #24202b;
-    --dim: #3a3542;
+    /* Neutral greys only, no tint. */
+    --bg: #141414;
+    --paper: #f5f5f5;
+    --ink: #141414;
+    --dim: #2b2b2b;
     position: fixed;
     inset: 0;
     box-sizing: border-box;
@@ -109,7 +110,7 @@
     border-radius: 1em;
     background: var(--dim);
   }
-  /* Your own current line: paper-light, the cue to read and tap. */
+  /* Your own current line turns light: the cue to read and tap. */
   main[data-mine='true'] li[data-current='true'] p {
     background: var(--paper);
     color: var(--ink);
