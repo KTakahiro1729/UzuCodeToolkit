@@ -1,0 +1,13 @@
+/*
+ * Colour tokens for every screen. Light theme only; neutral greys with no tint.
+ * Components use these variables, never raw colours.
+ */
+:root {
+  --color-bg: #fafafa; /* page */
+  --color-text: #1a1a1a; /* body text */
+  --color-bubble: #ebebeb; /* a line that is not your current one */
+  --color-bubble-text: #1a1a1a;
+  --color-mine: #1a1a1a; /* your current line: the cue to read and tap */
+  --color-mine-text: #fafafa;
+  color-scheme: light;
+}

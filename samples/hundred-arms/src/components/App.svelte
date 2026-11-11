@@ -1,7 +1,7 @@
 <!--
   Chat-style read-through. The only text on screen is the script.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
-  each with the speaker's icon. The current line is the brightest bubble; on your line
+  each with the speaker's icon. On your current line the bubble turns dark and
   a tap anywhere advances. Earlier lines are a little dimmer.
   After the last line, the title and end mark show, then give way to the author's afterword
   for the post-game talk.
@@ -58,11 +58,6 @@
     margin: 0;
   }
   main {
-    /* Neutral greys only, no tint. */
-    --bg: #141414;
-    --paper: #f5f5f5;
-    --ink: #141414;
-    --dim: #2b2b2b;
     position: fixed;
     inset: 0;
     box-sizing: border-box;
@@ -71,8 +66,8 @@
     justify-content: flex-end;
     padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
-    background: var(--bg);
-    color: var(--paper);
+    background: var(--color-bg);
+    color: var(--color-text);
     font-family: 'Shippori Mincho', serif;
     /* Sizes are in em; the base scales with the screen's short side. */
     font-size: clamp(14px, 4.4vmin, 28px);
@@ -121,12 +116,13 @@
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
-    background: var(--dim);
+    background: var(--color-bubble);
+    color: var(--color-bubble-text);
   }
-  /* Your own current line turns light: the cue to read and tap. */
+  /* Your own current line turns dark: the cue to read and tap. */
   main[data-mine='true'] li[data-current='true'] p {
-    background: var(--paper);
-    color: var(--ink);
+    background: var(--color-mine);
+    color: var(--color-mine-text);
   }
   /* The end mark holds for a moment, then crossfades into the afterword. */
   .end {
