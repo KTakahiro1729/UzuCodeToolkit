@@ -2,21 +2,30 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 09:29 UTC
+Last checked: 2026-11-11 09:38 UTC
 
 ## Waiting on the owner
 
-Merge order: #2, #3, #4, #5. #3 and #4 are stacked on #2's branch, #5 on #4's; each gets retargeted to `main` when the PR below it merges. No CI checks are configured.
+| What | Kind | Notes |
+|---|---|---|
+| [#3](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/3) Design policy in docs/design.md | Review, merge | Ready. Docs only. Base still points at #2's branch; to be retargeted to `main`. |
 
-| What | Kind | Since | Notes |
-|---|---|---|---|
-| [#2](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/2) Simplify to the guidelines, add CLAUDE.md | Review, merge | 2026-11-11 | Ready. [Screen flow](https://claude.ai/artifact/QP4ZjWNo4qHNSHXCvgfxRM) |
-| [#3](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/3) Design policy in docs/design.md | Review, merge | 2026-11-11 | Ready. Three design questions are open in the open-questions thread; their answers land in #3. After #2. |
-| [#4](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/4) Afterword screen after the read-through | Review, merge | 2026-11-11 | After #3. [Screen flow](https://claude.ai/artifact/RXrrMFuQe8SwT2dMedbC5y) |
-| [#5](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/5) Minimal animation for the read-through and the switch to the afterword | Review, merge | 2026-11-11 | After #4. [Recordings](https://claude.ai/artifact/WLY4K3NHLiPYGXZfDwFUrn) |
+No open decisions.
+
+## In progress (not waiting on the owner yet)
+
+| What | Notes |
+|---|---|
+| [#4](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/4) Afterword screen | Being retargeted to `main` and re-checked. |
+| [#5](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/5) Minimal animation | Reworking: new lines push up from below. Stacked on #4. |
+| Header band (no PR yet) | Stacked on #5. |
+| Colour rework (no PR yet) | New PR from `main`, shared colour tokens only. |
+
+Merge order: #3, #4, #5, header. The colour PR is independent of that order. No CI checks are configured.
 
 ## Done
 
 | PR | Result | Date |
 |---|---|---|
+| [#2](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/2) Simplify to the guidelines, add CLAUDE.md | Merged | 2026-11-11 |
 | [#1](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/1) Kit, minimal template, sample "Hundred Arms and the Hero" | Merged | 2026-11-11 |
