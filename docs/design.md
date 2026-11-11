@@ -143,7 +143,9 @@ Decoration is out of scope, but it must not break the rules above:
 - The title and the end mark, centred, nothing else.
 - After a moment the post-game screen replaces it: a centred greeting
   (`review.heading`) and under it an area (a white block) labelled
-  `review.afterword` holding the author's afterword. The band's phase changes at the same moment.
+  `review.afterword` holding the author's afterword. The end screen fades out,
+  then the post-game screen fades in, so the two never show through each
+  other. The band's phase changes as the post-game screen comes in.
 
 ### Other screens
 
