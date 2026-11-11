@@ -1,19 +1,18 @@
 /*
- * Colour tokens for every screen. Light theme only; neutral greys with no tint.
+ * Colour tokens for every screen. Light theme only, in the usual chat-app
+ * pattern: a soft grey page, white bubbles for others, a calm blue for you.
  * Components use these variables, never raw colours.
  *
- * Rules: every text colour meets WCAG AA (4.5:1) on its background; no opacity
- * fades (they wash out text and icons together); the only strong colour is
- * "your turn".
+ * Every text colour meets WCAG AA (4.5:1) on its background. No opacity fades.
  */
 :root {
-  --color-bg: #ffffff; /* page */
-  --color-text: #1f1f1f; /* body text; 16.5:1 on bg */
-  --color-text-read: #666666; /* lines already read; 5.1:1 on --color-bubble */
-  --color-bubble: #f2f2f2; /* a line already read */
-  --color-bubble-current: #e3e3e3; /* the current line when it is not yours */
-  --color-bubble-text: #1f1f1f; /* 12.8:1 on --color-bubble-current */
-  --color-mine: #1f1f1f; /* your current line: the cue to read and tap */
-  --color-mine-text: #ffffff; /* 16.5:1 on --color-mine */
+  --color-bg: #e9ecef; /* page: soft grey, not pure white */
+  --color-text: #24292f; /* body text; 12.4:1 on bg */
+  --color-bubble: #ffffff; /* the other player's lines */
+  --color-bubble-current: #ffffff; /* the other player's current line (same as read) */
+  --color-bubble-text: #24292f; /* 14.7:1 on white */
+  --color-text-read: #24292f; /* read lines keep full contrast */
+  --color-mine: #3b6fb6; /* your lines */
+  --color-mine-text: #ffffff; /* 5.1:1 on --color-mine */
   color-scheme: light;
 }

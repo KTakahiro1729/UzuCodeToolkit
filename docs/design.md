@@ -15,8 +15,8 @@ How screens in this repository look and move.
 ### Colour
 
 - Light theme only.
-- Neutral greys and white, with no hue or tint. The characters' icons are the only colour on screen.
-- Meaning is carried by contrast. The only strong colour is your own current line, which inverts (black bubble, white text).
+- The usual chat-app palette: a soft grey page (not pure white), white bubbles for the other player, a calm blue with white text for your lines.
+- Read lines keep full contrast.
 - No gradients, fades, shadows or glows.
 - Every text colour meets WCAG AA contrast (4.5:1) on its background.
 - No opacity on resting states; quieter things use a quieter colour token. Short opacity transitions are fine.
@@ -25,7 +25,7 @@ How screens in this repository look and move.
 ### Typography
 
 - Shippori Mincho, Regular, one size for the script.
-- Hierarchy comes from contrast and position, not from size or weight.
+- Hierarchy comes from colour and position, not from size or weight.
 
 ### Space and layout
 
@@ -49,7 +49,7 @@ How screens in this repository look and move.
 
 - Text on screen is the work's own text: the script, the title, character names. No hints or instructions.
 - A short label is allowed only where no icon or position can say the same thing. It comes from a key.
-- State is shown by position and contrast. Whose turn it is shows as the side of the current line and whether it is inverted. The next reader is not shown.
+- State is shown by position and colour. When the newest line is yours (right, blue), it is your turn. The next reader is not shown.
 
 ## Components
 
@@ -64,12 +64,12 @@ How screens in this repository look and move.
 ### Dialogue line (read-through only)
 
 - A bubble with the speaker's icon beside it. Your role's lines on the right, the other role's on the left.
-- Earlier lines use a quieter text and bubble colour; the current line a stronger one. Your own current line inverts: the cue to read and tap.
+- Your lines are blue, the other player's white. When the newest line is yours, it is your turn to read and tap.
 - On your line, a tap anywhere advances.
 
 ### Character icon
 
-- Every role has one. It is the only colour on screen and the main way to tell speakers apart.
+- Every role has one. It tells speakers apart alongside the side of the screen.
 
 ### End screen
 
@@ -83,7 +83,7 @@ How screens in this repository look and move.
 
 - Wrap blocks in cards, or nest cards.
 - Use gradients, edge fades, glows or coloured shadows.
-- Add a tint, brand colour or accent colour.
+- Add colours beyond the palette above, such as brand or decorative accents.
 - Add labels, hints or headings that explain what the screen already shows.
 - Draw borders, dividers or accent stripes.
 - Build features or options the sample does not use.

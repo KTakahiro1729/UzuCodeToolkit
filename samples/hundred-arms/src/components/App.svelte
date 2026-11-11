@@ -1,8 +1,8 @@
 <!--
   Chat-style read-through. The only text on screen is the script.
-  Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
-  each with the speaker's icon. On your current line the bubble turns dark and
-  a tap anywhere advances. Lines already read get a lighter bubble and grey text.
+  Lines appear as bubbles as they are read: your role's lines on the right in blue,
+  others on the left in white, each with the speaker's icon. When the newest line is
+  yours, a tap anywhere advances.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
@@ -114,8 +114,8 @@
     background: var(--color-bubble-current);
     color: var(--color-bubble-text);
   }
-  /* Your own current line turns dark: the cue to read and tap. */
-  main[data-mine='true'] li[data-current='true'] p {
+  /* Your lines, as in any chat app. When the newest line is yours, it is your turn. */
+  li[data-side='right'] p {
     background: var(--color-mine);
     color: var(--color-mine-text);
   }
