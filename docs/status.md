@@ -8,9 +8,9 @@ Last checked: 2026-11-11 09:43 UTC
 
 | What | Kind | Notes |
 |---|---|---|
-| [#3](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/3) Design policy in docs/design.md | Review, merge | Ready. Merge after #6; its diff also shows #6's colour commits until #6 is in `main`. |
-| [#7](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/7) Top band: both players' icons and names, game phase | Review | Ready for review. Merge after #5. [Screen flow](https://claude.ai/artifact/DowW1Hjvgf85YsED3LyC8n) |
+| [#3](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/3) Design policy in docs/design.md | Review, merge | Ready, but review after #6 is ready; its diff shows #6's colour commits until #6 is in `main`. |
 | [#4](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/4) Afterword screen after the read-through | Review, merge | Ready. Based on `main`. Merge after #3. [Screen flow](https://claude.ai/artifact/RXrrMFuQe8SwT2dMedbC5y) |
+| [#7](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/7) Top band: both players' icons and names, game phase | Review | Ready for review. Merge after #5. [Screen flow](https://claude.ai/artifact/DowW1Hjvgf85YsED3LyC8n) |
 
 No open decisions.
 
