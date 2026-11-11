@@ -16,10 +16,10 @@ How screens in this repository look and move.
 
 - Light theme only.
 - Neutral greys and white, with no hue or tint. The characters' icons are the only colour on screen.
-- Meaning is carried by contrast. The only strong colour is your own current line, which inverts (dark bubble, light text).
+- Meaning is carried by contrast. The only strong colour is your own current line, which inverts (black bubble, white text).
 - No gradients, fades, shadows or glows.
 - Every text colour meets WCAG AA contrast (4.5:1) on its background.
-- No opacity fades. Quieter things use a quieter colour token, so text and icons stay legible.
+- No opacity on resting states; quieter things use a quieter colour token. Short opacity transitions are fine.
 - Colours are tokens in `samples/hundred-arms/src/theme.css`. Screens use the variables, never raw colours.
 
 ### Typography
