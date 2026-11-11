@@ -112,7 +112,7 @@ Decoration is out of scope, but it must not break the rules above:
   universal-design gothic made for telling characters apart, so short labels
   stay legible at small sizes. Both are bundled subsets; no system fonts.
 - No text below 16px, except ruby: it gives the reading of the word under it
-  at half the text size.
+  at half the text size (owner's decision).
 
 ## Components
 
