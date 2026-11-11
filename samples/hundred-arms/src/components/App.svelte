@@ -1,14 +1,13 @@
 <!--
   Chat-style read-through. The only text on screen is the script.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
-  each with the speaker's icon. The current line is the brightest bubble; on your line
+  each with the speaker's icon. On your current line the bubble turns dark and
   a tap anywhere advances. Earlier lines are a little dimmer.
   After the last line, the title and end mark show, then give way to the author's afterword
   for the post-game talk. The top band beside the UZU HUD shows both roles and the phase.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
-  import { cubicOut } from 'svelte/easing';
   import { fade } from 'svelte/transition';
   import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
   import { game, sendAction } from '../store.svelte';
@@ -21,26 +20,39 @@
   const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
 
   let chat: HTMLOListElement | undefined = $state();
+  // Set by push(), which scrolls before it moves the lines; scrolling again mid-push would
+  // follow the moving lines and cancel the motion.
+  let pushed = false;
   // Keep the newest line in view as lines are added.
+  const count = $derived(shown.length);
   $effect(() => {
-    void shown.length;
-    chat?.scrollTo({ top: chat.scrollHeight });
+    void count;
+    if (pushed) pushed = false;
+    else chat?.scrollTo({ top: chat.scrollHeight });
   });
 
   const reduceMotion = (): boolean => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /** A new line grows in from zero height, so the lines above slide up instead of jumping. */
-  function grow(node: HTMLElement) {
-    const height = node.offsetHeight;
-    const margin = parseFloat(getComputedStyle(node).marginTop);
+  /**
+   * A new line enters at full size from below and pushes the earlier lines up.
+   * Easing is Material 3's "standard" curve; 300 ms is its medium2 duration.
+   */
+  function push(node: HTMLElement) {
     const list = node.parentElement;
-    return {
-      duration: reduceMotion() ? 0 : 200,
-      easing: cubicOut,
-      css: (t: number) => `overflow: hidden; height: ${t * height}px; margin-top: ${t * margin}px; opacity: ${t};`,
-      // Keep the newest line in view while it grows.
-      tick: () => list?.scrollTo({ top: list.scrollHeight }),
-    };
+    if (!list || reduceMotion()) return {};
+    list.scrollTo({ top: list.scrollHeight });
+    pushed = true;
+    const shift = node.offsetHeight + parseFloat(getComputedStyle(list).rowGap);
+    for (const li of list.children) {
+      // If lines are still moving from the last push, start from where they are now.
+      const now = new DOMMatrix(getComputedStyle(li).transform).m42;
+      li.getAnimations().forEach((a) => a.cancel());
+      li.animate([{ transform: `translateY(${now + shift}px)` }, { transform: 'none' }], {
+        duration: 300,
+        easing: 'cubic-bezier(0.2, 0, 0, 1)',
+      });
+    }
+    return {};
   }
 
   function advance(): void {
@@ -60,7 +72,7 @@
   {:else}
     <ol class="chat" bind:this={chat} out:fade={{ duration: 300 }}>
       {#each shown as l, i}
-        <li in:grow data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
+        <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
           <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
           <p>{l.text}</p>
         </li>
@@ -80,11 +92,6 @@
     margin: 0;
   }
   main {
-    /* Neutral greys only, no tint. */
-    --bg: #141414;
-    --paper: #f5f5f5;
-    --ink: #141414;
-    --dim: #2b2b2b;
     position: fixed;
     inset: 0;
     box-sizing: border-box;
@@ -94,8 +101,8 @@
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
     padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
-    background: var(--bg);
-    color: var(--paper);
+    background: var(--color-bg);
+    color: var(--color-text);
     font-family: 'Shippori Mincho', serif;
     /* Sizes are in em; the base scales with the screen's short side. */
     font-size: clamp(14px, 4.4vmin, 28px);
@@ -117,6 +124,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    gap: 0.45em;
     /* Older lines scroll up; the list keeps the newest line in view. */
     overflow-y: auto;
     scrollbar-width: none;
@@ -128,10 +136,6 @@
     max-width: 90%;
     opacity: 0.6;
     transition: opacity 0.2s;
-  }
-  /* Spacing as a margin (not gap) so a new line's space grows in with it. */
-  li + li {
-    margin-top: 0.45em;
   }
   li[data-side='right'] {
     flex-direction: row-reverse;
@@ -152,15 +156,16 @@
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
-    background: var(--dim);
+    background: var(--color-bubble);
+    color: var(--color-bubble-text);
     transition:
       background-color 0.2s,
       color 0.2s;
   }
-  /* Your own current line turns light: the cue to read and tap. */
+  /* Your own current line turns dark: the cue to read and tap. */
   main[data-mine='true'] li[data-current='true'] p {
-    background: var(--paper);
-    color: var(--ink);
+    background: var(--color-mine);
+    color: var(--color-mine-text);
   }
   /* The end mark holds for a moment, then crossfades into the afterword. */
   .end {
