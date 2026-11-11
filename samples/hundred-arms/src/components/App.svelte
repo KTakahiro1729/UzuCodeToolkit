@@ -108,7 +108,6 @@
     border-radius: 0.8em;
     background: var(--color-bubble);
     color: var(--color-text-read);
-    transition: background 0.2s, color 0.2s;
   }
   li[data-current='true'] p {
     background: var(--color-bubble-current);

@@ -1,75 +1,125 @@
 # Design policy
 
-How screens in this repository look and move.
+How screens in this repository work for the players. This policy covers the
+functional side of design only: helping players see what to do and keeping
+their cognitive load low. The decorative side (hues, typeface, icon art, corner
+shapes) is out of scope here; this policy only sets the limits decoration must
+stay within.
 
-## Principles
+## Owner's instructions
 
-1. **The work leads.** The screen carries the script and the players reading it. The UI helps and never competes; it has no look of its own.
-2. **Nothing without a job.** Build only what the sample uses. Every element must have a reason to be on screen; if nothing breaks without it, leave it out.
-3. **Group with space.** Separate and group things with spacing. Use a background only where it carries meaning, such as one line of dialogue. No lines or borders.
-4. **Room is scarce.** Design for a phone first. Keep padding and gaps tight. No cards by default.
-5. **Change smoothly.** Motion keeps the eye's place when something changes. It never decorates.
+Quoted verbatim.
 
-## Foundations
+> デザインは機能面と装飾面を分けて考え、さらにここでは装飾面は担当しません。
+> 機能面とは、ユーザーが何をすべきかを理解し、認知負荷を下げるためのものです
+> ・過剰なアニメーション（カクツキもユーザーからはアニメーションと捉えられる）
+> ・不明な
+> ・注目すべき箇所がわからない（情報が階層化されていない）
+> ・それ以外のものに視線が行く
+> ・自明や不要な文章を読むことの認知負荷
+> ・視線移動
+> をすべて避けるべきです。
 
-### Colour
+Earlier instructions that still apply:
 
-- Light theme only.
-- The usual chat-app palette: a soft grey page (not pure white), white bubbles for the other player, a calm blue with white text for your lines.
-- Read lines keep full contrast.
-- No gradients, fades, shadows or glows.
-- Every text colour meets WCAG AA contrast (4.5:1) on its background.
-- No opacity on resting states; quieter things use a quieter colour token. Short opacity transitions are fine.
-- Colours are tokens in `samples/hundred-arms/src/theme.css`. Screens use the variables, never raw colours.
+> 過剰設計をさける（YAGNI）
+> 文字に頼るUIは極小に
+> 余白や背景色を利用し、線が多すぎるUIは減らす
+> カード型デザインを過信しないで。変に余白食うだけのことあるし
 
-### Typography
+## What to avoid
 
-- Shippori Mincho, Regular, one size for the script.
-- Hierarchy comes from colour and position, not from size or weight.
+Every screen is checked against these six. The item "不明な" is cut off in the
+original; it is read here as an unclear state or action.
 
-### Space and layout
+1. **Excess motion.** Anything that moves pulls the eye, and so does a stutter
+   or a sudden jump. Move only what has to change, and move it smoothly.
+2. **Unclear state or action.** At any moment a player can tell whose turn it
+   is and what a tap does, from what is on screen alone. Signs follow the
+   meaning players already know from other apps; never reuse a familiar sign
+   with a different meaning.
+3. **No clear focus.** There is one most important thing on screen at a time,
+   and it is the most salient thing. If everything is emphasised, nothing is.
+4. **The eye drawn elsewhere.** Nothing outside the focus is more salient than
+   the focus: no strong colour, size or motion on things the player is not
+   acting on now.
+5. **Reading the obvious.** No text that repeats what position, colour or the
+   content already says. No hints, headings or instructions.
+6. **Eye travel.** What the player needs at one moment sits together, near the
+   focus. Related things are close; the eye does not cross the screen for one
+   decision.
 
-- Sizes in em, based on the screen's short side.
-- Tight, consistent gaps. Small padding inside bubbles.
-- The newest line sits at the bottom; older lines scroll up.
+Plus: build only what the sample uses (YAGNI), group with space and background
+rather than lines, and spend no room on cards.
+
+## Rules
+
+### Focus and hierarchy
+
+- During the read-through the focus is the current line: the newest one, at the
+  bottom.
+- The current line is the most salient thing on screen. Read lines keep full
+  text contrast (no fades), but their bubbles are quieter than the current one,
+  on both sides.
+- Your turn is shown at the focus itself: the current line is on your side.
+  Nothing else on screen signals the turn.
+- Lines are told apart by side (yours right, as in chat apps) and by the
+  speaker's icon.
+
+### Text
+
+- Text on screen is the work's own text: the script, the title, character names.
+- A short label is allowed only where nothing else on screen says the same
+  thing. It comes from a key.
+- The next reader is not shown.
+
+### Layout
+
+- Phone first; sizes in em, based on the screen's short side.
+- The chat column has a reading width, so the eye does not cross a wide
+  landscape screen between lines.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-y`).
-
-### Shape
-
-- Rounded bubbles and round icons only.
+- Group with spacing; a background only where it carries meaning, such as one
+  line of dialogue. No borders, dividers or cards.
 
 ### Motion
 
-- Animate state changes only: a line appearing, the current line changing, the list scrolling.
-- 150–250 ms, ease-out. Opacity and transform only; never width, height, padding or margin.
-- No bounce or elastic easing, no looping animation.
+- Only state changes move: a line appearing, the list making room for it.
+- A new line never makes the rest of the list jump; older lines move up
+  smoothly or not at all.
+- Motion must run without dropped frames: opacity and transform only, never
+  width, height, padding or margin. 150–250 ms, ease-out, no bounce, no loops.
+- No transition that cannot be seen; remove it with the change it served.
 - With `prefers-reduced-motion`, change instantly.
 
-### Text on screen
+### Limits on decoration
 
-- Text on screen is the work's own text: the script, the title, character names. No hints or instructions.
-- A short label is allowed only where no icon or position can say the same thing. It comes from a key.
-- State is shown by position and colour. When the newest line is yours (right, blue), it is your turn. The next reader is not shown.
+Decoration is out of scope, but it must not break the rules above:
+
+- Colours are tokens in `samples/hundred-arms/src/theme.css`; screens use the
+  variables, never raw colours.
+- Every text colour meets WCAG AA (4.5:1) on its background.
+- No gradients, edge fades, shadows or glows.
+- No colour, size or weight that competes with the focus.
 
 ## Components
 
 ### Top band
 
-- Sits in the strip to the right of the UZU HUD, at the HUD's height, so it takes no reading space. Same layout in portrait and landscape.
-- Left: the current phase of the game (read-through, afterword, or other) as a short label from a key, in a quieter text colour.
-- Right: both players as icon and role name, ordered like the chat: the other player left, you right.
-- During the read-through, the name of the player whose line is current is in the full text colour and the other in a quieter one; icons stay at full strength. In other phases both are full.
-- The band is the only place that says where the game is; screens below it have no headings.
+- Sits in the strip to the right of the UZU HUD, at the HUD's height, so it
+  takes no reading space.
+- Shows both players as icon and role name, ordered like the chat: the other
+  player left, you right. This is where you learn which role is yours.
+- It does not signal the turn; the current line does.
+- A phase label appears only in phases whose screen does not already show the
+  phase. The read-through does not need one.
 
 ### Dialogue line (read-through only)
 
-- A bubble with the speaker's icon beside it. Your role's lines on the right, the other role's on the left.
-- Your lines are blue, the other player's white. When the newest line is yours, it is your turn to read and tap.
-- On your line, a tap anywhere advances.
-
-### Character icon
-
-- Every role has one. It tells speakers apart alongside the side of the screen.
+- A bubble with the speaker's icon beside it. Your role's lines on the right,
+  the other role's on the left.
+- When the current line is yours, a tap anywhere advances. When it is not, a
+  tap does nothing.
 
 ### End screen
 
@@ -77,16 +127,5 @@ How screens in this repository look and move.
 
 ### Other screens
 
-- Screens other than the read-through, such as the afterword, do not use the chat style. They follow the same principles and foundations.
-
-## Don't
-
-- Wrap blocks in cards, or nest cards.
-- Use gradients, edge fades, glows or coloured shadows.
-- Add colours beyond the palette above, such as brand or decorative accents.
-- Add labels, hints or headings that explain what the screen already shows.
-- Draw borders, dividers or accent stripes.
-- Build features or options the sample does not use.
-- Use bounce easing, animate layout properties, or animate everything.
-- Use emoji or generic icons as decoration.
-- Centre everything by default.
+- Screens other than the read-through, such as the afterword, do not use the
+  chat style. They follow the same rules.
