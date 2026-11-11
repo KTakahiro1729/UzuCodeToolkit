@@ -168,6 +168,8 @@
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
+    /* Break between phrases, never mid-word. */
+    word-break: auto-phrase;
     background: var(--color-bubble-read);
   }
   li[data-current='true'] p {
