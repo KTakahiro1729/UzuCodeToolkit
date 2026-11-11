@@ -44,13 +44,13 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 
 ## Font
 
-`samples/hundred-arms/src/fonts/` holds Shippori Mincho (Google Fonts, OFL 1.1) as a woff2 subset to the script's characters (~19 KB). No CDN: certification forbids external network access. Regular only, so no bold.
+`samples/hundred-arms/src/fonts/` holds Shippori Mincho (Google Fonts, OFL 1.1) as a woff2 subset to the script's characters (~21 KB). No CDN: certification forbids external network access. Regular only, so no bold.
 
 Rebuild it when the script's characters change (needs [fonttools](https://github.com/fonttools/fonttools)):
 
 ```bash
 curl -LO https://raw.githubusercontent.com/google/fonts/main/ofl/shipporimincho/ShipporiMincho-Regular.ttf
-node -e 'const s=require("./samples/hundred-arms/script/script.json");const t=[s.title,s.end,...s.cast.map(c=>c.label),...s.lines.map(l=>l.text)].join("");process.stdout.write([...new Set(t)].join(""))' > chars.txt
+node -e 'const s=require("./samples/hundred-arms/script/script.json");const t=[s.title,s.end,...s.cast.map(c=>c.label),...s.lines.map(l=>l.text),s.afterword].join("");process.stdout.write([...new Set(t)].join(""))' > chars.txt
 pyftsubset ShipporiMincho-Regular.ttf --text-file=chars.txt --flavor=woff2 --layout-features='*' \
   --output-file=samples/hundred-arms/src/fonts/ShipporiMincho-Regular.subset.woff2
 ```

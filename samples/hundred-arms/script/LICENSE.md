@@ -14,4 +14,4 @@ Code outside this folder (views, logic, configuration) is MIT, per the repositor
 | File | Content |
 |---|---|
 | `original.txt` | The script as written |
-| `script.json` | The same text in the shape the read-through code reads (wording unchanged) |
+| `script.json` | The same text in the shape the read-through code reads (wording unchanged), plus the author's afterword (`afterword`) |

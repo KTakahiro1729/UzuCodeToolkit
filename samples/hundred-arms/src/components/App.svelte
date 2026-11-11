@@ -3,10 +3,12 @@
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
   each with the speaker's icon. The current line is the brightest bubble; on your line
   a tap anywhere advances. Earlier lines fade back.
+  After the last line, the title and end mark show, then give way to the author's afterword
+  for the post-game talk.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
-  import { END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
+  import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
   import { game, sendAction } from '../store.svelte';
 
   const dialogue = $derived(game.state?.dialogue);
@@ -22,7 +24,10 @@
 
 <main data-mine={mine} onclick={advance} role="presentation">
   {#if dialogue?.finished}
-    <p class="end">{TITLE}<br />{END_MARK}</p>
+    <div class="end">
+      <p class="closing">{TITLE}<br />{END_MARK}</p>
+      <p class="afterword">{AFTERWORD}</p>
+    </div>
   {:else}
     <ol class="chat">
       {#each shown as l, i}
@@ -115,9 +120,37 @@
     background: var(--paper);
     color: var(--ink);
   }
+  /* The end mark holds for a moment, then crossfades into the afterword. */
   .end {
     margin: auto;
+    display: grid;
+    place-items: center;
     text-align: center;
+  }
+  .end > p {
+    grid-area: 1 / 1;
+    padding: 0;
+    background: none;
+  }
+  .closing {
     line-height: 2.4;
+    animation: fade-out 1s 2.5s both;
+  }
+  .afterword {
+    line-height: 2;
+    /* If it wraps (portrait), break between phrases and keep the lines even. */
+    word-break: auto-phrase;
+    text-wrap: balance;
+    animation: fade-in 1s 3.5s both;
+  }
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
   }
 </style>
