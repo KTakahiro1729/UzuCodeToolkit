@@ -45,7 +45,9 @@ on cards.
   Nothing else on screen signals the turn.
 - The button is always there during the read-through, so it never moves the
   lines. It carries a short label from a key (read, then tap) until your first
-  line is read, then the next mark (a small down-pointing triangle) alone.
+  line is read, then the next mark (a small down-pointing triangle) alone. On
+  the last line it carries an end label from a key instead of the mark, since
+  that tap ends the read-through rather than showing a next line.
 - Lines are told apart by side (yours right, as in chat apps), by the
   speaker's icon and by the speaker's name above the bubble. Your role's
   bubbles are tinted; the other role's are white. All lines keep full text
