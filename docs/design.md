@@ -70,11 +70,13 @@ on cards.
 
 - Text that can run to more than one line (dialogue, the afterword) is
   left-aligned, so every line starts at the same edge and the eye does not
-  hunt for it. A heading over such text shares its left edge.
+  hunt for it. A label naming such text (such as the afterword's) shares its
+  left edge.
 - Where a block sits carries meaning: dialogue goes to its speaker's side, your
   role sits at the right of the band as in the chat.
 - Centre only short, single items that stand for the whole screen rather than
-  one speaker: the phase label, the advance button, the title and end mark.
+  one speaker: the phase label, the advance button, the title and end mark, the
+  post-game greeting.
 
 ### Motion
 
@@ -135,9 +137,9 @@ Decoration is out of scope, but it must not break the rules above:
 ### End screen
 
 - The title and the end mark, centred, nothing else.
-- After a moment the post-game screen replaces it: a heading
-  (`review.heading`) and under it an area (a white block) holding the author's
-  afterword. The band's phase changes at the same moment.
+- After a moment the post-game screen replaces it: a centred greeting
+  (`review.heading`) and under it an area (a white block) labelled
+  `review.afterword` holding the author's afterword. The band's phase changes at the same moment.
 
 ### Other screens
 

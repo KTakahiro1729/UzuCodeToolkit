@@ -82,7 +82,10 @@
       <p class="closing">{TITLE}<br />{END_MARK}</p>
       <section class="review">
         <h1>{STRINGS['review.heading']}</h1>
-        <p class="afterword">{AFTERWORD}</p>
+        <div class="afterword">
+          <h2>{STRINGS['review.afterword']}</h2>
+          <p>{AFTERWORD}</p>
+        </div>
       </section>
     </div>
   {:else}
@@ -255,17 +258,31 @@
     gap: 0.8em;
     animation: hide 0s 3s reverse both;
   }
+  /* The greeting stands for the whole screen, so it is centred. */
   h1 {
     margin: 0;
+    text-align: center;
     font-family: var(--font-ui);
     font-size: 1.2em;
     font-weight: 700;
   }
   .afterword {
-    margin: 0;
+    display: grid;
+    gap: 0.3em;
     padding: 1em 1.2em;
     border-radius: 0.8em;
     background: var(--color-bubble);
+  }
+  /* The area's label, on the same left edge as the text it names. */
+  h2 {
+    margin: 0;
+    color: var(--color-text-quiet);
+    font-family: var(--font-ui);
+    font-size: max(16px, 0.8em);
+    font-weight: 700;
+  }
+  .afterword p {
+    margin: 0;
     line-height: 2;
     /* If it wraps, break between phrases. */
     word-break: auto-phrase;
