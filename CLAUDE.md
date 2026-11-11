@@ -32,8 +32,22 @@ UZU Code (`@uzuhq/code-sdk` の `run()`) でマーダーミステリーを作る
 - 寸法は em (基準は画面の短辺に比例)。 Safe Area と UZU の HUD は `main.ts` が CSS 変数 (`--safe-*` / `--hud-y`) に流す。
 - 認証要件 (https://docs.code.uzu-app.com/certification): `firstFrameReady()` 必須、 相対パス、 ファイル名は英数字と `_` `-` `.` のみ。
 
+## フォント
+
+`samples/hundred-arms/src/fonts/` に Google Fonts の しっぽり明朝 (Shippori Mincho、 OFL 1.1) を、 台本に出る文字だけへサブセットした woff2 で置いている (約 19 KB)。 外部 CDN は使わない (認証要件で外部との通信が禁止)。 Regular だけなので太字は使わない。
+
+台本の文字が変わったら作り直す ([fonttools](https://github.com/fonttools/fonttools) が要る):
+
+```bash
+curl -LO https://raw.githubusercontent.com/google/fonts/main/ofl/shipporimincho/ShipporiMincho-Regular.ttf
+node -e 'const s=require("./samples/hundred-arms/script/script.json");const t=[s.title,s.end,...s.cast.map(c=>c.label),...s.lines.map(l=>l.text)].join("");process.stdout.write([...new Set(t)].join(""))' > chars.txt
+pyftsubset ShipporiMincho-Regular.ttf --text-file=chars.txt --flavor=woff2 --layout-features='*' \
+  --output-file=samples/hundred-arms/src/fonts/ShipporiMincho-Regular.subset.woff2
+```
+
 ## ライセンス
 
 - コード: MIT (`LICENSE`)
 - 台本の文章 (`samples/hundred-arms/script/`): CC BY 4.0、 著作者 あろすてりっく (`script/LICENSE.md`)。 台本は一字一句変えない (`original.txt` と `script.json` の一致をテストが確かめる)
+- フォント (`samples/hundred-arms/src/fonts/`): SIL Open Font License 1.1 (`OFL.txt`)
 - 公式サンプル densetsu-no-tantei はライセンス表示が無いので、 コードを写さない

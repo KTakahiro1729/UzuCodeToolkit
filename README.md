@@ -19,3 +19,4 @@ npm test
 
 - コード: [MIT](./LICENSE)
 - サンプル台本『百本腕と勇者』の文章（`samples/hundred-arms/script/`）: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.ja)。詳細は [script/LICENSE.md](./samples/hundred-arms/script/LICENSE.md)
+- 同梱フォント しっぽり明朝（`samples/hundred-arms/src/fonts/`）: [SIL Open Font License 1.1](./samples/hundred-arms/src/fonts/OFL.txt)
