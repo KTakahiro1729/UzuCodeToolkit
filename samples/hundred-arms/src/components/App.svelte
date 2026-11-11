@@ -4,7 +4,7 @@
   each with the speaker's icon and name. Right under the newest line, both players see the
   advance button: active for whoever reads now, greyed for the other.
   After the last line, the title and end mark show, then give way to the author's afterword
-  for the post-game talk. The top band beside the UZU HUD shows both roles and the phase.
+  for the post-game talk. The top band, its own row under the UZU HUD, shows both roles and the phase.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
@@ -118,8 +118,8 @@
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
-    /* A gap under the band, so a line cut off by scrolling reads as the list's edge. */
-    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
+    /* Below the HUD and the band, with a gap so a line cut off by scrolling reads as the list's edge. */
+    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--color-bg);
     color: var(--color-text);

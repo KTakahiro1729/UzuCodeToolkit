@@ -99,8 +99,9 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Top band
 
-- Sits in the strip to the right of the UZU HUD, at the HUD's height, so it
-  takes no reading space.
+- Its own full-width row under the UZU HUD, on a white background, tall
+  enough for icons with names under them (`--band-h`). Nothing shares a row
+  with the HUD.
 - Shows both players as icon and role name, ordered like the chat: the other
   player left, you right. Each name sits under its icon. Your role's icon has a
   double circle (a ring around it), since order alone does not say which one

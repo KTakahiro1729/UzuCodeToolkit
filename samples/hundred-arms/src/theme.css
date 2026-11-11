@@ -18,6 +18,8 @@
   /* Story text (script, title, end mark, afterword) and UI text (band, names, button). */
   --font-body: 'Shippori Mincho', serif;
   --font-ui: 'BIZ UDPGothic', sans-serif;
+  /* The top band's height: icon, ring and name with room around them. */
+  --band-h: 76px;
   color-scheme: light;
 }
 

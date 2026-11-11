@@ -1,8 +1,8 @@
 <!--
-  The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
-  Left: the game's phase, in the quieter text colour. Right: both roles as icon and name, the other
-  left and yours right as in the chat, yours marked with a double circle. It does not signal the turn; the current
-  line does.
+  The band: its own row under the UZU HUD (docs/design.md, Top band).
+  Centre: the game's phase, in the quieter text colour. Right: both roles, name under icon, the
+  other left and yours right as in the chat, yours marked with a double circle. It does not signal
+  the turn; the advance button does.
 -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
@@ -34,25 +34,24 @@
 
 <style>
   /*
-   * Spans the screen's width at the HUD's height. Three columns: the HUD's side, the phase
-   * centred on the screen, the roles at the right.
+   * Its own row under the UZU HUD, full width, on its own background. Three columns: empty,
+   * the phase centred on the screen, the roles at the right.
    */
   header {
     position: fixed;
-    top: var(--safe-top, 0px);
-    left: calc(var(--safe-left, 0px) + var(--hud-x, 0px));
-    right: calc(var(--safe-right, 0px) + 0.8em);
-    height: var(--hud-y, 0px);
-    /* Centre on the screen, not on the band: mirror the HUD's width on the left. */
-    margin-left: calc(-1 * var(--hud-x, 0px));
-    padding-left: var(--hud-x, 0px);
+    top: calc(var(--safe-top, 0px) + var(--hud-y, 0px));
+    left: 0;
+    right: 0;
+    height: var(--band-h);
+    box-sizing: border-box;
+    padding: 0 calc(var(--safe-right, 0px) + 0.8em) 0 calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    background: var(--color-bubble);
     white-space: nowrap;
     font-family: var(--font-ui);
     font-weight: 700;
-    /* One size for the band, the minimum for text, so icon, ring and name fit at the HUD's height. */
     font-size: 16px;
     pointer-events: none;
   }
@@ -60,6 +59,7 @@
     grid-column: 2;
     display: grid;
     color: var(--color-text-quiet);
+    font-size: 18px;
   }
   /* The old and new phase overlap while one fades into the other. */
   .phase > span {
@@ -69,20 +69,19 @@
     grid-column: 3;
     justify-self: end;
     display: flex;
-    gap: 0.8em;
+    gap: 1em;
   }
   /* Icon above, name below. */
   .who {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 6px;
     line-height: 1;
   }
   img {
-    /* Sized from the HUD's height so icon, ring and name fit in the band. */
-    width: calc(var(--hud-y, 48px) - 32px);
-    height: calc(var(--hud-y, 48px) - 32px);
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     object-fit: cover;
   }
