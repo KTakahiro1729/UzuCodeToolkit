@@ -31,7 +31,7 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 ### Typography
 
 - One family, Shippori Mincho: the work's voice. One weight (Regular) and one size for the script.
-- Hierarchy comes from lightness and position, not from size or weight.
+- Hierarchy comes from contrast and position, not from size or weight.
 
 ### Space and layout
 
@@ -54,7 +54,7 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 ### Text on screen
 
 - The only text on screen is the work's own text (the script, the title, character names). No labels, hints or instructions.
-- State is shown by position and lightness. For example, whose turn it is shows as which side the current line is on and whether it is light. The next reader is not shown.
+- State is shown by position and contrast. For example, whose turn it is shows as which side the current line is on and whether it is inverted. The next reader is not shown.
 - **Open:** whether a short label is ever allowed where no icon or position can say it. Recommended: no labels; rethink the screen instead.
 
 ## Components
