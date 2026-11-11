@@ -120,14 +120,13 @@ const PAGE = `<!DOCTYPE html>
 </html>
 `;
 
-type Next = () => void;
-type Res = { setHeader(k: string, v: string): void; end(body: string): void };
-type Server = { middlewares: { use(fn: (req: { url?: string }, res: Res, next: Next) => void): void } };
-
+// Plain JavaScript: each sample's vite.config.ts loads it from this package through Node, which
+// cannot run TypeScript from another package before Node 22.18.
+/** @returns {import('vite').Plugin} */
 export const devHarness = () => ({
   name: 'dev-harness',
-  apply: 'serve' as const,
-  configureServer(server: Server) {
+  apply: 'serve',
+  configureServer(server) {
     server.middlewares.use((req, res, next) => {
       if (req.url?.split('?')[0] !== '/harness') return next();
       res.setHeader('content-type', 'text/html; charset=utf-8');
