@@ -45,7 +45,7 @@
   .phase {
     margin-right: auto;
     display: grid;
-    color: var(--color-text-read);
+    color: var(--color-text-quiet);
   }
   /* The old and new phase overlap while one fades into the other. */
   .phase > span {
