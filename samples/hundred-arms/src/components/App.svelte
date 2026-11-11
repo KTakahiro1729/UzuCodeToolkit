@@ -238,7 +238,8 @@
     height: 0.45em;
     fill: currentColor;
   }
-  /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
+  /* The end mark holds for a moment, then fades out and the post-game screen fades in after it,
+     one at a time so the two never show through each other. */
   .end {
     margin: auto;
     display: grid;
@@ -254,7 +255,7 @@
     /* Comes in as the chat goes out, so the screen does not cut. */
     animation:
       fade-in 0.2s ease-out both,
-      hide 0s 3s both;
+      fade-out 0.2s 2.8s ease-out both;
   }
   /* The post-game screen: a heading, and under it an area for the author's afterword. */
   .review {
@@ -263,7 +264,7 @@
     text-align: start;
     display: grid;
     gap: 0.8em;
-    animation: hide 0s 3s reverse both;
+    animation: fade-in 0.2s 3s ease-out both;
   }
   /* The greeting stands for the whole screen, so it is centred. */
   h1 {
@@ -296,16 +297,22 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .closing {
-      animation: hide 0s 3s both;
+      animation: fade-out 0s 3s both;
+    }
+    .review {
+      animation: fade-in 0s 3s both;
     }
   }
+  /* Opacity only; visibility keeps a faded-out screen from being read or selected. */
   @keyframes fade-in {
     from {
       opacity: 0;
+      visibility: hidden;
     }
   }
-  @keyframes hide {
+  @keyframes fade-out {
     to {
+      opacity: 0;
       visibility: hidden;
     }
   }
