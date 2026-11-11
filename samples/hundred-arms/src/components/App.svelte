@@ -249,6 +249,8 @@
   /* The post-game screen: a heading, and under it an area for the author's afterword. */
   .review {
     width: min(30em, calc(100vw - 1.6em));
+    /* Text that can run to several lines starts at one left edge; the heading shares it. */
+    text-align: start;
     display: grid;
     gap: 0.8em;
     animation: hide 0s 3s reverse both;
@@ -265,9 +267,8 @@
     border-radius: 0.8em;
     background: var(--color-bubble);
     line-height: 2;
-    /* If it wraps (portrait), break between phrases and keep the lines even. */
+    /* If it wraps, break between phrases. */
     word-break: auto-phrase;
-    text-wrap: balance;
   }
   @media (prefers-reduced-motion: reduce) {
     .closing {

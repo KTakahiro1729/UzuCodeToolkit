@@ -39,12 +39,14 @@
    */
   header {
     position: fixed;
-    top: calc(var(--safe-top, 0px) + var(--hud-y, 0px));
+    /* The white reaches the top edge; the HUD sits on it, the content starts below the HUD. */
+    top: 0;
     left: 0;
     right: 0;
-    height: var(--band-h);
+    height: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h));
     box-sizing: border-box;
-    padding: 0 calc(var(--safe-right, 0px) + 0.8em) 0 calc(var(--safe-left, 0px) + 0.8em);
+    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em) 0
+      calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;

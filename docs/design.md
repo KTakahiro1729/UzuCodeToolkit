@@ -66,6 +66,16 @@ on cards.
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No borders, dividers or cards.
 
+### Alignment
+
+- Text that can run to more than one line (dialogue, the afterword) is
+  left-aligned, so every line starts at the same edge and the eye does not
+  hunt for it. A heading over such text shares its left edge.
+- Where a block sits carries meaning: dialogue goes to its speaker's side, your
+  role sits at the right of the band as in the chat.
+- Centre only short, single items that stand for the whole screen rather than
+  one speaker: the phase label, the advance button, the title and end mark.
+
 ### Motion
 
 - Only state changes move: a line appearing, the list making room for it.
@@ -99,7 +109,8 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Top band
 
-- Its own full-width row under the UZU HUD, on a white background, tall
+- Its own full-width row under the UZU HUD, on a white background that
+  reaches the top edge behind the HUD, tall
   enough for icons with names under them (`--band-h`). Nothing shares a row
   with the HUD.
 - Shows both players as icon and role name, ordered like the chat: the other
