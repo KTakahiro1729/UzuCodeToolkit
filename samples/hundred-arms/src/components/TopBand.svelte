@@ -42,7 +42,7 @@
     gap: 0.9em;
     white-space: nowrap;
     font-family: var(--font-ui);
-    font-weight: 600;
+    font-weight: 700;
     pointer-events: none;
   }
   .phase {
@@ -68,7 +68,7 @@
   }
   /* Your role: a double circle (the icon's edge and a ring around it). */
   img[data-you='true'] {
-    outline: 0.12em solid var(--color-mine-current);
+    outline: 0.12em solid var(--color-text);
     outline-offset: 0.12em;
   }
 </style>

@@ -104,12 +104,6 @@
 </main>
 
 <style>
-  /* Shippori Mincho (Google Fonts, OFL), subset to the script's characters. See CLAUDE.md. */
-  @font-face {
-    font-family: 'Shippori Mincho';
-    src: url('../fonts/ShipporiMincho-Regular.subset.woff2') format('woff2');
-    font-display: block;
-  }
   :global(body) {
     margin: 0;
   }

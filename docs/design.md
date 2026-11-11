@@ -90,7 +90,9 @@ Decoration is out of scope, but it must not break the rules above:
 
 - Two roles, as CSS variables in `theme.css`: story text (script lines, title,
   end mark, afterword) in Shippori Mincho (`--font-body`); UI text (top band,
-  speaker names, the advance button) in the system gothic (`--font-ui`).
+  speaker names, the advance button) in BIZ UDPGothic (`--font-ui`), a
+  universal-design gothic made for telling characters apart, so short labels
+  stay legible at small sizes. Both are bundled subsets; no system fonts.
 - No text below 16px.
 
 ## Components
@@ -102,7 +104,7 @@ Decoration is out of scope, but it must not break the rules above:
 - Shows both players as icon and role name, ordered like the chat: the other
   player left, you right. Your role's icon has a double circle (a ring around
   it), since order alone does not say which one is yours. Band text is
-  semi-bold.
+  bold.
 - The phase label changes when the screen below it does (for example when the
   afterword appears), never before.
 - It does not signal the turn; the current line does.

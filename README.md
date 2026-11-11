@@ -19,4 +19,4 @@ npm test
 
 - Code: [MIT](./LICENSE)
 - Script text of 百本腕と勇者 (`samples/hundred-arms/script/`): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). See [script/LICENSE.md](./samples/hundred-arms/script/LICENSE.md)
-- Bundled font Shippori Mincho (`samples/hundred-arms/src/fonts/`): [SIL Open Font License 1.1](./samples/hundred-arms/src/fonts/OFL.txt)
+- Bundled fonts (`samples/hundred-arms/src/fonts/`), SIL Open Font License 1.1: Shippori Mincho ([OFL](./samples/hundred-arms/src/fonts/OFL-ShipporiMincho.txt)), BIZ UDPGothic ([OFL](./samples/hundred-arms/src/fonts/OFL-BIZUDPGothic.txt))
