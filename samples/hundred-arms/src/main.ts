@@ -4,6 +4,7 @@
 
 import { firstFrameReady, gameEnded, gameReady, getInsets, onInsetsChange, run, type UzuInsets } from '@uzuhq/code-sdk';
 import { mount } from 'svelte';
+import './theme.css';
 import App from './components/App.svelte';
 import logic from './logic';
 import { ROLE_IDS } from './scenario';

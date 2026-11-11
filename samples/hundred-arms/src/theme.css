@@ -1,0 +1,19 @@
+/*
+ * Colour tokens for every screen. Light theme only; neutral greys with no tint.
+ * Components use these variables, never raw colours.
+ *
+ * Rules: every text colour meets WCAG AA (4.5:1) on its background; no opacity
+ * fades (they wash out text and icons together); the only strong colour is
+ * "your turn".
+ */
+:root {
+  --color-bg: #ffffff; /* page */
+  --color-text: #1f1f1f; /* body text; 16.5:1 on bg */
+  --color-text-read: #666666; /* lines already read; 5.1:1 on --color-bubble */
+  --color-bubble: #f2f2f2; /* a line already read */
+  --color-bubble-current: #e3e3e3; /* the current line when it is not yours */
+  --color-bubble-text: #1f1f1f; /* 12.8:1 on --color-bubble-current */
+  --color-mine: #1f1f1f; /* your current line: the cue to read and tap */
+  --color-mine-text: #ffffff; /* 16.5:1 on --color-mine */
+  color-scheme: light;
+}
