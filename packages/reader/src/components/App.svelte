@@ -233,11 +233,17 @@
     flex: 1;
     align-items: stretch;
   }
-  /* Stage directions are narration, not speech: no bubble, in every state. The advance button
-     alone says whose turn it is. */
-  li[data-direction='true'][data-side] p {
+  /* Stage directions are narration, not speech: no bubble. While you read one, a line in the
+     advance button's colour stands at each side of it. The lines are always there, uncoloured,
+     so colouring them never moves the text. */
+  li[data-direction='true'][data-current][data-side] p {
     background: none;
     color: var(--color-text);
+    border-inline: 0.2em solid transparent;
+    border-radius: 0;
+  }
+  li[data-direction='true'][data-current='true'][data-side='right'] p {
+    border-inline-color: var(--color-mine-current);
   }
   /* The work's note on itself, above the first line: an aside, not story, so UI text in the
      quieter colour, set apart from the lines by space. */

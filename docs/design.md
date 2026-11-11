@@ -70,7 +70,8 @@ on cards.
   landscape screen between lines.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
-  line of dialogue. No borders, dividers or cards.
+  line of dialogue. No borders, dividers or cards, except the side lines on a
+  stage direction you are reading.
 
 ### Alignment
 
@@ -165,8 +166,10 @@ Decoration is out of scope, but it must not break the rules above:
 
 - A stage direction is read aloud like a line, by the player whose part holds
   it, but it is no one's speech: it spans the chat column as plain text, with
-  no icon, name or background, in every state (owner's decision). The advance
-  button alone says whose turn it is.
+  no icon, name or background (owner's decision). While you read one, a line
+  in the advance button's colour stands at each side of it instead of a
+  coloured background (owner's decision); this is the one place lines are
+  drawn. Other players see it plain.
 - A scene heading sits centred above the line that opens the scene, in the
   quieter text colour, since it stands for what follows.
 
