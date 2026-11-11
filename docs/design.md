@@ -38,14 +38,16 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it.
-- The line being read now takes the button's colour: blue when you read it,
-  grey when the other player does. Line and button read as one cue.
+- When you read, the line being read takes the button's blue, so line and
+  button read as one cue. The other role's lines are always white.
 - Both players see the button. It is filled for whoever reads now and greyed
   for the other, so each player knows at a glance whether to read or to wait.
   Nothing else on screen signals the turn.
 - The button is always there during the read-through, so it never moves the
   lines. It carries a short label from a key (read, then tap) until your first
-  line is read, then the next mark (a small down-pointing triangle) alone.
+  line is read, then the next mark (a small down-pointing triangle) alone. On
+  the last line it carries an end label from a key instead of the mark, since
+  that tap ends the read-through rather than showing a next line.
 - Lines are told apart by side (yours right, as in chat apps), by the
   speaker's icon and by the speaker's name above the bubble. Your role's
   bubbles are tinted; the other role's are white. All lines keep full text
@@ -64,7 +66,7 @@ on cards.
 - Phone first; sizes in em, based on the screen's short side.
 - The chat column has a reading width, so the eye does not cross a wide
   landscape screen between lines.
-- Respect the safe area and the UZU HUD (`--safe-*`, `--hud-y`).
+- Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No borders, dividers or cards.
 
@@ -113,10 +115,14 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Top band
 
-- Its own full-width row under the UZU HUD, on a white background that
-  reaches the top edge behind the HUD, tall
-  enough for icons with names under them (`--band-h`). Nothing shares a row
-  with the HUD.
+- A full-width row on a white background that reaches the top edge behind the
+  HUD, tall enough for icons with names under them (`--band-h`).
+- Whether it shares the HUD's row depends on how much of the screen width the
+  HUD takes. Over a quarter (phones held upright, about a third), the band is
+  its own row under the HUD, so the centred phase label keeps clear of the
+  HUD. A quarter or less (landscape and tablets, under a fifth), the band
+  shares the HUD's row with the HUD over its empty left part, so the chat
+  keeps the height. Nothing else shares a row with the HUD.
 - Shows both players as icon and role name, ordered like the chat: the other
   player left, you right. Each name sits under its icon. Your role's icon has a
   double circle (a ring around it), since order alone does not say which one
@@ -141,7 +147,9 @@ Decoration is out of scope, but it must not break the rules above:
 - The title and the end mark, centred, nothing else.
 - After a moment the post-game screen replaces it: a centred greeting
   (`review.heading`) and under it an area (a white block) labelled
-  `review.afterword` holding the author's afterword. The band's phase changes at the same moment.
+  `review.afterword` holding the author's afterword. The end screen fades out,
+  then the post-game screen fades in, so the two never show through each
+  other. The band's phase changes as the post-game screen comes in.
 
 ### Other screens
 

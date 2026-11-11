@@ -21,6 +21,8 @@
   const mine = $derived(!!line && line.speaker === myRole);
   // The button says what it does until your first line is read; after that the mark alone.
   const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex((l) => l.speaker === myRole));
+  // On the last line the button ends the read-through, so it says so instead of the next mark.
+  const last = $derived(!!line && dialogue?.index === LINES.length - 1);
 
   // The afterword replaces the title and end mark after a moment (CSS, 3 s); the band's phase
   // changes at the same moment, so the band never says something the screen does not show yet.
@@ -103,7 +105,7 @@
       </ol>
       <!-- Right under the newest line for both players: active for the reader, greyed for the other. -->
       <button type="button" disabled={!mine} onclick={advance}>
-        {#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
+        {#if last}{STRINGS['button.end']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
       </button>
     </div>
   {/if}
@@ -122,7 +124,7 @@
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
     /* Below the HUD and the band, with a gap so a line cut off by scrolling reads as the list's edge. */
-    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
+    padding: calc(var(--band-bottom) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--color-bg);
     color: var(--color-text);
@@ -206,10 +208,7 @@
   li[data-side='right'] p {
     background: var(--color-bubble-mine);
   }
-  /* The line being read now matches the advance button: blue when you read, grey when you wait. */
-  li[data-current='true'] p {
-    background: var(--color-button-off);
-  }
+  /* Your line being read now matches the advance button. The other role's lines stay white. */
   li[data-current='true'][data-side='right'] p {
     background: var(--color-mine-current);
     color: var(--color-mine-text);
@@ -239,7 +238,8 @@
     height: 0.45em;
     fill: currentColor;
   }
-  /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
+  /* The end mark holds for a moment, then fades out and the post-game screen fades in after it,
+     one at a time so the two never show through each other. */
   .end {
     margin: auto;
     display: grid;
@@ -255,7 +255,7 @@
     /* Comes in as the chat goes out, so the screen does not cut. */
     animation:
       fade-in 0.2s ease-out both,
-      hide 0s 3s both;
+      fade-out 0.2s 2.8s ease-out both;
   }
   /* The post-game screen: a heading, and under it an area for the author's afterword. */
   .review {
@@ -264,7 +264,7 @@
     text-align: start;
     display: grid;
     gap: 0.8em;
-    animation: hide 0s 3s reverse both;
+    animation: fade-in 0.2s 3s ease-out both;
   }
   /* The greeting stands for the whole screen, so it is centred. */
   h1 {
@@ -297,16 +297,22 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .closing {
-      animation: hide 0s 3s both;
+      animation: fade-out 0s 3s both;
+    }
+    .review {
+      animation: fade-in 0s 3s both;
     }
   }
+  /* Opacity only; visibility keeps a faded-out screen from being read or selected. */
   @keyframes fade-in {
     from {
       opacity: 0;
+      visibility: hidden;
     }
   }
-  @keyframes hide {
+  @keyframes fade-out {
     to {
+      opacity: 0;
       visibility: hidden;
     }
   }
