@@ -8,6 +8,8 @@
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
+  import { cubicOut } from 'svelte/easing';
+  import { fade } from 'svelte/transition';
   import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
   import { game, sendAction } from '../store.svelte';
 
@@ -24,6 +26,22 @@
     chat?.scrollTo({ top: chat.scrollHeight });
   });
 
+  const reduceMotion = (): boolean => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** A new line grows in from zero height, so the lines above slide up instead of jumping. */
+  function grow(node: HTMLElement) {
+    const height = node.offsetHeight;
+    const margin = parseFloat(getComputedStyle(node).marginTop);
+    const list = node.parentElement;
+    return {
+      duration: reduceMotion() ? 0 : 200,
+      easing: cubicOut,
+      css: (t: number) => `overflow: hidden; height: ${t * height}px; margin-top: ${t * margin}px; opacity: ${t};`,
+      // Keep the newest line in view while it grows.
+      tick: () => list?.scrollTo({ top: list.scrollHeight }),
+    };
+  }
+
   function advance(): void {
     if (mine && dialogue) sendAction('advance', { index: dialogue.index });
   }
@@ -36,9 +54,9 @@
       <p class="afterword">{AFTERWORD}</p>
     </div>
   {:else}
-    <ol class="chat" bind:this={chat}>
+    <ol class="chat" bind:this={chat} out:fade={{ duration: 300 }}>
       {#each shown as l, i}
-        <li data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
+        <li in:grow data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
           <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
           <p>{l.text}</p>
         </li>
@@ -66,9 +84,9 @@
     position: fixed;
     inset: 0;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    /* One cell: the chat and the end screen overlap while one fades into the other. */
+    display: grid;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--bg);
@@ -82,14 +100,18 @@
   main[data-mine='true'] {
     cursor: pointer;
   }
+  main > :global(*) {
+    grid-area: 1 / 1;
+  }
   .chat {
+    align-self: end;
+    max-height: 100%;
     margin: 0;
     padding: 0;
     list-style: none;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 0.45em;
     /* Older lines scroll up; the list keeps the newest line in view. */
     overflow-y: auto;
     scrollbar-width: none;
@@ -101,6 +123,10 @@
     max-width: 90%;
     opacity: 0.6;
     transition: opacity 0.2s;
+  }
+  /* Spacing as a margin (not gap) so a new line's space grows in with it. */
+  li + li {
+    margin-top: 0.45em;
   }
   li[data-side='right'] {
     flex-direction: row-reverse;
@@ -122,6 +148,9 @@
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
     background: var(--dim);
+    transition:
+      background-color 0.2s,
+      color 0.2s;
   }
   /* Your own current line turns light: the cue to read and tap. */
   main[data-mine='true'] li[data-current='true'] p {
@@ -141,7 +170,9 @@
   }
   .closing {
     line-height: 2.4;
-    animation: fade-out 1s 2.5s both;
+    animation:
+      fade-in 0.4s 0.2s both,
+      fade-out 1s 2.5s forwards;
   }
   .afterword {
     line-height: 2;
