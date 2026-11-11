@@ -80,7 +80,10 @@
   {#if dialogue?.finished}
     <div class="end">
       <p class="closing">{TITLE}<br />{END_MARK}</p>
-      <p class="afterword">{AFTERWORD}</p>
+      <section class="review">
+        <h1>{STRINGS['review.heading']}</h1>
+        <p class="afterword">{AFTERWORD}</p>
+      </section>
     </div>
   {:else}
     <div class="read" out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
@@ -232,7 +235,7 @@
     place-items: center;
     text-align: center;
   }
-  .end > p {
+  .end > * {
     grid-area: 1 / 1;
     margin: 0;
   }
@@ -243,12 +246,28 @@
       fade-in 0.2s ease-out both,
       hide 0s 3s both;
   }
+  /* The post-game screen: a heading, and under it an area for the author's afterword. */
+  .review {
+    width: min(30em, calc(100vw - 1.6em));
+    display: grid;
+    gap: 0.8em;
+    animation: hide 0s 3s reverse both;
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--font-ui);
+    font-size: 1.2em;
+    font-weight: 700;
+  }
   .afterword {
+    margin: 0;
+    padding: 1em 1.2em;
+    border-radius: 0.8em;
+    background: var(--color-bubble);
     line-height: 2;
     /* If it wraps (portrait), break between phrases and keep the lines even. */
     word-break: auto-phrase;
     text-wrap: balance;
-    animation: hide 0s 3s reverse both;
   }
   @media (prefers-reduced-motion: reduce) {
     .closing {

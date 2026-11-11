@@ -102,14 +102,16 @@ Decoration is out of scope, but it must not break the rules above:
 - Sits in the strip to the right of the UZU HUD, at the HUD's height, so it
   takes no reading space.
 - Shows both players as icon and role name, ordered like the chat: the other
-  player left, you right. Your role's icon has a double circle (a ring around
-  it), since order alone does not say which one is yours. Band text is
+  player left, you right. Each name sits under its icon. Your role's icon has a
+  double circle (a ring around it), since order alone does not say which one
+  is yours. Band text is
   bold.
 - The phase label changes when the screen below it does (for example when the
   afterword appears), never before.
 - It does not signal the turn; the current line does.
 - Shows the current phase of the game (read-through, afterword, or other) as a
-  short label from a key, in every phase (owner's decision).
+  short label from a key, in every phase (owner's decision), centred on the
+  screen.
 
 ### Dialogue line (read-through only)
 
@@ -121,6 +123,9 @@ Decoration is out of scope, but it must not break the rules above:
 ### End screen
 
 - The title and the end mark, centred, nothing else.
+- After a moment the post-game screen replaces it: a heading
+  (`review.heading`) and under it an area (a white block) holding the author's
+  afterword. The band's phase changes at the same moment.
 
 ### Other screens
 
