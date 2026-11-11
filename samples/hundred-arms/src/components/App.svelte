@@ -50,7 +50,7 @@
 
 <main data-mine={mine} onclick={advance} role="presentation">
   {#if dialogue}
-    <TopBand {myRole} finished={dialogue.finished} />
+    <TopBand {myRole} speaker={line?.speaker} finished={dialogue.finished} />
   {/if}
   {#if dialogue?.finished}
     <div class="end">

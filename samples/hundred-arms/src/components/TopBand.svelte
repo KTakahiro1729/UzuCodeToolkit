@@ -1,6 +1,7 @@
 <!--
-  The band beside the UZU HUD, at the HUD's height. The other role sits on the left and
-  yours on the right, as in the chat; the game's phase sits between them.
+  The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
+  Left: the game's phase, faint. Right: both roles, the other left and yours right as in the chat.
+  During the read-through the role whose line is current is at full strength; otherwise both are.
 -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
@@ -8,66 +9,61 @@
   // UI strings by key. The values are the owner's words for the band, quoted verbatim.
   import STRINGS from '../strings.json';
 
-  let { myRole, finished }: { myRole: string | undefined; finished: boolean } = $props();
+  let { myRole, speaker, finished }: { myRole: string | undefined; speaker: string | undefined; finished: boolean } =
+    $props();
 
-  const other = $derived(ROLE_IDS.find((r) => r !== myRole) ?? ROLE_IDS[0]);
-  const right = $derived(myRole ?? ROLE_IDS[1]);
+  const roles = $derived(myRole ? [...ROLE_IDS.filter((r) => r !== myRole), myRole] : ROLE_IDS);
   const phase = $derived(STRINGS[finished ? 'phase.review' : 'phase.reading']);
-  const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 250;
+  const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
 
 <header>
-  {#each [other, right] as role (role)}
-    <span class="who" data-side={role === right ? 'right' : 'left'}>
-      <img src={`./assets/icon-${role}.webp`} alt="" />{SPEAKER_NAMES[role]}
-    </span>
-  {/each}
   <div class="phase">
     {#key phase}
       <span transition:fade={{ duration }}>{phase}</span>
     {/key}
   </div>
+  {#each roles as role (role)}
+    <span class="who" data-faint={!finished && role !== speaker}>
+      <img src={`./assets/icon-${role}.webp`} alt="" />{SPEAKER_NAMES[role]}
+    </span>
+  {/each}
 </header>
 
 <style>
   header {
     position: fixed;
     top: var(--safe-top, 0px);
-    left: calc(var(--safe-left, 0px) + var(--hud-x, 0px) + 0.8em);
+    left: calc(var(--safe-left, 0px) + var(--hud-x, 0px) + 0.6em);
     right: calc(var(--safe-right, 0px) + 0.8em);
     height: var(--hud-y, 0px);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
-    gap: 0.6em;
+    gap: 0.9em;
     white-space: nowrap;
     pointer-events: none;
   }
-  .who {
-    grid-row: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.45em;
-  }
-  .who[data-side='left'] {
-    grid-column: 1;
-  }
-  .who[data-side='right'] {
-    grid-column: 3;
-    flex-direction: row-reverse;
-  }
   .phase {
-    grid-row: 1;
-    grid-column: 2;
+    margin-right: auto;
     display: grid;
+    opacity: 0.6;
   }
   /* The old and new phase overlap while one fades into the other. */
   .phase > span {
     grid-area: 1 / 1;
   }
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    transition: opacity 0.2s;
+  }
+  .who[data-faint='true'] {
+    opacity: 0.6;
+  }
   img {
-    width: 1.8em;
-    height: 1.8em;
+    width: 1.5em;
+    height: 1.5em;
     border-radius: 50%;
     object-fit: cover;
   }
