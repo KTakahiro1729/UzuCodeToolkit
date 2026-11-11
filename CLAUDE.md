@@ -4,11 +4,11 @@ Toolkit for making murder-mystery games with UZU Code (`run()` from `@uzuhq/code
 
 ## Design policy
 
-Read [docs/design.md](docs/design.md) before any UI work. It holds the owner's design instructions and how they apply.
+Read [docs/design.md](docs/design.md) before any UI work. It holds the functional design rules every screen follows.
 
 ## Language
 
-Write code, comments, docs, tests and error messages in English. UI strings come only from keys or data. Japanese goes into the repo only as the owner's own text quoted verbatim (e.g. the script), rule text from specs, or proper nouns.
+Write code, comments, docs, tests and error messages in English. UI strings come only from keys or data. Japanese goes into the repo only as content (the script and UI string data), rule text from specs, or proper nouns. Docs state the owner's intent in English; do not quote the owner.
 
 ## Layout (npm workspaces)
 

@@ -6,31 +6,9 @@ their cognitive load low. The decorative side (hues, typeface, icon art, corner
 shapes) is out of scope here; this policy only sets the limits decoration must
 stay within.
 
-## Owner's instructions
-
-Quoted verbatim.
-
-> デザインは機能面と装飾面を分けて考え、さらにここでは装飾面は担当しません。
-> 機能面とは、ユーザーが何をすべきかを理解し、認知負荷を下げるためのものです
-> ・過剰なアニメーション（カクツキもユーザーからはアニメーションと捉えられる）
-> ・不明な
-> ・注目すべき箇所がわからない（情報が階層化されていない）
-> ・それ以外のものに視線が行く
-> ・自明や不要な文章を読むことの認知負荷
-> ・視線移動
-> をすべて避けるべきです。
-
-Earlier instructions that still apply:
-
-> 過剰設計をさける（YAGNI）
-> 文字に頼るUIは極小に
-> 余白や背景色を利用し、線が多すぎるUIは減らす
-> カード型デザインを過信しないで。変に余白食うだけのことあるし
-
 ## What to avoid
 
-Every screen is checked against these six. The item "不明な" is cut off in the
-original; it is read here as an unclear state or action.
+Every screen is checked against these six.
 
 1. **Excess motion.** Anything that moves pulls the eye, and so does a stutter
    or a sudden jump. Move only what has to change, and move it smoothly.
@@ -49,8 +27,9 @@ original; it is read here as an unclear state or action.
    focus. Related things are close; the eye does not cross the screen for one
    decision.
 
-Plus: build only what the sample uses (YAGNI), group with space and background
-rather than lines, and spend no room on cards.
+Plus: build only what the sample uses (YAGNI), keep UI that relies on text to a
+minimum, group with space and background rather than lines, and spend no room
+on cards.
 
 ## Rules
 
