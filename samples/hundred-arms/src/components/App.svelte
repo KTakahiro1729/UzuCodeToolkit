@@ -1,7 +1,7 @@
 <!--
-  画面。 文字は台本だけ。 誰の番かは背景色で示す:
-  自分の番は行が明るい紙色になり、 画面のどこをタップしても次へ送れる。
-  ほかの人の番は行が沈んだ色のまま。 読んだ行は上に薄く残る。
+  The only text on screen is the script. Whose turn it is shows as background colour:
+  on your line the box turns paper-light and a tap anywhere advances;
+  otherwise it stays dim. Lines already read stay faintly above.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
@@ -35,7 +35,7 @@
 </main>
 
 <style>
-  /* しっぽり明朝 (Google Fonts、 OFL) を台本の文字だけにサブセットして同梱。 作り方は CLAUDE.md。 */
+  /* Shippori Mincho (Google Fonts, OFL), subset to the script's characters. See CLAUDE.md. */
   @font-face {
     font-family: 'Shippori Mincho';
     src: url('../fonts/ShipporiMincho-Regular.subset.woff2') format('woff2');
@@ -61,7 +61,7 @@
     background: var(--bg);
     color: var(--paper);
     font-family: 'Shippori Mincho', serif;
-    /* 寸法は em。 基準を画面の短辺に比例させる。 */
+    /* Sizes are in em; the base scales with the screen's short side. */
     font-size: clamp(14px, 4.4vmin, 28px);
     overflow: hidden;
     user-select: none;
@@ -69,7 +69,7 @@
   main[data-mine='true'] {
     cursor: pointer;
   }
-  /* フォントは Regular だけ同梱するので太字にしない。 話者は台詞より少し沈める。 */
+  /* Only the Regular weight is bundled, so no bold. Speakers are a little dimmer than lines. */
   .speaker {
     opacity: 0.7;
   }
@@ -85,7 +85,7 @@
     opacity: 0.45;
     font-size: 0.8em;
   }
-  /* 話者と台詞は別の列。 話者の列幅をそろえて、 台詞の頭を縦に並べる。 */
+  /* Speaker and line in separate columns, so lines start at the same x. */
   .past li {
     display: grid;
     grid-template-columns: 2.5em 1fr;
@@ -94,7 +94,7 @@
     display: grid;
     gap: 0.6em;
   }
-  /* 話者は台詞の箱の外に置き、 箱には台詞だけを入れる。 */
+  /* The speaker sits outside the box; the box holds only the line. */
   .current .speaker {
     padding-left: 1.2em;
     font-size: 0.8em;

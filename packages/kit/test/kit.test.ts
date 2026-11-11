@@ -7,7 +7,7 @@ const lines = [
 ];
 
 describe('advanceDialogue', () => {
-  it('話者だけが送れ、 最後の行で終わる', () => {
+  it('only the speaker advances, and the last line finishes', () => {
     const p = startDialogue();
     expect(() => advanceDialogue(lines, p, 'b', 0)).toThrow();
     advanceDialogue(lines, p, 'a', 0);
@@ -17,7 +17,7 @@ describe('advanceDialogue', () => {
     expect(currentLine(lines, p)).toBeNull();
     expect(() => advanceDialogue(lines, p, 'b', 1)).toThrow();
   });
-  it('古い行を見て押した二重タップを弾く', () => {
+  it('rejects a duplicate tap made on an old line', () => {
     const p = startDialogue();
     advanceDialogue(lines, p, 'a', 0);
     expect(() => advanceDialogue(lines, p, 'a', 0)).toThrow();
@@ -26,7 +26,7 @@ describe('advanceDialogue', () => {
 });
 
 describe('assignRoles', () => {
-  it('選ばれたキャラを優先し、 残りを席順に割り当てる', () => {
+  it('prefers chosen characters and fills the rest in seat order', () => {
     expect(
       assignRoles(
         [{ id: 's1' }, { id: 's2', characterId: 'b' }, { id: 's3', characterId: 'b' }],
