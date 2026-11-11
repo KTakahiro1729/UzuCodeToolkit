@@ -8,7 +8,7 @@ Read [docs/design.md](docs/design.md) before any UI work. It holds the owner's d
 
 ## Language
 
-Write code, comments, docs, tests and error messages in English. UI strings come only from keys or data. Japanese goes into the repo only as the owner's own text quoted verbatim (e.g. the script, the policy above), rule text from specs, or proper nouns.
+Write code, comments, docs, tests and error messages in English. UI strings come only from keys or data. Japanese goes into the repo only as the owner's own text quoted verbatim (e.g. the script), rule text from specs, or proper nouns.
 
 ## Layout (npm workspaces)
 
