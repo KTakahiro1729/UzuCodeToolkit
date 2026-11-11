@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 12:15 UTC
+Last checked: 2026-11-11 12:37 UTC
 
 ## Waiting on the owner
 
@@ -10,13 +10,13 @@ No open decisions. No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End of game: end label on the last line, fade into the post-game screen | Review, merge | Ready. Also re-lands the "other role's lines always white" commit that missed #8. |
-| [#11](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/11) Tap-next button and hot swap | Review, merge | Ready. Independent of #10. |
+| [#11](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/11) Tap-next button and hot swap | Review, merge | Ready. |
 
 ## Done
 
 | PR | Result | Date |
 |---|---|---|
+| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End of game: end label on the last line, fade into the post-game screen | Merged | 2026-11-11 |
 | [#9](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/9) Reset and rotate buttons in the dev harness | Merged | 2026-11-11 |
 | [#8](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/8) Current line takes the advance button's colour | Merged | 2026-11-11 |
 | [#6](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/6) Chat-app colours and design policy | Merged; also carried #3's design policy | 2026-11-11 |
