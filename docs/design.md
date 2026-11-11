@@ -66,7 +66,7 @@ on cards.
 - Phone first; sizes in em, based on the screen's short side.
 - The chat column has a reading width, so the eye does not cross a wide
   landscape screen between lines.
-- Respect the safe area and the UZU HUD (`--safe-*`, `--hud-y`).
+- Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No borders, dividers or cards.
 
@@ -115,10 +115,14 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Top band
 
-- Its own full-width row under the UZU HUD, on a white background that
-  reaches the top edge behind the HUD, tall
-  enough for icons with names under them (`--band-h`). Nothing shares a row
-  with the HUD.
+- A full-width row on a white background that reaches the top edge behind the
+  HUD, tall enough for icons with names under them (`--band-h`).
+- Whether it shares the HUD's row depends on how much of the screen width the
+  HUD takes. Over a quarter (phones held upright, about a third), the band is
+  its own row under the HUD, so the centred phase label keeps clear of the
+  HUD. A quarter or less (landscape and tablets, under a fifth), the band
+  shares the HUD's row with the HUD over its empty left part, so the chat
+  keeps the height. Nothing else shares a row with the HUD.
 - Shows both players as icon and role name, ordered like the chat: the other
   player left, you right. Each name sits under its icon. Your role's icon has a
   double circle (a ring around it), since order alone does not say which one
