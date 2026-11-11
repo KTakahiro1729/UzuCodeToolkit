@@ -6,7 +6,7 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { ROLE_IDS, SPEAKER_NAMES } from '../scenario';
-  // UI strings by key. The values are the owner's words for the band, quoted verbatim.
+  // UI strings by key.
   import STRINGS from '../strings.json';
 
   let { myRole, finished }: { myRole: string | undefined; finished: boolean } = $props();

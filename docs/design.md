@@ -22,7 +22,8 @@ Every screen is checked against these six.
    the focus: no strong colour, size or motion on things the player is not
    acting on now.
 5. **Reading the obvious.** No text that repeats what position, colour or the
-   content already says. No hints, headings or instructions.
+   content already says. No headings or instructions, apart from the one
+   first-turn label below.
 6. **Eye travel.** What the player needs at one moment sits together, near the
    focus. Related things are close; the eye does not cross the screen for one
    decision.
@@ -40,8 +41,12 @@ on cards.
 - The current line is the most salient thing on screen. Read lines keep full
   text contrast (no fades), but their bubbles are quieter than the current one,
   on both sides.
-- Your turn is shown at the focus itself: the current line is on your side.
-  Nothing else on screen signals the turn.
+- Your turn is shown at the focus itself: the current line is on your side, in
+  your colour, and ends with a next mark (a small down-pointing triangle, as in
+  reading games) that says a tap continues. Nothing else on screen signals the
+  turn.
+- On your first turn only, a short label from a key (read, then tap) sits
+  beside that line. Later turns show the mark alone.
 - Lines are told apart by side (yours right, as in chat apps) and by the
   speaker's icon.
 

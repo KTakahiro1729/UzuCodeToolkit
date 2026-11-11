@@ -13,11 +13,15 @@
   import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
   import { game, sendAction } from '../store.svelte';
   import TopBand from './TopBand.svelte';
+  // UI strings by key.
+  import STRINGS from '../strings.json';
 
   const dialogue = $derived(game.state?.dialogue);
   const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
   const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
   const mine = $derived(!!line && line.speaker === myRole);
+  // Your first turn gets a short label beside the next mark; later turns show the mark only.
+  const firstTurn = $derived(!!dialogue && mine && LINES.findIndex((l) => l.speaker === myRole) === dialogue.index);
   const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
 
   let chat: HTMLOListElement | undefined = $state();
@@ -75,7 +79,15 @@
       {#each shown as l, i}
         <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
           <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
-          <p>{l.text}</p>
+          <p>
+            {l.text}{#if mine && i === dialogue?.index}
+              <!-- Tap to continue: the mark reading games put at the end of a line. Static, no blink. -->
+              <svg class="next" viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
+            {/if}
+          </p>
+          {#if firstTurn && i === dialogue?.index}
+            <span class="hint">{STRINGS['hint.readThenTap']}</span>
+          {/if}
         </li>
       {/each}
     </ol>
@@ -165,6 +177,17 @@
   li[data-current='true'][data-side='right'] p {
     background: var(--color-mine-current);
     color: var(--color-mine-text);
+  }
+  .next {
+    width: 0.55em;
+    height: 0.45em;
+    margin-left: 0.4em;
+    fill: currentColor;
+  }
+  .hint {
+    flex: none;
+    color: var(--color-text-quiet);
+    font-size: 0.8em;
   }
   /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
   .end {
