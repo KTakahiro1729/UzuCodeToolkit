@@ -12,38 +12,31 @@
     },
     {
       "id": "king",
-      "label": "黒ん坊の王",
-      "mark": "王"
+      "label": "黒ん坊の王"
     },
     {
       "id": "thief1",
-      "label": "第一の盗人",
-      "mark": "盗一"
+      "label": "第一の盗人"
     },
     {
       "id": "thief2",
-      "label": "第二の盗人",
-      "mark": "盗二"
+      "label": "第二の盗人"
     },
     {
       "id": "thief3",
-      "label": "第三の盗人",
-      "mark": "盗三"
+      "label": "第三の盗人"
     },
     {
       "id": "innkeeper",
-      "label": "宿屋の主人",
-      "mark": "主人"
+      "label": "宿屋の主人"
     },
     {
       "id": "farmer1",
-      "label": "第一の農夫",
-      "mark": "農一"
+      "label": "第一の農夫"
     },
     {
       "id": "farmer2",
-      "label": "第二の農夫",
-      "mark": "農二"
+      "label": "第二の農夫"
     },
     {
       "id": "all",
