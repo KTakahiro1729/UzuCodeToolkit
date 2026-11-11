@@ -42,6 +42,7 @@
     align-items: center;
     gap: 0.9em;
     white-space: nowrap;
+    font-family: var(--font-ui);
     pointer-events: none;
   }
   .phase {

@@ -1,9 +1,8 @@
 <!--
   Chat-style read-through.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
-  each with the speaker's icon. The current line is the most salient bubble (blue when it is
-  yours). On your turn a button under the chat advances. Read lines keep full text contrast on
-  quieter bubbles.
+  each with the speaker's icon and name. Right under the newest line, both players see the
+  advance button: active for whoever reads now, greyed for the other.
   After the last line, the title and end mark show, then give way to the author's afterword
   for the post-game talk. The top band beside the UZU HUD shows both roles and the phase.
 -->
@@ -87,12 +86,17 @@
         {#each shown as l, i}
           <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
             <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
-            <p>{l.text}</p>
+            <div class="body">
+              <span class="name">{SPEAKER_NAMES[l.speaker]}</span>
+              <p>{l.text}</p>
+            </div>
           </li>
         {/each}
       </ol>
-      <!-- Only on your turn; its row is always kept, so it never moves the lines. -->
-      <button type="button" data-shown={mine} disabled={!mine} onclick={advance}>{STRINGS['hint.readThenTap']}</button>
+      <!-- Right under the newest line for both players: active for the reader, greyed for the other. -->
+      <button type="button" disabled={!mine} onclick={advance}>
+        {STRINGS['hint.readThenTap']}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
+      </button>
     </div>
   {/if}
 </main>
@@ -120,9 +124,9 @@
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--color-bg);
     color: var(--color-text);
-    font-family: 'Shippori Mincho', serif;
+    font-family: var(--font-body);
     /* Sizes are in em; the base scales with the screen's short side. */
-    font-size: clamp(14px, 4.4vmin, 28px);
+    font-size: clamp(16px, 4.4vmin, 28px);
     overflow: hidden;
     user-select: none;
   }
@@ -156,7 +160,7 @@
   }
   li {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 0.45em;
     max-width: 90%;
   }
@@ -171,6 +175,22 @@
     border-radius: 50%;
     object-fit: cover;
   }
+  .body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15em;
+  }
+  li[data-side='right'] .body {
+    align-items: flex-end;
+  }
+  /* Who speaks, by name: side and icon alone are not enough to tell roles apart. */
+  .name {
+    color: var(--color-text-quiet);
+    font-family: var(--font-ui);
+    /* No text below 16px. */
+    font-size: max(16px, 0.75em);
+  }
   li p {
     margin: 0;
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
@@ -178,18 +198,17 @@
     border-radius: 0.8em;
     /* Break between phrases, never mid-word. */
     word-break: auto-phrase;
-    background: var(--color-bubble-read);
+    background: var(--color-bubble);
   }
-  li[data-current='true'] p {
-    background: var(--color-bubble-current);
-  }
-  /* Your current line: the cue to read and tap. */
-  li[data-current='true'][data-side='right'] p {
-    background: var(--color-mine-current);
-    color: var(--color-mine-text);
+  /* Your role's lines, as in chat apps. */
+  li[data-side='right'] p {
+    background: var(--color-bubble-mine);
   }
   button {
-    align-self: flex-end;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
     margin: 0;
     padding: 0.45em 1.2em;
     border: none;
@@ -197,10 +216,18 @@
     background: var(--color-mine-current);
     color: var(--color-mine-text);
     font: inherit;
+    font-family: var(--font-ui);
     cursor: pointer;
   }
-  button[data-shown='false'] {
-    visibility: hidden;
+  button:disabled {
+    background: var(--color-button-off);
+    color: var(--color-text-quiet);
+    cursor: default;
+  }
+  button svg {
+    width: 0.55em;
+    height: 0.45em;
+    fill: currentColor;
   }
   /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
   .end {

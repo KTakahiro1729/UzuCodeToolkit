@@ -36,17 +36,17 @@ on cards.
 
 ### Focus and hierarchy
 
-- During the read-through the focus is the current line: the newest one, at the
-  bottom.
-- The current line is the most salient thing on screen. Read lines keep full
-  text contrast (no fades), but their bubbles are quieter than the current one,
-  on both sides.
-- Your turn is shown at the focus itself: the current line is on your side, in
-  your colour, and a button right under it (read, then tap) advances. Nothing
-  else on screen signals the turn.
-- The button's row is kept when it is hidden, so it never moves the lines.
-- Lines are told apart by side (yours right, as in chat apps) and by the
-  speaker's icon.
+- During the read-through the focus is the newest line, at the bottom, and the
+  advance button right under it.
+- Both players see the button. It is filled for whoever reads now and greyed
+  for the other, so each player knows at a glance whether to read or to wait.
+  Nothing else on screen signals the turn.
+- The button is always there during the read-through, so it never moves the
+  lines.
+- Lines are told apart by side (yours right, as in chat apps), by the
+  speaker's icon and by the speaker's name above the bubble. Your role's
+  bubbles are tinted; the other role's are white. All lines keep full text
+  contrast.
 
 ### Text
 
@@ -85,6 +85,13 @@ Decoration is out of scope, but it must not break the rules above:
 - No gradients, edge fades, shadows or glows.
 - No colour, size or weight that competes with the focus.
 
+### Type
+
+- Two roles, as CSS variables in `theme.css`: story text (script lines, title,
+  end mark, afterword) in Shippori Mincho (`--font-body`); UI text (top band,
+  speaker names, the advance button) in the system gothic (`--font-ui`).
+- No text below 16px.
+
 ## Components
 
 ### Top band
@@ -102,8 +109,8 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Dialogue line (read-through only)
 
-- A bubble with the speaker's icon beside it. Your role's lines on the right,
-  the other role's on the left.
+- A bubble with the speaker's icon beside it and name above it. Your role's
+  lines on the right, the other role's on the left.
 - Only the button advances; tapping elsewhere does nothing, so a stray tap
   never skips a line.
 
