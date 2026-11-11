@@ -42,11 +42,9 @@ on cards.
   text contrast (no fades), but their bubbles are quieter than the current one,
   on both sides.
 - Your turn is shown at the focus itself: the current line is on your side, in
-  your colour, and ends with a next mark (a small down-pointing triangle, as in
-  reading games) that says a tap continues. Nothing else on screen signals the
-  turn.
-- On your first turn only, a short label from a key (read, then tap) sits
-  beside that line. Later turns show the mark alone.
+  your colour, and a button right under it (read, then tap) advances. Nothing
+  else on screen signals the turn.
+- The button's row is kept when it is hidden, so it never moves the lines.
 - Lines are told apart by side (yours right, as in chat apps) and by the
   speaker's icon.
 
@@ -94,7 +92,10 @@ Decoration is out of scope, but it must not break the rules above:
 - Sits in the strip to the right of the UZU HUD, at the HUD's height, so it
   takes no reading space.
 - Shows both players as icon and role name, ordered like the chat: the other
-  player left, you right. This is where you learn which role is yours.
+  player left, you right. Your role carries a short "you" label from a key,
+  since order alone does not say which one is yours.
+- The phase label changes when the screen below it does (for example when the
+  afterword appears), never before.
 - It does not signal the turn; the current line does.
 - Shows the current phase of the game (read-through, afterword, or other) as a
   short label from a key, in every phase (owner's decision).
@@ -103,8 +104,8 @@ Decoration is out of scope, but it must not break the rules above:
 
 - A bubble with the speaker's icon beside it. Your role's lines on the right,
   the other role's on the left.
-- When the current line is yours, a tap anywhere advances. When it is not, a
-  tap does nothing.
+- Only the button advances; tapping elsewhere does nothing, so a stray tap
+  never skips a line.
 
 ### End screen
 

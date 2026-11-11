@@ -8,9 +8,9 @@
  */
 :root {
   --color-bg: #e9ecef; /* page */
-  --color-text: #24292f; /* all script text; 12.4:1 on bg, 11.0:1 on read bubbles */
+  --color-text: #24292f; /* all script text; 12.4:1 on bg, 10.4:1 on read bubbles */
   --color-text-quiet: #57606a; /* labels outside the focus; 5.4:1 on bg */
-  --color-bubble-read: #dde1e6; /* read lines, both sides: close to the page, so white stands out */
+  --color-bubble-read: #d5dae0; /* read lines, both sides: darker than the page, so the white current line stands out */
   --color-bubble-current: #ffffff; /* the other player's current line */
   --color-mine-current: #3b6fb6; /* your current line: your turn */
   --color-mine-text: #ffffff; /* 5.1:1 on --color-mine-current */

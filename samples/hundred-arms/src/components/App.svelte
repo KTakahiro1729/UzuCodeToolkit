@@ -1,8 +1,8 @@
 <!--
-  Chat-style read-through. The only text on screen is the script.
+  Chat-style read-through.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
   each with the speaker's icon. The current line is the most salient bubble (blue when it is
-  yours: your turn, and a tap anywhere advances). Read lines keep full text contrast on
+  yours). On your turn a button under the chat advances. Read lines keep full text contrast on
   quieter bubbles.
   After the last line, the title and end mark show, then give way to the author's afterword
   for the post-game talk. The top band beside the UZU HUD shows both roles and the phase.
@@ -20,8 +20,15 @@
   const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
   const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
   const mine = $derived(!!line && line.speaker === myRole);
-  // Your first turn gets a short label beside the next mark; later turns show the mark only.
-  const firstTurn = $derived(!!dialogue && mine && LINES.findIndex((l) => l.speaker === myRole) === dialogue.index);
+
+  // The afterword replaces the title and end mark after a moment (CSS, 3 s); the band's phase
+  // changes at the same moment, so the band never says something the screen does not show yet.
+  let review = $state(false);
+  $effect(() => {
+    if (!dialogue?.finished) return void (review = false);
+    const t = setTimeout(() => (review = true), 3000);
+    return () => clearTimeout(t);
+  });
   const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
 
   let chat: HTMLOListElement | undefined = $state();
@@ -65,9 +72,9 @@
   }
 </script>
 
-<main data-mine={mine} onclick={advance} role="presentation">
+<main>
   {#if dialogue}
-    <TopBand {myRole} finished={dialogue.finished} />
+    <TopBand {myRole} finished={review} />
   {/if}
   {#if dialogue?.finished}
     <div class="end">
@@ -75,22 +82,18 @@
       <p class="afterword">{AFTERWORD}</p>
     </div>
   {:else}
-    <ol class="chat" bind:this={chat} out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
-      {#each shown as l, i}
-        <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
-          <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
-          <p>
-            {l.text}{#if mine && i === dialogue?.index}
-              <!-- Tap to continue: the mark reading games put at the end of a line. Static, no blink. -->
-              <svg class="next" viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
-            {/if}
-          </p>
-          {#if firstTurn && i === dialogue?.index}
-            <span class="hint">{STRINGS['hint.readThenTap']}</span>
-          {/if}
-        </li>
-      {/each}
-    </ol>
+    <div class="read" out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
+      <ol class="chat" bind:this={chat}>
+        {#each shown as l, i}
+          <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
+            <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
+            <p>{l.text}</p>
+          </li>
+        {/each}
+      </ol>
+      <!-- Only on your turn; its row is always kept, so it never moves the lines. -->
+      <button type="button" data-shown={mine} disabled={!mine} onclick={advance}>{STRINGS['hint.readThenTap']}</button>
+    </div>
   {/if}
 </main>
 
@@ -112,7 +115,8 @@
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
-    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em)
+    /* A gap under the band, so a line cut off by scrolling reads as the list's edge. */
+    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--color-bg);
     color: var(--color-text);
@@ -122,19 +126,23 @@
     overflow: hidden;
     user-select: none;
   }
-  main[data-mine='true'] {
-    cursor: pointer;
-  }
   main > :global(*) {
     grid-area: 1 / 1;
   }
-  .chat {
+  /* The chat and, under it, the button for your turn. */
+  .read {
     align-self: end;
     /* A reading width, so the eye does not cross a wide landscape screen between lines. */
     justify-self: center;
     width: 100%;
     max-width: 30em;
     max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+  }
+  .chat {
+    min-height: 0;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -180,16 +188,19 @@
     background: var(--color-mine-current);
     color: var(--color-mine-text);
   }
-  .next {
-    width: 0.55em;
-    height: 0.45em;
-    margin-left: 0.4em;
-    fill: currentColor;
+  button {
+    align-self: flex-end;
+    margin: 0;
+    padding: 0.45em 1.2em;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-mine-current);
+    color: var(--color-mine-text);
+    font: inherit;
+    cursor: pointer;
   }
-  .hint {
-    flex: none;
-    color: var(--color-text-quiet);
-    font-size: 0.8em;
+  button[data-shown='false'] {
+    visibility: hidden;
   }
   /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
   .end {

@@ -1,7 +1,8 @@
 <!--
   The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
   Left: the game's phase, in the quieter text colour. Right: both roles as icon and name, the other
-  left and yours right as in the chat. It does not signal the turn; the current line does.
+  left and yours right as in the chat, yours marked as you. It does not signal the turn; the current
+  line does.
 -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
@@ -25,6 +26,7 @@
   {#each roles as role (role)}
     <span class="who">
       <img src={`./assets/icon-${role}.webp`} alt="" />{SPEAKER_NAMES[role]}
+      {#if role === myRole}<span class="you">{STRINGS['band.you']}</span>{/if}
     </span>
   {/each}
 </header>
@@ -61,5 +63,8 @@
     height: 1.5em;
     border-radius: 50%;
     object-fit: cover;
+  }
+  .you {
+    color: var(--color-text-quiet);
   }
 </style>
