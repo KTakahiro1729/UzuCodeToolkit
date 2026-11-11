@@ -59,6 +59,11 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 
 ## Components
 
+### Top band
+
+- Shows both players' icons and names, and the current phase of the game (the read-through, the afterword, or anything else).
+- It is the one place that says where the game is, so the screens below it need no headings. How the phase is shown is being designed in the header thread.
+
 ### Dialogue line
 
 - A bubble with the speaker's icon beside it. Your role's lines on the right, the other role's on the left.
@@ -124,6 +129,8 @@ The instructions this policy is built from, verbatim.
 > アイコンはある前提で
 >
 > カクカクにならないような最小限のアニメーションを入れて
+>
+> 帯には2人のアイコンと名前、現在のゲームステータス（本編なのか感想戦なのかそれ以外なのか）を
 >
 > そのまま書き移すんじゃなくて、記載したものから私の思考と方針を汲み取り、曖昧なところは確認し、既存のデザインフレームに落とし込み、きちんと言語化されたデザイン方針を作ってほしいんだよね
 
