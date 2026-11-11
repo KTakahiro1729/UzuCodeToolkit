@@ -12,8 +12,8 @@
   --color-text-quiet: #57606a; /* labels outside the focus; 5.4:1 on bg */
   --color-bubble: #ffffff; /* the other role's lines */
   --color-bubble-mine: #d6e2f3; /* your role's lines; 11.0:1 with --color-text */
-  --color-mine-current: #a8c5ec; /* the advance button and the current line on your turn; pale */
-  --color-mine-text: #24292f; /* 8.3:1 on --color-mine-current */
+  --color-mine-current: #92bef6; /* the advance button and the current line on your turn: light but saturated */
+  --color-mine-text: #24292f; /* 7.6:1 on --color-mine-current */
   --color-button-off: #d9dde2; /* the advance button and the current line on the other player's turn; 10.7:1 with --color-text, 4.7:1 with --color-text-quiet */
   /* Story text (script, title, end mark, afterword) and UI text (band, names, button). */
   --font-body: 'Shippori Mincho', serif;
