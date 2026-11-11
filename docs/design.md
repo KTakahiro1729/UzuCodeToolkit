@@ -2,7 +2,7 @@
 
 The source of truth for how screens in this repository look and move. It turns the owner's instructions (quoted verbatim at the end) into principles, foundations and component rules, following the usual design-system layout: principles first, then foundations (colour, type, space, shape, motion, text), then components.
 
-Values chosen for the sample (exact colours, file names) are in [decisions.md](decisions.md). Points still open are marked **Open** and follow the recommended option until the owner decides.
+Values chosen for the sample (exact colours, file names) are in [decisions.md](decisions.md).
 
 ## The idea behind it
 
@@ -78,7 +78,7 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 
 - The title and the end mark, centred, with nothing else.
 
-**Open:** whether the chat style applies to every screen built from the script (such as the afterword) or only to the read-through. Recommended: every screen built from the script.
+The chat style (dialogue line, character icon beside it) is for the read-through only. Other screens, such as the afterword, get their own layout under the same principles and foundations.
 
 ## Anti-patterns
 
