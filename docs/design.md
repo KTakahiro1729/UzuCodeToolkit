@@ -111,8 +111,8 @@ Decoration is out of scope, but it must not break the rules above:
 - Shows both players as icon and role name, ordered like the chat: the other
   player left, you right. This is where you learn which role is yours.
 - It does not signal the turn; the current line does.
-- A phase label appears only in phases whose screen does not already show the
-  phase. The read-through does not need one.
+- Shows the current phase of the game (read-through, afterword, or other) as a
+  short label from a key, in every phase (owner's decision).
 
 ### Dialogue line (read-through only)
 
