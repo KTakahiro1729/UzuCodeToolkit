@@ -1,0 +1,25 @@
+{
+  "id": "uzu-toolkit-yubiwa",
+  "build": "npm run build",
+  "output": "dist",
+  "playerCount": 2,
+  "orientation": "landscape",
+  "serverActionLogicPath": "./src/logic.ts",
+  "characters": [
+    {
+      "id": "a",
+      "name": "Ａ",
+      "description": "汽車でＢと隣り合わせた男",
+      "icon": "./public/assets/icon-a.webp"
+    },
+    {
+      "id": "b",
+      "name": "Ｂ",
+      "description": "ダイヤの指環を掏ったと疑われた男",
+      "icon": "./public/assets/icon-b.webp"
+    }
+  ],
+  "dev": {
+    "command": "npm run dev"
+  }
+}

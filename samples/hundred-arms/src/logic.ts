@@ -1,26 +1,7 @@
-/**
- * Server-authoritative logic (manifest.json serverActionLogicPath).
- * Actions run both in client prediction and on the server, so keep them deterministic.
- */
+/** Server-authoritative logic (manifest.json serverActionLogicPath): the shared read-through. */
 
-import { advanceDialogue, assignRoles, type DialogueProgress, startDialogue } from '@uzu-toolkit/kit';
-import type { ActionArgs, GameLogic } from '@uzuhq/code-sdk';
-import { LINES, ROLE_IDS } from './scenario';
+import { readThroughLogic } from '@uzu-toolkit/reader/logic';
+import script from '../script/script.json';
 
-export interface State {
-  /** Seat ID -> role ID. */
-  roles: Record<string, string>;
-  dialogue: DialogueProgress;
-}
-
-const logic: GameLogic<State> = {
-  setup: ({ players }) => ({ roles: assignRoles(players, ROLE_IDS), dialogue: startDialogue() }),
-  actions: {
-    advance({ state, playerId, payload }: ActionArgs<State, { index: number }>) {
-      advanceDialogue(LINES, state.dialogue, state.roles[playerId], payload.index);
-    },
-  },
-  update() {},
-};
-
-export default logic;
+export type { State } from '@uzu-toolkit/reader/logic';
+export default readThroughLogic(script);

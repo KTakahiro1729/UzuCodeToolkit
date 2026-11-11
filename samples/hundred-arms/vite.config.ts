@@ -1,5 +1,5 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { devHarness } from './dev-harness.ts';
+import { devHarness } from '@uzu-toolkit/reader/dev-harness';
 
 export default {
   // Certification: load assets by relative path.

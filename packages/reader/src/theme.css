@@ -28,24 +28,6 @@
 }
 
 /*
- * Bundled Google Fonts (OFL 1.1), subset to the characters they show. See CLAUDE.md.
- * Story text: Shippori Mincho. UI text: BIZ UDPGothic, a universal-design face made
- * for telling characters apart at a glance, so short labels read at small sizes.
+ * The two faces are bundled per sample (src/fonts.css), subset to the characters that work shows.
+ * See CLAUDE.md.
  */
-@font-face {
-  font-family: 'Shippori Mincho';
-  src: url('./fonts/ShipporiMincho-Regular.subset.woff2') format('woff2');
-  font-display: block;
-}
-@font-face {
-  font-family: 'BIZ UDPGothic';
-  src: url('./fonts/BIZUDPGothic-Regular.subset.woff2') format('woff2');
-  font-weight: 400;
-  font-display: block;
-}
-@font-face {
-  font-family: 'BIZ UDPGothic';
-  src: url('./fonts/BIZUDPGothic-Bold.subset.woff2') format('woff2');
-  font-weight: 700;
-  font-display: block;
-}
