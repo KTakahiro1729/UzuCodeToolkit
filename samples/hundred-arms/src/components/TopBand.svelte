@@ -1,6 +1,6 @@
 <!--
   The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
-  Left: the game's phase, faint. Right: both roles, the other left and yours right as in the chat.
+  Left: the game's phase, in the faint text colour. Right: both roles, the other left and yours right as in the chat.
   During the read-through the role whose line is current is at full strength; otherwise both are.
 -->
 <script lang="ts">
@@ -46,7 +46,7 @@
   .phase {
     margin-right: auto;
     display: grid;
-    opacity: 0.6;
+    color: var(--color-text-read);
   }
   /* The old and new phase overlap while one fades into the other. */
   .phase > span {
@@ -56,10 +56,11 @@
     display: flex;
     align-items: center;
     gap: 0.4em;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
   }
+  /* Faint by text colour, not opacity, so the icon stays whole and the name keeps AA contrast. */
   .who[data-faint='true'] {
-    opacity: 0.6;
+    color: var(--color-text-read);
   }
   img {
     width: 1.5em;
