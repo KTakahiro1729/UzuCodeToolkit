@@ -1,52 +1,96 @@
 <!--
-  画面の枠。 フェーズごとに画面を出し分ける。
+  画面。 文字は台本だけ。 誰の番かは背景色で示す:
+  自分の番は行が明るい紙色になり、 画面のどこをタップしても次へ送れる。
+  ほかの人の番は行が沈んだ色のまま。 読んだ行は上に薄く残る。
 -->
 <script lang="ts">
-  import { game } from '../store.svelte';
-  import DialogueView from './DialogueView.svelte';
-  import { END_MARK, TITLE } from '../scenario';
+  import { currentLine } from '@uzu-toolkit/kit';
+  import { END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
+  import { game, sendAction } from '../store.svelte';
+
+  const dialogue = $derived(game.state?.dialogue);
+  const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
+  const mine = $derived(!!line && !!game.me && game.state?.roles[game.me] === line.speaker);
+  const past = $derived(dialogue ? LINES.slice(0, dialogue.index) : []);
+
+  function advance(): void {
+    if (mine && dialogue) sendAction('advance', { index: dialogue.index });
+  }
 </script>
 
-<main class="frame">
-  {#if !game.state}
-    <p class="center">接続しています…</p>
-  {:else if game.state.phase === 'dialogue'}
-    <DialogueView snapshot={game.state} me={game.me} />
-  {:else}
-    <p class="center end"><span>{TITLE}</span><span>{END_MARK}</span></p>
+<main data-mine={mine} onclick={advance} role="presentation">
+  {#if dialogue?.finished}
+    <p class="end">{TITLE}<br />{END_MARK}</p>
+  {:else if line}
+    <ol class="past">
+      {#each past as l}
+        <li><b>{SPEAKER_NAMES[l.speaker]}</b>{l.text}</li>
+      {/each}
+    </ol>
+    <p class="current"><b>{SPEAKER_NAMES[line.speaker]}</b>{line.text}</p>
   {/if}
 </main>
 
 <style>
-  :root {
-    --bg: #14121a;
-    --paper: #f3ecdf;
-    --ink: #2a2530;
-    --muted: #8d8496;
-    --accent: #c9853a;
+  :global(body) {
+    margin: 0;
   }
-  .frame {
+  main {
+    --bg: #17151d;
+    --paper: #f1e9dc;
+    --ink: #24202b;
+    --dim: #3a3542;
     position: fixed;
     inset: 0;
-    /* Safe Area (ノッチ) を避ける。 値は main.ts が SDK の getInsets() から流す。 */
-    padding: var(--safe-top, 0) var(--safe-right, 0) var(--safe-bottom, 0) var(--safe-left, 0);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.2em;
+    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 1.5em)
+      calc(var(--safe-bottom, 0px) + 1.5em) calc(var(--safe-left, 0px) + 1.5em);
     background: var(--bg);
     color: var(--paper);
     font-family: system-ui, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    /* 寸法は em。 基準を画面の短辺に比例させ、 端末の大きさに追従する。 */
-    font-size: clamp(14px, 4.2vmin, 28px);
+    /* 寸法は em。 基準を画面の短辺に比例させる。 */
+    font-size: clamp(14px, 4.4vmin, 28px);
     overflow: hidden;
     user-select: none;
   }
-  .end {
-    grid-auto-flow: row;
-    align-content: center;
-    gap: 0.8em;
+  main[data-mine='true'] {
+    cursor: pointer;
   }
-  .center {
-    display: grid;
-    place-items: center;
-    height: 100%;
+  b {
+    display: inline-block;
+    width: 1.8em;
+    font-weight: bold;
+  }
+  .past {
     margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.3em;
+    opacity: 0.45;
+    font-size: 0.8em;
+  }
+  .current {
+    margin: 0;
+    padding: 1em 1.2em;
+    border-radius: 0.6em;
+    background: var(--dim);
+    transition: background 0.2s, color 0.2s;
+  }
+  main[data-mine='true'] .current {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .end {
+    margin: auto;
+    text-align: center;
+    line-height: 2.4;
   }
 </style>

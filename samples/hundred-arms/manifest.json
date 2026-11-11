@@ -4,11 +4,18 @@
   "output": "dist",
   "playerCount": 2,
   "orientation": "landscape",
-  "admin": true,
   "serverActionLogicPath": "./src/logic.ts",
   "characters": [
-    { "id": "yu", "name": "勇", "description": "勇者。かなり強い" },
-    { "id": "hyaku", "name": "百", "description": "百本の腕を持つ魔物。そこそこ強かった" }
+    {
+      "id": "yu",
+      "name": "勇",
+      "description": "勇者。かなり強い"
+    },
+    {
+      "id": "hyaku",
+      "name": "百",
+      "description": "百本の腕を持つ魔物。そこそこ強かった"
+    }
   ],
   "dev": {
     "command": "npm run dev"
