@@ -64,8 +64,8 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 1.2em)
-      calc(var(--safe-bottom, 0px) + 1.2em) calc(var(--safe-left, 0px) + 1.2em);
+    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 0.8em)
+      calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--bg);
     color: var(--paper);
     font-family: 'Shippori Mincho', serif;
@@ -84,7 +84,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 0.7em;
+    gap: 0.45em;
     /* Older lines scroll up; the list keeps the newest line in view. */
     overflow-y: auto;
     scrollbar-width: none;
@@ -92,8 +92,8 @@
   li {
     display: flex;
     align-items: flex-end;
-    gap: 0.6em;
-    max-width: 80%;
+    gap: 0.45em;
+    max-width: 90%;
     opacity: 0.6;
     transition: opacity 0.2s;
   }
@@ -106,15 +106,16 @@
   }
   img {
     flex: none;
-    width: 2.2em;
-    height: 2.2em;
+    width: 1.8em;
+    height: 1.8em;
     border-radius: 50%;
     object-fit: cover;
   }
   li p {
     margin: 0;
-    padding: 0.6em 0.9em;
-    border-radius: 1em;
+    /* Keep bubbles tight: padding here costs a lot of room on a phone. */
+    padding: 0.35em 0.7em;
+    border-radius: 0.8em;
     background: var(--dim);
   }
   /* Your own current line turns light: the cue to read and tap. */
