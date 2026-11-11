@@ -13,6 +13,7 @@ import { bindSend, game } from './store.svelte';
 function applyInsets({ safeArea, hud }: UzuInsets): void {
   const s = document.documentElement.style;
   for (const side of ['top', 'right', 'bottom', 'left'] as const) s.setProperty(`--safe-${side}`, `${safeArea[side]}px`);
+  s.setProperty('--hud-x', `${hud.x}px`);
   s.setProperty('--hud-y', `${hud.y}px`);
 }
 applyInsets(getInsets());

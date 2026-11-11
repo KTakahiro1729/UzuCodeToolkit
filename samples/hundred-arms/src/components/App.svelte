@@ -4,13 +4,14 @@
   each with the speaker's icon. The current line is the brightest bubble; on your line
   a tap anywhere advances. Earlier lines are a little dimmer.
   After the last line, the title and end mark show, then give way to the author's afterword
-  for the post-game talk.
+  for the post-game talk. The top band beside the UZU HUD shows both roles and the phase.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
   import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
   import { game, sendAction } from '../store.svelte';
+  import TopBand from './TopBand.svelte';
 
   const dialogue = $derived(game.state?.dialogue);
   const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
@@ -60,6 +61,9 @@
 </script>
 
 <main data-mine={mine} onclick={advance} role="presentation">
+  {#if dialogue}
+    <TopBand {myRole} speaker={line?.speaker} finished={dialogue.finished} />
+  {/if}
   {#if dialogue?.finished}
     <div class="end">
       <p class="closing">{TITLE}<br />{END_MARK}</p>
@@ -99,7 +103,8 @@
     /* One cell: the chat and the end screen overlap while one gives way to the other. */
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
-    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 0.8em)
+    /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
+    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--bg);
     color: var(--paper);
