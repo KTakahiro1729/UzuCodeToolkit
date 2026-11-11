@@ -2,11 +2,15 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 12:03 UTC
+Last checked: 2026-11-11 12:08 UTC
 
 ## Waiting on the owner
 
-Nothing right now. No open decisions. No CI checks are configured.
+No open decisions. No CI checks are configured.
+
+| What | Kind | Notes |
+|---|---|---|
+| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End label on the advance button for the last line | Review, merge | Ready. Also re-lands the "other role's lines always white" commit that missed #8. |
 
 ## Done
 
