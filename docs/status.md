@@ -2,17 +2,15 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 11:22 UTC
+Last checked: 2026-11-11 11:25 UTC
 
 ## Waiting on the owner
 
-Nothing right now. No open decisions. No CI checks are configured.
+No open decisions. No CI checks are configured.
 
-## In progress (not waiting on the owner yet)
-
-| What | Notes |
-|---|---|
-| Motion follow-up | Match the motion from #5 to the new rules in docs/design.md. |
+| What | Kind | Notes |
+|---|---|---|
+| [#8](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/8) Current line takes the advance button's colour | Review, merge | Ready. |
 
 ## Done
 
