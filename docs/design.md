@@ -16,9 +16,10 @@ How screens in this repository look and move.
 
 - Light theme only.
 - Neutral greys and white, with no hue or tint. The characters' icons are the only colour on screen.
-- Meaning is carried by contrast: the current line stands out most, and your own current line inverts (dark bubble, light text).
+- Meaning is carried by contrast. The only strong colour is your own current line, which inverts (dark bubble, light text).
 - No gradients, fades, shadows or glows.
-- Text meets WCAG AA contrast (4.5:1), dimmed lines included.
+- Every text colour meets WCAG AA contrast (4.5:1) on its background.
+- No opacity fades. Quieter things use a quieter colour token, so text and icons stay legible.
 - Colours are tokens in `samples/hundred-arms/src/theme.css`. Screens use the variables, never raw colours.
 
 ### Typography
@@ -55,15 +56,15 @@ How screens in this repository look and move.
 ### Top band
 
 - Sits in the strip to the right of the UZU HUD, at the HUD's height, so it takes no reading space. Same layout in portrait and landscape.
-- Left: the current phase of the game (read-through, afterword, or other) as a short label from a key, faint.
+- Left: the current phase of the game (read-through, afterword, or other) as a short label from a key, in a quieter text colour.
 - Right: both players as icon and role name, ordered like the chat: the other player left, you right.
-- During the read-through, the player whose line is current is at full strength and the other is faint; in other phases both are full.
+- During the read-through, the name of the player whose line is current is in the full text colour and the other in a quieter one; icons stay at full strength. In other phases both are full.
 - The band is the only place that says where the game is; screens below it have no headings.
 
 ### Dialogue line (read-through only)
 
 - A bubble with the speaker's icon beside it. Your role's lines on the right, the other role's on the left.
-- The current line has full contrast; earlier lines are fainter. Your own current line inverts: the cue to read and tap.
+- Earlier lines use a quieter text and bubble colour; the current line a stronger one. Your own current line inverts: the cue to read and tap.
 - On your line, a tap anywhere advances.
 
 ### Character icon
