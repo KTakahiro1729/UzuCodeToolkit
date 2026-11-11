@@ -2,17 +2,20 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 09:58 UTC
+Last checked: 2026-11-11 10:04 UTC
 
 ## Waiting on the owner
 
-Nothing right now. No open decisions. No CI checks are configured.
+No open decisions. No CI checks are configured.
+
+| What | Kind | Notes |
+|---|---|---|
+| [#6](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/6) Chat-app colours and design policy | Review, merge | Ready. Up to date with `main`. |
 
 ## In progress (not waiting on the owner yet)
 
 | What | Notes |
 |---|---|
-| [#6](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/6) Chat-app colours and design policy | Being redone after the owner's note on functional design. Carries the design policy from #3. |
 | Motion follow-up | After #6 merges: match the motion from #5 to the new rules in docs/design.md. |
 
 ## Done
