@@ -36,6 +36,12 @@ Neutral colours with no tint; no gradients or fades.
 
 Do not reach for cards by default. A box with padding costs room, most of all on a phone; use a background only where it carries meaning, and keep its padding tight.
 
+## Motion
+
+> カクカクにならないような最小限のアニメーションを入れて
+
+Use only the motion needed so changes on screen do not jump.
+
 ## Read-through screen
 
 > どちらかというとチャット画面風にして
