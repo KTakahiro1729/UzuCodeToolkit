@@ -10,7 +10,7 @@ No open decisions. No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End label on the advance button for the last line | Review, merge | Ready. Also re-lands the "other role's lines always white" commit that missed #8. |
+| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End of game: end label on the last line, fade into the post-game screen | Review, merge | Ready. Also re-lands the "other role's lines always white" commit that missed #8. |
 | [#11](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/11) Tap-next button and hot swap | Review, merge | Ready. Independent of #10. |
 
 ## Done
