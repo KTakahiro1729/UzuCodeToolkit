@@ -1,7 +1,8 @@
 <!--
-  The only text on screen is the script. Whose turn it is shows as background colour:
-  on your line the box turns paper-light and a tap anywhere advances;
-  otherwise it stays dim. Lines already read stay faintly above.
+  Chat-style read-through. The only text on screen is the script.
+  Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
+  each with the speaker's icon. The current line is the brightest bubble; on your line
+  a tap anywhere advances. Earlier lines fade back.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
@@ -9,9 +10,10 @@
   import { game, sendAction } from '../store.svelte';
 
   const dialogue = $derived(game.state?.dialogue);
+  const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
   const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
-  const mine = $derived(!!line && !!game.me && game.state?.roles[game.me] === line.speaker);
-  const past = $derived(dialogue ? LINES.slice(0, dialogue.index) : []);
+  const mine = $derived(!!line && line.speaker === myRole);
+  const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
 
   function advance(): void {
     if (mine && dialogue) sendAction('advance', { index: dialogue.index });
@@ -21,16 +23,15 @@
 <main data-mine={mine} onclick={advance} role="presentation">
   {#if dialogue?.finished}
     <p class="end">{TITLE}<br />{END_MARK}</p>
-  {:else if line}
-    <ol class="past">
-      {#each past as l}
-        <li><span class="speaker">{SPEAKER_NAMES[l.speaker]}</span><span>{l.text}</span></li>
+  {:else}
+    <ol class="chat">
+      {#each shown as l, i}
+        <li data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
+          <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
+          <p>{l.text}</p>
+        </li>
       {/each}
     </ol>
-    <section class="current">
-      <span class="speaker">{SPEAKER_NAMES[line.speaker]}</span>
-      <p class="text">{line.text}</p>
-    </section>
   {/if}
 </main>
 
@@ -55,9 +56,8 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 1.2em;
-    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 1.5em)
-      calc(var(--safe-bottom, 0px) + 1.5em) calc(var(--safe-left, 0px) + 1.5em);
+    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 1.2em)
+      calc(var(--safe-bottom, 0px) + 1.2em) calc(var(--safe-left, 0px) + 1.2em);
     background: var(--bg);
     color: var(--paper);
     font-family: 'Shippori Mincho', serif;
@@ -69,44 +69,48 @@
   main[data-mine='true'] {
     cursor: pointer;
   }
-  /* Only the Regular weight is bundled, so no bold. Speakers are a little dimmer than lines. */
-  .speaker {
-    opacity: 0.7;
-  }
-  .past {
+  .chat {
     margin: 0;
     padding: 0;
     list-style: none;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 0.3em;
-    opacity: 0.45;
-    font-size: 0.8em;
+    gap: 0.7em;
+    overflow: hidden;
+    /* Older lines scroll off the top; fade them out instead of cutting them. */
+    mask-image: linear-gradient(to bottom, transparent, #000 3em);
   }
-  /* Speaker and line in separate columns, so lines start at the same x. */
-  .past li {
-    display: grid;
-    grid-template-columns: 2.5em 1fr;
-  }
-  .current {
-    display: grid;
+  li {
+    display: flex;
+    align-items: flex-end;
     gap: 0.6em;
+    max-width: 80%;
+    opacity: 0.45;
+    transition: opacity 0.2s;
   }
-  /* The speaker sits outside the box; the box holds only the line. */
-  .current .speaker {
-    padding-left: 1.2em;
-    font-size: 0.8em;
+  li[data-side='right'] {
+    flex-direction: row-reverse;
+    align-self: flex-end;
   }
-  .text {
+  li[data-current='true'] {
+    opacity: 1;
+  }
+  img {
+    flex: none;
+    width: 2.2em;
+    height: 2.2em;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  p {
     margin: 0;
-    padding: 1em 1.2em;
-    border-radius: 0.6em;
+    padding: 0.6em 0.9em;
+    border-radius: 1em;
     background: var(--dim);
-    transition: background 0.2s, color 0.2s;
   }
-  main[data-mine='true'] .text {
+  /* Your own current line: paper-light, the cue to read and tap. */
+  main[data-mine='true'] li[data-current='true'] p {
     background: var(--paper);
     color: var(--ink);
   }
