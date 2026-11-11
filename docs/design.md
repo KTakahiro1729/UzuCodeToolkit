@@ -54,7 +54,10 @@ How screens in this repository look and move.
 
 ### Top band
 
-- Both players' icons and names, and the current phase of the game (read-through, afterword, or other).
+- Sits in the strip to the right of the UZU HUD, at the HUD's height, so it takes no reading space. Same layout in portrait and landscape.
+- Left: the current phase of the game (read-through, afterword, or other) as a short label from a key, faint.
+- Right: both players as icon and role name, ordered like the chat: the other player left, you right.
+- During the read-through, the player whose line is current is at full strength and the other is faint; in other phases both are full.
 - The band is the only place that says where the game is; screens below it have no headings.
 
 ### Dialogue line (read-through only)
