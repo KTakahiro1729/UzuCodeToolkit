@@ -1,18 +1,18 @@
 /*
- * Colour tokens for every screen. Light theme only, in the usual chat-app
- * pattern: a soft grey page, white bubbles for others, a calm blue for you.
- * Components use these variables, never raw colours.
- *
+ * Colour tokens for every screen (docs/design.md, Limits on decoration).
+ * Light theme only. Components use these variables, never raw colours.
  * Every text colour meets WCAG AA (4.5:1) on its background. No opacity fades.
+ *
+ * Function: the current line is the most salient thing on screen. Read lines
+ * keep full text contrast; only their bubbles are quieter.
  */
 :root {
-  --color-bg: #e9ecef; /* page: soft grey, not pure white */
-  --color-text: #24292f; /* body text; 12.4:1 on bg */
-  --color-bubble: #ffffff; /* the other player's lines */
-  --color-bubble-current: #ffffff; /* the other player's current line (same as read) */
-  --color-bubble-text: #24292f; /* 14.7:1 on white */
-  --color-text-read: #24292f; /* read lines keep full contrast */
-  --color-mine: #3b6fb6; /* your lines */
-  --color-mine-text: #ffffff; /* 5.1:1 on --color-mine */
+  --color-bg: #e9ecef; /* page */
+  --color-text: #24292f; /* all script text; 12.4:1 on bg, 11.0:1 on read bubbles */
+  --color-text-quiet: #57606a; /* labels outside the focus; 5.4:1 on bg */
+  --color-bubble-read: #dde1e6; /* read lines, both sides: close to the page, so white stands out */
+  --color-bubble-current: #ffffff; /* the other player's current line */
+  --color-mine-current: #3b6fb6; /* your current line: your turn */
+  --color-mine-text: #ffffff; /* 5.1:1 on --color-mine-current */
   color-scheme: light;
 }
