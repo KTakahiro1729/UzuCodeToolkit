@@ -83,7 +83,7 @@ How screens in this repository look and move.
 
 - Wrap blocks in cards, or nest cards.
 - Use gradients, edge fades, glows or coloured shadows.
-- Add a tint, brand colour or accent colour.
+- Add colours beyond the palette above, such as brand or decorative accents.
 - Add labels, hints or headings that explain what the screen already shows.
 - Draw borders, dividers or accent stripes.
 - Build features or options the sample does not use.
