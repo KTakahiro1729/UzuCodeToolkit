@@ -2,21 +2,18 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 11:38 UTC
+Last checked: 2026-11-11 12:03 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
-
-| What | Kind | Notes |
-|---|---|---|
-| [#8](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/8) Current line takes the advance button's colour | Review, merge | Ready. |
-| [#9](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/9) Reset and rotate buttons in the dev harness | Review, merge | Ready. Independent of #8. |
+Nothing right now. No open decisions. No CI checks are configured.
 
 ## Done
 
 | PR | Result | Date |
 |---|---|---|
+| [#9](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/9) Reset and rotate buttons in the dev harness | Merged | 2026-11-11 |
+| [#8](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/8) Current line takes the advance button's colour | Merged | 2026-11-11 |
 | [#6](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/6) Chat-app colours and design policy | Merged; also carried #3's design policy | 2026-11-11 |
 | [#5](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/5) Minimal animation | Merged; also brought in #7 | 2026-11-11 |
 | [#7](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/7) Top band: both players' icons and names, game phase | Merged into #5's branch | 2026-11-11 |
