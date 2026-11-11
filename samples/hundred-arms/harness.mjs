@@ -1,0 +1,48 @@
+// Runs `uzu dev` and restarts it whenever the server logic changes, so logic
+// edits show up without a manual restart. Screen code (Svelte, CSS) needs no
+// restart: vite swaps it in place. The /harness page (dev-harness.ts) puts the
+// game state back after a restart.
+import { spawn } from 'node:child_process';
+import { watch } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const here = (path) => fileURLToPath(new URL(path, import.meta.url));
+// Everything src/logic.ts imports.
+const WATCHED = [here('./src/logic.ts'), here('./src/scenario.ts'), here('./script'), here('../../packages/kit/src')];
+const WINDOWS = process.platform === 'win32';
+
+let child = null;
+
+const start = () => {
+  child = spawn('npx', ['uzu', 'dev', ...process.argv.slice(2)], { stdio: 'inherit', shell: true, detached: !WINDOWS });
+};
+
+// Stop uzu dev together with the vite server it spawned.
+const stop = () =>
+  new Promise((resolve) => {
+    if (!child || child.exitCode !== null) return resolve();
+    child.once('exit', resolve);
+    if (WINDOWS) spawn('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore' });
+    else process.kill(-child.pid, 'SIGTERM');
+  });
+
+let timer;
+const restart = () => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    console.log('\n[harness] Server logic changed. Restarting uzu dev...\n');
+    await stop();
+    start();
+  }, 300);
+};
+
+for (const path of WATCHED) watch(path, { recursive: true }, restart);
+
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.on(signal, async () => {
+    await stop();
+    process.exit(0);
+  });
+}
+
+start();

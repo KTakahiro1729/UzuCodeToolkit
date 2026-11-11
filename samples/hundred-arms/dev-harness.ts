@@ -1,4 +1,5 @@
-// Dev-only page: the UZU dev harness plus reset and rotate buttons.
+// Dev-only page: the UZU dev harness plus reset, rotate and tap-next buttons,
+// keeping the game state across server logic restarts (see harness.mjs).
 // Open http://localhost:<harness port>/harness while `npm run harness` runs.
 // The harness proxies unknown paths to vite, so this page shares the harness
 // origin and its in-memory room. Not part of the build.
@@ -27,6 +28,9 @@ const PAGE = `<!DOCTYPE html>
   <button id="dev-rotate" title="Rotate" aria-label="Rotate">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="16" rx="2"/><path d="M4 20h12a4 4 0 0 0 4-4v-2"/><path d="M17 17l3-3 3 3"/></svg>
   </button>
+  <button id="dev-tap" title="Tap next" aria-label="Tap next">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M12 9.5a1.5 1.5 0 0 1 3 0V11"/><path d="M15 10.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1a5 5 0 0 1-4-2l-2.6-3.6a1.5 1.5 0 0 1 2.3-1.9L9 15"/></svg>
+  </button>
 </div></template>
 <script>
   // The harness replaces <body>'s children, so hang the buttons on <html>.
@@ -42,6 +46,9 @@ const PAGE = `<!DOCTYPE html>
     const meta = await res.json();
     if (forced === 'portrait' || forced === 'landscape') meta.orientation = forced;
     orientation = meta.orientation;
+    // Load the player screens through the harness proxy, so they share this
+    // page's origin and tap-next can reach their buttons.
+    meta.scenarioUrl = location.origin + '/';
     return new Response(JSON.stringify(meta), { headers: { 'content-type': 'application/json' } });
   };
   document.getElementById('dev-reset').onclick = () => window.__uzu_dev?.reset?.({ seed: 'random' });
@@ -49,6 +56,64 @@ const PAGE = `<!DOCTYPE html>
     params.set('orientation', orientation === 'portrait' ? 'landscape' : 'portrait');
     location.search = params.toString();
   };
+  // Click the first enabled, visible button across the player screens (same
+  // origin): during the read-through that is the current reader's advance button.
+  document.getElementById('dev-tap').onclick = () => {
+    for (const frame of document.querySelectorAll('iframe')) {
+      const doc = frame.contentDocument;
+      const next = [...(doc?.querySelectorAll('button') ?? [])].find((b) => !b.disabled && b.getClientRects().length > 0);
+      if (next) return next.click();
+    }
+  };
+  // Hot swap: harness.mjs restarts the harness when the server logic changes,
+  // which empties its in-memory room. Keep the latest state, and when the
+  // harness comes back, reload and put that state back. Uses its own channel
+  // to the harness admin API, since the stock one does not reconnect.
+  const RESTORE = 'uzu-dev-restore';
+  let saved = sessionStorage.getItem(RESTORE);
+  sessionStorage.removeItem(RESTORE);
+  let last = null;
+  let down = false;
+  let admin = null;
+  let seq = 0;
+  const pending = new Map();
+  const adminCall = (method, args = []) =>
+    new Promise((resolve, reject) => {
+      if (admin?.readyState !== WebSocket.OPEN) return reject(new Error('admin closed'));
+      const id = 'dev-' + ++seq;
+      pending.set(id, { resolve, reject });
+      admin.send(JSON.stringify({ type: 'call', id, method, args }));
+    });
+  const openAdmin = () => {
+    admin = new WebSocket('ws://' + location.host + '/dev/admin');
+    admin.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      const call = pending.get(msg.id);
+      if (!call) return;
+      pending.delete(msg.id);
+      if (msg.type === 'error') call.reject(new Error(msg.error));
+      else call.resolve(msg.value);
+    };
+    admin.onopen = () => {
+      if (!down) return;
+      if (last) sessionStorage.setItem(RESTORE, JSON.stringify(last));
+      location.reload();
+    };
+    admin.onclose = () => {
+      down = true;
+      setTimeout(openAdmin, 1000);
+    };
+  };
+  openAdmin();
+  setInterval(async () => {
+    // Fails with no_active_room until the player screens have joined.
+    const state = await adminCall('getRawState').catch(() => null);
+    if (!state) return;
+    if (saved) {
+      await adminCall('setRawState', [JSON.parse(saved)]).catch(() => {});
+      saved = null;
+    } else last = state;
+  }, 1000);
 </script>
 <script src="/_uzu_harness.js"></script>
 </body>

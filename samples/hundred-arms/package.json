@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "harness": "uzu dev",
+    "harness": "node harness.mjs",
     "build": "tsc --noEmit && vite build",
     "publish": "uzu publish",
     "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
