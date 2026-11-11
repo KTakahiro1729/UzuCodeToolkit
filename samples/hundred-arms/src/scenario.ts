@@ -6,6 +6,8 @@ import script from '../script/script.json';
 
 export const TITLE: string = script.title;
 export const END_MARK: string = script.end;
+/** The author's afterword, shown after the end for the post-game talk. */
+export const AFTERWORD: string = script.afterword;
 export const LINES = script.lines;
 /** Role IDs, in the same order as manifest.json characters. */
 export const ROLE_IDS: string[] = script.cast.map((c) => c.id);

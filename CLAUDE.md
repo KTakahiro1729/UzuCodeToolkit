@@ -31,18 +31,18 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 ## Writing code
 
 - Actions run both in client prediction and on the server: keep them deterministic (no random or wall-clock values in state). Reject by throwing.
-- Sizes in em, based on the screen's short side. `main.ts` exposes the safe area and the UZU HUD as CSS variables (`--safe-*`, `--hud-y`).
+- Sizes in em, based on the screen's short side. `main.ts` exposes the safe area and the UZU HUD as CSS variables (`--safe-*`, `--hud-x`, `--hud-y`).
 - Certification (https://docs.code.uzu-app.com/certification): call `firstFrameReady()`, use relative paths, file names only `[A-Za-z0-9_.-]`, no external network access.
 
 ## Font
 
-`samples/hundred-arms/src/fonts/` holds Shippori Mincho (Google Fonts, OFL 1.1) as a woff2 subset to the script's characters (~19 KB). No CDN: certification forbids external network access. Regular only, so no bold.
+`samples/hundred-arms/src/fonts/` holds Shippori Mincho (Google Fonts, OFL 1.1) as a woff2 subset to the characters of the script and the UI strings (`src/strings.json`) (~21 KB). No CDN: certification forbids external network access. Regular only, so no bold.
 
-Rebuild it when the script's characters change (needs [fonttools](https://github.com/fonttools/fonttools)):
+Rebuild it when those characters change (needs [fonttools](https://github.com/fonttools/fonttools)):
 
 ```bash
 curl -LO https://raw.githubusercontent.com/google/fonts/main/ofl/shipporimincho/ShipporiMincho-Regular.ttf
-node -e 'const s=require("./samples/hundred-arms/script/script.json");const t=[s.title,s.end,...s.cast.map(c=>c.label),...s.lines.map(l=>l.text)].join("");process.stdout.write([...new Set(t)].join(""))' > chars.txt
+node -e 'const s=require("./samples/hundred-arms/script/script.json");const t=[s.title,s.end,...s.cast.map(c=>c.label),...s.lines.map(l=>l.text),s.afterword,...Object.values(require("./samples/hundred-arms/src/strings.json"))].join("");process.stdout.write([...new Set(t)].join(""))' > chars.txt
 pyftsubset ShipporiMincho-Regular.ttf --text-file=chars.txt --flavor=woff2 --layout-features='*' \
   --output-file=samples/hundred-arms/src/fonts/ShipporiMincho-Regular.subset.woff2
 ```
