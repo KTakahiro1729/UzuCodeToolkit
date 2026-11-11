@@ -19,6 +19,8 @@
   const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
   const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
   const mine = $derived(!!line && line.speaker === myRole);
+  // The button says what it does until your first line is read; after that the mark alone.
+  const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex((l) => l.speaker === myRole));
 
   // The afterword replaces the title and end mark after a moment (CSS, 3 s); the band's phase
   // changes at the same moment, so the band never says something the screen does not show yet.
@@ -95,7 +97,7 @@
       </ol>
       <!-- Right under the newest line for both players: active for the reader, greyed for the other. -->
       <button type="button" disabled={!mine} onclick={advance}>
-        {STRINGS['hint.readThenTap']}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
+        {#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
       </button>
     </div>
   {/if}

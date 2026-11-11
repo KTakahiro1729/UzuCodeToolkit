@@ -42,7 +42,8 @@ on cards.
   for the other, so each player knows at a glance whether to read or to wait.
   Nothing else on screen signals the turn.
 - The button is always there during the read-through, so it never moves the
-  lines.
+  lines. It carries a short label from a key (read, then tap) until your first
+  line is read, then the next mark (a small down-pointing triangle) alone.
 - Lines are told apart by side (yours right, as in chat apps), by the
   speaker's icon and by the speaker's name above the bubble. Your role's
   bubbles are tinted; the other role's are white. All lines keep full text
@@ -99,8 +100,9 @@ Decoration is out of scope, but it must not break the rules above:
 - Sits in the strip to the right of the UZU HUD, at the HUD's height, so it
   takes no reading space.
 - Shows both players as icon and role name, ordered like the chat: the other
-  player left, you right. Your role carries a short "you" label from a key,
-  since order alone does not say which one is yours.
+  player left, you right. Your role's icon has a double circle (a ring around
+  it), since order alone does not say which one is yours. Band text is
+  semi-bold.
 - The phase label changes when the screen below it does (for example when the
   afterword appears), never before.
 - It does not signal the turn; the current line does.

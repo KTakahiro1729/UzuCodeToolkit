@@ -1,7 +1,7 @@
 <!--
   The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
   Left: the game's phase, in the quieter text colour. Right: both roles as icon and name, the other
-  left and yours right as in the chat, yours marked as you. It does not signal the turn; the current
+  left and yours right as in the chat, yours marked with a double circle. It does not signal the turn; the current
   line does.
 -->
 <script lang="ts">
@@ -25,8 +25,7 @@
   </div>
   {#each roles as role (role)}
     <span class="who">
-      <img src={`./assets/icon-${role}.webp`} alt="" />{SPEAKER_NAMES[role]}
-      {#if role === myRole}<span class="you">{STRINGS['band.you']}</span>{/if}
+      <img src={`./assets/icon-${role}.webp`} alt="" data-you={role === myRole} />{SPEAKER_NAMES[role]}
     </span>
   {/each}
 </header>
@@ -43,6 +42,7 @@
     gap: 0.9em;
     white-space: nowrap;
     font-family: var(--font-ui);
+    font-weight: 600;
     pointer-events: none;
   }
   .phase {
@@ -60,12 +60,15 @@
     gap: 0.4em;
   }
   img {
-    width: 1.5em;
-    height: 1.5em;
+    /* Small enough that the ring stays inside the band's height. */
+    width: 1.3em;
+    height: 1.3em;
     border-radius: 50%;
     object-fit: cover;
   }
-  .you {
-    color: var(--color-text-quiet);
+  /* Your role: a double circle (the icon's edge and a ring around it). */
+  img[data-you='true'] {
+    outline: 0.12em solid var(--color-mine-current);
+    outline-offset: 0.12em;
   }
 </style>
