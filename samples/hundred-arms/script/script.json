@@ -1,0 +1,58 @@
+{
+  "title": "百本腕と勇者",
+  "cast": [
+    {
+      "id": "yu",
+      "label": "勇",
+      "description": "勇者。かなり強い"
+    },
+    {
+      "id": "hyaku",
+      "label": "百",
+      "description": "百本の腕を持つ魔物。そこそこ強かった"
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "yu",
+      "text": "まだ戦う気？　強いって言ったでしょ"
+    },
+    {
+      "speaker": "hyaku",
+      "text": "おいおい、気が早いな。こっちには腕がまだ6本もあるぞ"
+    },
+    {
+      "speaker": "yu",
+      "text": "あと4本切れば人間と一緒だよ"
+    },
+    {
+      "speaker": "hyaku",
+      "text": "頭の中までもう魔物なんだよ。首まで落とさないと咬み殺すぞ？"
+    },
+    {
+      "speaker": "yu",
+      "text": "生きたくはないんだね"
+    },
+    {
+      "speaker": "hyaku",
+      "text": "こんなザマでか？"
+    },
+    {
+      "speaker": "yu",
+      "text": "どう？"
+    },
+    {
+      "speaker": "hyaku",
+      "text": "……ミコトに会いたい"
+    },
+    {
+      "speaker": "yu",
+      "text": "私も。でも私、なんか強くてさ"
+    },
+    {
+      "speaker": "hyaku",
+      "text": "じゃあ、そう伝えとくよ"
+    }
+  ],
+  "end": "（了）"
+}
