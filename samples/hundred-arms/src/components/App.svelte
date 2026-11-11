@@ -206,6 +206,14 @@
   li[data-side='right'] p {
     background: var(--color-bubble-mine);
   }
+  /* The line being read now matches the advance button: blue when you read, grey when you wait. */
+  li[data-current='true'] p {
+    background: var(--color-button-off);
+  }
+  li[data-current='true'][data-side='right'] p {
+    background: var(--color-mine-current);
+    color: var(--color-mine-text);
+  }
   button {
     align-self: center;
     display: flex;

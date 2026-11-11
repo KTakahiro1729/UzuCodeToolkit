@@ -38,6 +38,8 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it.
+- The line being read now takes the button's colour: blue when you read it,
+  grey when the other player does. Line and button read as one cue.
 - Both players see the button. It is filled for whoever reads now and greyed
   for the other, so each player knows at a glance whether to read or to wait.
   Nothing else on screen signals the turn.
