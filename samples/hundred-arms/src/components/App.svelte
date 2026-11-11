@@ -21,6 +21,8 @@
   const mine = $derived(!!line && line.speaker === myRole);
   // The button says what it does until your first line is read; after that the mark alone.
   const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex((l) => l.speaker === myRole));
+  // On the last line the button ends the read-through, so it says so instead of the next mark.
+  const last = $derived(!!line && dialogue?.index === LINES.length - 1);
 
   // The afterword replaces the title and end mark after a moment (CSS, 3 s); the band's phase
   // changes at the same moment, so the band never says something the screen does not show yet.
@@ -103,7 +105,7 @@
       </ol>
       <!-- Right under the newest line for both players: active for the reader, greyed for the other. -->
       <button type="button" disabled={!mine} onclick={advance}>
-        {#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
+        {#if last}{STRINGS['button.end']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
       </button>
     </div>
   {/if}
@@ -206,10 +208,7 @@
   li[data-side='right'] p {
     background: var(--color-bubble-mine);
   }
-  /* The line being read now matches the advance button: blue when you read, grey when you wait. */
-  li[data-current='true'] p {
-    background: var(--color-button-off);
-  }
+  /* Your line being read now matches the advance button. The other role's lines stay white. */
   li[data-current='true'][data-side='right'] p {
     background: var(--color-mine-current);
     color: var(--color-mine-text);

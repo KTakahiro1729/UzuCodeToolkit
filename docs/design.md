@@ -38,14 +38,16 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it.
-- The line being read now takes the button's colour: blue when you read it,
-  grey when the other player does. Line and button read as one cue.
+- When you read, the line being read takes the button's blue, so line and
+  button read as one cue. The other role's lines are always white.
 - Both players see the button. It is filled for whoever reads now and greyed
   for the other, so each player knows at a glance whether to read or to wait.
   Nothing else on screen signals the turn.
 - The button is always there during the read-through, so it never moves the
   lines. It carries a short label from a key (read, then tap) until your first
-  line is read, then the next mark (a small down-pointing triangle) alone.
+  line is read, then the next mark (a small down-pointing triangle) alone. On
+  the last line it carries an end label from a key instead of the mark, since
+  that tap ends the read-through rather than showing a next line.
 - Lines are told apart by side (yours right, as in chat apps), by the
   speaker's icon and by the speaker's name above the bubble. Your role's
   bubbles are tinted; the other role's are white. All lines keep full text
