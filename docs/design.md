@@ -23,10 +23,10 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 ### Colour
 
 - Neutral greys and white only, with no hue or tint. The characters' icons are the only colour on screen.
-- Meaning is carried by lightness. The brightest thing is the thing to look at now: the current line, and your own current line turns light.
+- Light theme only: a white or near-white background with dark text.
+- Meaning is carried by contrast. The current line stands out most, and your own current line inverts (dark bubble, light text).
 - No gradients, fades, shadows or glows.
 - Text keeps WCAG AA contrast (4.5:1), including dimmed earlier lines.
-- **Open:** dark theme only, or follow the device setting. Recommended: dark only (one theme is enough for the sample).
 
 ### Typography
 
@@ -67,7 +67,7 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 ### Dialogue line
 
 - A bubble with the speaker's icon beside it. Your role's lines on the right, the other role's on the left.
-- The current line is at full brightness; earlier lines are dimmer. Your own current line turns light: that is the cue to read and tap.
+- The current line has full contrast; earlier lines are fainter. Your own current line inverts: that is the cue to read and tap.
 - On your line, a tap anywhere advances.
 
 ### Character icon
