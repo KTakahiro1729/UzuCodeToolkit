@@ -21,15 +21,15 @@ Every screen is checked against these six.
 4. **The eye drawn elsewhere.** Nothing outside the focus is more salient than
    the focus: no strong colour, size or motion on things the player is not
    acting on now.
-5. **Reading the obvious.** No text that repeats what position, colour or the
-   content already says. No headings or instructions, apart from the one
-   first-turn label below.
+5. **Reading the obvious.** Text is judged by load, not avoided as such. Leave
+   out text that only repeats what position, colour or the content already
+   says; reading it costs more than it gives. Show text where its absence would
+   leave the player guessing.
 6. **Eye travel.** What the player needs at one moment sits together, near the
    focus. Related things are close; the eye does not cross the screen for one
    decision.
 
-Plus: build only what the sample uses (YAGNI), keep UI that relies on text to a
-minimum, group with space and background rather than lines, and spend no room
+Plus: build only what the sample uses (YAGNI), group with space and background rather than lines, and spend no room
 on cards.
 
 ## Rules
@@ -52,9 +52,10 @@ on cards.
 
 ### Text
 
-- Text on screen is the work's own text: the script, the title, character names.
-- A short label is allowed only where nothing else on screen says the same
-  thing. It comes from a key.
+- Use text when going without it costs the player more than reading it, and
+  not otherwise. Prefer position, colour or a familiar mark where one says the
+  same thing as clearly.
+- UI text is short and comes from a key.
 - The next reader is not shown.
 
 ### Layout
