@@ -1,16 +1,16 @@
 <!--
-  The band beside the UZU HUD, at the HUD's height (docs/design.md, Top band).
-  Left: the game's phase, in the faint text colour. Right: both roles, the other left and yours right as in the chat.
-  During the read-through the role whose line is current is at full strength; otherwise both are.
+  The band: its own row under the UZU HUD (docs/design.md, Top band).
+  Centre: the game's phase, in the quieter text colour. Right: both roles, name under icon, the
+  other left and yours right as in the chat, yours marked with a double circle. It does not signal
+  the turn; the advance button does.
 -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { ROLE_IDS, SPEAKER_NAMES } from '../scenario';
-  // UI strings by key. The values are the owner's words for the band, quoted verbatim.
+  // UI strings by key.
   import STRINGS from '../strings.json';
 
-  let { myRole, speaker, finished }: { myRole: string | undefined; speaker: string | undefined; finished: boolean } =
-    $props();
+  let { myRole, finished }: { myRole: string | undefined; finished: boolean } = $props();
 
   const roles = $derived(myRole ? [...ROLE_IDS.filter((r) => r !== myRole), myRole] : ROLE_IDS);
   const phase = $derived(STRINGS[finished ? 'phase.review' : 'phase.reading']);
@@ -23,49 +23,73 @@
       <span transition:fade={{ duration }}>{phase}</span>
     {/key}
   </div>
-  {#each roles as role (role)}
-    <span class="who" data-faint={!finished && role !== speaker}>
-      <img src={`./assets/icon-${role}.webp`} alt="" />{SPEAKER_NAMES[role]}
-    </span>
-  {/each}
+  <div class="roles">
+    {#each roles as role (role)}
+      <span class="who">
+        <img src={`./assets/icon-${role}.webp`} alt="" data-you={role === myRole} />{SPEAKER_NAMES[role]}
+      </span>
+    {/each}
+  </div>
 </header>
 
 <style>
+  /*
+   * Its own row under the UZU HUD, full width, on its own background. Three columns: empty,
+   * the phase centred on the screen, the roles at the right.
+   */
   header {
     position: fixed;
-    top: var(--safe-top, 0px);
-    left: calc(var(--safe-left, 0px) + var(--hud-x, 0px) + 0.6em);
-    right: calc(var(--safe-right, 0px) + 0.8em);
-    height: var(--hud-y, 0px);
-    display: flex;
+    /* The white reaches the top edge; the HUD sits on it, the content starts below the HUD. */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h));
+    box-sizing: border-box;
+    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em) 0
+      calc(var(--safe-left, 0px) + 0.8em);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 0.9em;
+    background: var(--color-bubble);
     white-space: nowrap;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 16px;
     pointer-events: none;
   }
   .phase {
-    margin-right: auto;
+    grid-column: 2;
     display: grid;
-    color: var(--color-text-read);
+    color: var(--color-text-quiet);
+    font-size: 18px;
   }
   /* The old and new phase overlap while one fades into the other. */
   .phase > span {
     grid-area: 1 / 1;
   }
+  .roles {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    gap: 1em;
+  }
+  /* Icon above, name below. */
   .who {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.4em;
-    transition: color 0.2s;
-  }
-  /* Faint by text colour, not opacity, so the icon stays whole and the name keeps AA contrast. */
-  .who[data-faint='true'] {
-    color: var(--color-text-read);
+    gap: 6px;
+    line-height: 1;
   }
   img {
-    width: 1.5em;
-    height: 1.5em;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     object-fit: cover;
+  }
+  /* Your role: a double circle (the icon's edge and a ring around it). */
+  img[data-you='true'] {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
   }
 </style>

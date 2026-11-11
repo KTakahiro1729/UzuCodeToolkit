@@ -1,10 +1,10 @@
 <!--
-  Chat-style read-through. The only text on screen is the script.
+  Chat-style read-through.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
-  each with the speaker's icon. The current line is the brightest bubble; on your line
-  a tap anywhere advances. Earlier lines are a little dimmer.
+  each with the speaker's icon and name. Right under the newest line, both players see the
+  advance button: active for whoever reads now, greyed for the other.
   After the last line, the title and end mark show, then give way to the author's afterword
-  for the post-game talk. The top band beside the UZU HUD shows both roles and the phase.
+  for the post-game talk. The top band, its own row under the UZU HUD, shows both roles and the phase.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
@@ -12,11 +12,24 @@
   import { AFTERWORD, END_MARK, LINES, SPEAKER_NAMES, TITLE } from '../scenario';
   import { game, sendAction } from '../store.svelte';
   import TopBand from './TopBand.svelte';
+  // UI strings by key.
+  import STRINGS from '../strings.json';
 
   const dialogue = $derived(game.state?.dialogue);
   const myRole = $derived(game.me ? game.state?.roles[game.me] : undefined);
   const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
   const mine = $derived(!!line && line.speaker === myRole);
+  // The button says what it does until your first line is read; after that the mark alone.
+  const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex((l) => l.speaker === myRole));
+
+  // The afterword replaces the title and end mark after a moment (CSS, 3 s); the band's phase
+  // changes at the same moment, so the band never says something the screen does not show yet.
+  let review = $state(false);
+  $effect(() => {
+    if (!dialogue?.finished) return void (review = false);
+    const t = setTimeout(() => (review = true), 3000);
+    return () => clearTimeout(t);
+  });
   const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
 
   let chat: HTMLOListElement | undefined = $state();
@@ -35,7 +48,7 @@
 
   /**
    * A new line enters at full size from below and pushes the earlier lines up.
-   * Easing is Material 3's "standard" curve; 300 ms is its medium2 duration.
+   * Opacity and transform only, 200 ms ease-out (docs/design.md, Motion).
    */
   function push(node: HTMLElement) {
     const list = node.parentElement;
@@ -48,8 +61,8 @@
       const now = new DOMMatrix(getComputedStyle(li).transform).m42;
       li.getAnimations().forEach((a) => a.cancel());
       li.animate([{ transform: `translateY(${now + shift}px)` }, { transform: 'none' }], {
-        duration: 300,
-        easing: 'cubic-bezier(0.2, 0, 0, 1)',
+        duration: 200,
+        easing: 'cubic-bezier(0, 0, 0.2, 1)',
       });
     }
     return {};
@@ -60,43 +73,47 @@
   }
 </script>
 
-<main data-mine={mine} onclick={advance} role="presentation">
+<main>
   {#if dialogue}
-    <TopBand {myRole} speaker={line?.speaker} finished={dialogue.finished} />
+    <TopBand {myRole} finished={review} />
   {/if}
   {#if dialogue?.finished}
     <div class="end">
       <p class="closing">{TITLE}<br />{END_MARK}</p>
-      <p class="afterword">{AFTERWORD}</p>
+      <section class="review">
+        <h1>{STRINGS['review.heading']}</h1>
+        <div class="afterword">
+          <h2>{STRINGS['review.afterword']}</h2>
+          <p>{AFTERWORD}</p>
+        </div>
+      </section>
     </div>
   {:else}
-    <ol class="chat" bind:this={chat} out:fade={{ duration: 300 }}>
-      {#each shown as l, i}
-        <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
-          <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
-          <p>{l.text}</p>
-        </li>
-      {/each}
-    </ol>
+    <div class="read" out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
+      <ol class="chat" bind:this={chat}>
+        {#each shown as l, i}
+          <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
+            <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
+            <div class="body">
+              <span class="name">{SPEAKER_NAMES[l.speaker]}</span>
+              <p>{l.text}</p>
+            </div>
+          </li>
+        {/each}
+      </ol>
+      <!-- Right under the newest line for both players: active for the reader, greyed for the other. -->
+      <button type="button" disabled={!mine} onclick={advance}>
+        {#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>
+      </button>
+    </div>
   {/if}
 </main>
 
 <style>
-  /* Shippori Mincho (Google Fonts, OFL), subset to the script's characters. See CLAUDE.md. */
-  @font-face {
-    font-family: 'Shippori Mincho';
-    src: url('../fonts/ShipporiMincho-Regular.subset.woff2') format('woff2');
-    font-display: block;
-  }
   :global(body) {
     margin: 0;
   }
   main {
-    /* Neutral greys only, no tint. */
-    --bg: #141414;
-    --paper: #f5f5f5;
-    --ink: #141414;
-    --dim: #2b2b2b;
     position: fixed;
     inset: 0;
     box-sizing: border-box;
@@ -104,25 +121,34 @@
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
-    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em)
+    /* Below the HUD and the band, with a gap so a line cut off by scrolling reads as the list's edge. */
+    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
-    background: var(--bg);
-    color: var(--paper);
-    font-family: 'Shippori Mincho', serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
     /* Sizes are in em; the base scales with the screen's short side. */
-    font-size: clamp(14px, 4.4vmin, 28px);
+    font-size: clamp(16px, 4.4vmin, 28px);
     overflow: hidden;
     user-select: none;
-  }
-  main[data-mine='true'] {
-    cursor: pointer;
   }
   main > :global(*) {
     grid-area: 1 / 1;
   }
-  .chat {
+  /* The chat and, under it, the button for your turn. */
+  .read {
     align-self: end;
+    /* A reading width, so the eye does not cross a wide landscape screen between lines. */
+    justify-self: center;
+    width: 100%;
+    max-width: 30em;
     max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+  }
+  .chat {
+    min-height: 0;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -136,18 +162,13 @@
   }
   li {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 0.45em;
     max-width: 90%;
-    opacity: 0.6;
-    transition: opacity 0.2s;
   }
   li[data-side='right'] {
     flex-direction: row-reverse;
     align-self: flex-end;
-  }
-  li[data-current='true'] {
-    opacity: 1;
   }
   img {
     flex: none;
@@ -156,20 +177,59 @@
     border-radius: 50%;
     object-fit: cover;
   }
+  .body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15em;
+  }
+  li[data-side='right'] .body {
+    align-items: flex-end;
+  }
+  /* Who speaks, by name: side and icon alone are not enough to tell roles apart. */
+  .name {
+    color: var(--color-text-quiet);
+    font-family: var(--font-ui);
+    /* No text below 16px. */
+    font-size: max(16px, 0.75em);
+  }
   li p {
     margin: 0;
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
     border-radius: 0.8em;
-    background: var(--dim);
-    transition:
-      background-color 0.2s,
-      color 0.2s;
+    /* Break between phrases, never mid-word. */
+    word-break: auto-phrase;
+    background: var(--color-bubble);
   }
-  /* Your own current line turns light: the cue to read and tap. */
-  main[data-mine='true'] li[data-current='true'] p {
-    background: var(--paper);
-    color: var(--ink);
+  /* Your role's lines, as in chat apps. */
+  li[data-side='right'] p {
+    background: var(--color-bubble-mine);
+  }
+  button {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+    padding: 0.45em 1.2em;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-mine-current);
+    color: var(--color-mine-text);
+    font: inherit;
+    font-family: var(--font-ui);
+    cursor: pointer;
+  }
+  button:disabled {
+    background: var(--color-button-off);
+    color: var(--color-text-quiet);
+    cursor: default;
+  }
+  button svg {
+    width: 0.55em;
+    height: 0.45em;
+    fill: currentColor;
   }
   /* The end mark holds for a moment, then the afterword replaces it (no opacity fade). */
   .end {
@@ -178,7 +238,7 @@
     place-items: center;
     text-align: center;
   }
-  .end > p {
+  .end > * {
     grid-area: 1 / 1;
     margin: 0;
   }
@@ -186,15 +246,51 @@
     line-height: 2.4;
     /* Comes in as the chat goes out, so the screen does not cut. */
     animation:
-      fade-in 0.4s 0.2s both,
+      fade-in 0.2s ease-out both,
       hide 0s 3s both;
   }
-  .afterword {
-    line-height: 2;
-    /* If it wraps (portrait), break between phrases and keep the lines even. */
-    word-break: auto-phrase;
-    text-wrap: balance;
+  /* The post-game screen: a heading, and under it an area for the author's afterword. */
+  .review {
+    width: min(30em, calc(100vw - 1.6em));
+    /* Text that can run to several lines starts at one left edge; the heading shares it. */
+    text-align: start;
+    display: grid;
+    gap: 0.8em;
     animation: hide 0s 3s reverse both;
+  }
+  /* The greeting stands for the whole screen, so it is centred. */
+  h1 {
+    margin: 0;
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 1.2em;
+    font-weight: 700;
+  }
+  .afterword {
+    display: grid;
+    gap: 0.3em;
+    padding: 1em 1.2em;
+    border-radius: 0.8em;
+    background: var(--color-bubble);
+  }
+  /* The area's label, on the same left edge as the text it names. */
+  h2 {
+    margin: 0;
+    color: var(--color-text-quiet);
+    font-family: var(--font-ui);
+    font-size: max(16px, 0.8em);
+    font-weight: 700;
+  }
+  .afterword p {
+    margin: 0;
+    line-height: 2;
+    /* If it wraps, break between phrases. */
+    word-break: auto-phrase;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .closing {
+      animation: hide 0s 3s both;
+    }
   }
   @keyframes fade-in {
     from {

@@ -1,0 +1,47 @@
+/*
+ * Colour tokens for every screen (docs/design.md, Limits on decoration).
+ * Light theme only. Components use these variables, never raw colours.
+ * Every text colour meets WCAG AA (4.5:1) on its background. No opacity fades.
+ *
+ * Function: the advance button under the newest line is the focus; it is
+ * filled for the reader and greyed for the other player.
+ */
+:root {
+  --color-bg: #e9ecef; /* page */
+  --color-text: #24292f; /* all script text; 12.4:1 on bg, 14.7:1 on white */
+  --color-text-quiet: #57606a; /* labels outside the focus; 5.4:1 on bg */
+  --color-bubble: #ffffff; /* the other role's lines */
+  --color-bubble-mine: #d6e2f3; /* your role's lines; 11.0:1 with --color-text */
+  --color-mine-current: #3b6fb6; /* the advance button on your turn */
+  --color-mine-text: #ffffff; /* 5.1:1 on --color-mine-current */
+  --color-button-off: #ced4da; /* the advance button on the other player's turn */
+  /* Story text (script, title, end mark, afterword) and UI text (band, names, button). */
+  --font-body: 'Shippori Mincho', serif;
+  --font-ui: 'BIZ UDPGothic', sans-serif;
+  /* The top band's height: icon, ring and name with room around them. */
+  --band-h: 76px;
+  color-scheme: light;
+}
+
+/*
+ * Bundled Google Fonts (OFL 1.1), subset to the characters they show. See CLAUDE.md.
+ * Story text: Shippori Mincho. UI text: BIZ UDPGothic, a universal-design face made
+ * for telling characters apart at a glance, so short labels read at small sizes.
+ */
+@font-face {
+  font-family: 'Shippori Mincho';
+  src: url('./fonts/ShipporiMincho-Regular.subset.woff2') format('woff2');
+  font-display: block;
+}
+@font-face {
+  font-family: 'BIZ UDPGothic';
+  src: url('./fonts/BIZUDPGothic-Regular.subset.woff2') format('woff2');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'BIZ UDPGothic';
+  src: url('./fonts/BIZUDPGothic-Bold.subset.woff2') format('woff2');
+  font-weight: 700;
+  font-display: block;
+}
