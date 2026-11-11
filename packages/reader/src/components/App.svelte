@@ -77,10 +77,32 @@
     return {};
   }
 
+  /**
+   * A wrapped bubble keeps the width it had before wrapping, which leaves a gap at the right of
+   * every line. Shrink it to its longest line: measure the text's line boxes and set the width.
+   */
+  function fit(node: HTMLElement) {
+    const text = node.firstElementChild as HTMLElement;
+    const measure = () => {
+      node.style.width = '';
+      // One rect per line, or several where ruby splits a line: span them all.
+      const rects = [...text.getClientRects()];
+      const widest = Math.max(...rects.map((r) => r.right)) - Math.min(...rects.map((r) => r.left));
+      node.style.width = `${Math.ceil(widest)}px`;
+    };
+    measure();
+    // Measure again once the bundled fonts are in; the fallback face sets different widths.
+    document.fonts.ready.then(measure);
+    addEventListener('resize', measure);
+    return { destroy: () => removeEventListener('resize', measure) };
+  }
+
   function advance(): void {
     if (mine && dialogue) sendAction('advance', { index: dialogue.index });
   }
 </script>
+
+{#snippet text(t: string)}{#each parseRuby(t) as seg}{#if seg.ruby}<span class="rb">{seg.text}<span class="rt">{seg.ruby}</span></span>{:else}{seg.text}{/if}{/each}{/snippet}
 
 <main>
   {#if dialogue}
@@ -116,7 +138,11 @@
               {/if}
               <div class="body">
                 {#if !isDirection(l) && !l.cont}<span class="name">{nameOf(l, STRINGS['name.and'])}</span>{/if}
-                <p>{#each parseRuby(l.text) as seg}{#if seg.ruby}<ruby>{seg.text}<rt>{seg.ruby}</rt></ruby>{:else}{seg.text}{/if}{/each}</p>
+                {#if isDirection(l)}
+                  <p>{@render text(l.text)}</p>
+                {:else}
+                  <p use:fit><span>{@render text(l.text)}</span></p>
+                {/if}
               </div>
             </div>
           </li>
@@ -206,6 +232,12 @@
     flex: 1;
     align-items: stretch;
   }
+  /* Stage directions are narration, not speech: no bubble, in every state. The advance button
+     alone says whose turn it is. */
+  li[data-direction='true'][data-side] p {
+    background: none;
+    color: var(--color-text);
+  }
   /* A scene heading stands for what follows, so it is centred. */
   h3 {
     margin: 0.4em 0 0;
@@ -247,12 +279,22 @@
     background: var(--color-bubble);
   }
   /* Room above each line for ruby. */
-  li p:has(ruby) {
+  li p:has(.rb) {
     line-height: 1.9;
   }
-  /* Ruby gives the reading of the word under it: half size, the one text below 16px. */
-  rt {
+  /* Ruby gives the reading of the word under it: half size, the one text below 16px. It may run
+     past its word rather than spread the word's letters apart (which <ruby> does in Chrome). */
+  .rb {
+    position: relative;
+  }
+  .rt {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
     font-size: 0.5em;
+    line-height: 1;
   }
   /* Your role's lines, as in chat apps. */
   li[data-side='right'] p {

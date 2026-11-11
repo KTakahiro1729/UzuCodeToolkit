@@ -149,13 +149,17 @@ Decoration is out of scope, but it must not break the rules above:
 - A line spoken together shows the speakers' names joined (`name.and`) and the
   first speaker's icon; that speaker reads it. A line marked as continuing the
   previous speech shows no name.
-- Ruby from the script (Aozora notation) shows above its word.
+- A bubble is as wide as its longest line, so a wrapped line leaves no gap at
+  the right.
+- Ruby from the script (Aozora notation) shows above its word. It may run past
+  its word rather than spread the word's letters apart.
 
 ### Stage direction and scene heading
 
 - A stage direction is read aloud like a line, by the player whose part holds
-  it, but it is no one's speech: it spans the chat column, with no icon or
-  name, and takes the same colours as a line (yours tinted, current yours blue).
+  it, but it is no one's speech: it spans the chat column as plain text, with
+  no icon, name or background, in every state (owner's decision). The advance
+  button alone says whose turn it is.
 - A scene heading sits centred above the line that opens the scene, in the
   quieter text colour, since it stands for what follows.
 
