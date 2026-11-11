@@ -2,17 +2,9 @@
 
 Toolkit for making murder-mystery games with UZU Code (`run()` from `@uzuhq/code-sdk`). Docs: https://docs.code.uzu-app.com/
 
-## Design policy (owner's words)
+## Design policy
 
-> 過剰設計をさける。具体的にはサンプルプロジェクトに不要なものはYAGNIと考える
-> 文字に頼るUIは極小に
-> 余白や背景色を利用し、線が多すぎるUIは減らす
-
-In practice:
-
-- Build only what `samples/` uses. Add to the kit when the sample needs it.
-- Screen text is the work's own text (the script). Do not explain state with sentences or hints.
-- No borders or rules; separate things with spacing and background colour.
+Read [docs/design.md](docs/design.md) before any UI work. It holds the owner's design instructions and how they apply.
 
 ## Language
 

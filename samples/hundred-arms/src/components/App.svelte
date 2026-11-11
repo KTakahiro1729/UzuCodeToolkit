@@ -2,7 +2,7 @@
   Chat-style read-through. The only text on screen is the script.
   Lines appear as bubbles as they are read: your role's lines on the right, others on the left,
   each with the speaker's icon. The current line is the brightest bubble; on your line
-  a tap anywhere advances. Earlier lines fade back.
+  a tap anywhere advances. Earlier lines are a little dimmer.
 -->
 <script lang="ts">
   import { currentLine } from '@uzu-toolkit/kit';
@@ -15,6 +15,13 @@
   const mine = $derived(!!line && line.speaker === myRole);
   const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
 
+  let chat: HTMLOListElement | undefined = $state();
+  // Keep the newest line in view as lines are added.
+  $effect(() => {
+    void shown.length;
+    chat?.scrollTo({ top: chat.scrollHeight });
+  });
+
   function advance(): void {
     if (mine && dialogue) sendAction('advance', { index: dialogue.index });
   }
@@ -24,7 +31,7 @@
   {#if dialogue?.finished}
     <p class="end">{TITLE}<br />{END_MARK}</p>
   {:else}
-    <ol class="chat">
+    <ol class="chat" bind:this={chat}>
       {#each shown as l, i}
         <li data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
           <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
@@ -57,8 +64,8 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 1.2em)
-      calc(var(--safe-bottom, 0px) + 1.2em) calc(var(--safe-left, 0px) + 1.2em);
+    padding: max(var(--hud-y, 0px), var(--safe-top, 0px)) calc(var(--safe-right, 0px) + 0.8em)
+      calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--bg);
     color: var(--paper);
     font-family: 'Shippori Mincho', serif;
@@ -77,17 +84,17 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 0.7em;
-    overflow: hidden;
-    /* Older lines scroll off the top; fade them out instead of cutting them. */
-    mask-image: linear-gradient(to bottom, transparent, #000 3em);
+    gap: 0.45em;
+    /* Older lines scroll up; the list keeps the newest line in view. */
+    overflow-y: auto;
+    scrollbar-width: none;
   }
   li {
     display: flex;
     align-items: flex-end;
-    gap: 0.6em;
-    max-width: 80%;
-    opacity: 0.45;
+    gap: 0.45em;
+    max-width: 90%;
+    opacity: 0.6;
     transition: opacity 0.2s;
   }
   li[data-side='right'] {
@@ -99,15 +106,16 @@
   }
   img {
     flex: none;
-    width: 2.2em;
-    height: 2.2em;
+    width: 1.8em;
+    height: 1.8em;
     border-radius: 50%;
     object-fit: cover;
   }
-  p {
+  li p {
     margin: 0;
-    padding: 0.6em 0.9em;
-    border-radius: 1em;
+    /* Keep bubbles tight: padding here costs a lot of room on a phone. */
+    padding: 0.35em 0.7em;
+    border-radius: 0.8em;
     background: var(--dim);
   }
   /* Your own current line turns light: the cue to read and tap. */
