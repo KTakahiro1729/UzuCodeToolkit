@@ -1,5 +1,5 @@
 <!--
-  The band: its own row under the UZU HUD (docs/design.md, Top band).
+  The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design.md, Top band).
   Centre: the game's phase, in the quieter text colour. Right: both roles, name under icon, the
   other left and yours right as in the chat, yours marked with a double circle. It does not signal
   the turn; the advance button does.
@@ -34,18 +34,18 @@
 
 <style>
   /*
-   * Its own row under the UZU HUD, full width, on its own background. Three columns: empty,
-   * the phase centred on the screen, the roles at the right.
+   * Full width on its own background, under the HUD or beside it (--band-top, set in main.ts).
+   * Three columns: empty (the HUD's side), the phase centred on the screen, the roles at the right.
    */
   header {
     position: fixed;
-    /* The white reaches the top edge; the HUD sits on it, the content starts below the HUD. */
+    /* The white reaches the top edge; the HUD sits on it. */
     top: 0;
     left: 0;
     right: 0;
-    height: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h));
+    height: var(--band-bottom);
     box-sizing: border-box;
-    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px)) calc(var(--safe-right, 0px) + 0.8em) 0
+    padding: calc(var(--safe-top, 0px) + var(--band-top, 0px)) calc(var(--safe-right, 0px) + 0.8em) 0
       calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
     grid-template-columns: 1fr auto 1fr;

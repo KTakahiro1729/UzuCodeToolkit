@@ -124,7 +124,7 @@
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
     /* Below the HUD and the band, with a gap so a line cut off by scrolling reads as the list's edge. */
-    padding: calc(var(--safe-top, 0px) + var(--hud-y, 0px) + var(--band-h) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
+    padding: calc(var(--band-bottom) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
       calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
     background: var(--color-bg);
     color: var(--color-text);
