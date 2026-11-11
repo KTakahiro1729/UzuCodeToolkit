@@ -84,7 +84,7 @@ Habits common in AI-generated UI (Claude's included) that break this policy. Sev
 | Wrapping every block in a card, or cards inside cards | 3, 4 | Yes |
 | Gradients, fades at the edge of a list, glows, coloured shadows | Colour | Yes (top fade on the chat log) |
 | Tinted or "brand" colour, purple or cyan accents | 1, Colour | Yes (tinted palette) |
-| Labels, hints or headings that explain what the screen already shows | Text on screen | Yes |
+| Labels, hints or headings that explain what the screen already shows | Text on screen | |
 | Borders, dividers, accent stripes on one side of a box | 3 | |
 | Building features or options the sample does not use | 2 | Yes |
 | Bounce easing, animating layout properties, motion everywhere | Motion | |
