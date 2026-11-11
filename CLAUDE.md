@@ -48,7 +48,7 @@ UZU documents no upper limit on players (`playerCount` is an integer of 1 or mor
 Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of the characters that work shows, declared in its `src/fonts.css`. No CDN: certification forbids external network access.
 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
-- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, and `packages/reader/src/strings.json`.
+- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and `packages/reader/src/strings.json`.
 
 Rebuild a sample's subsets when those characters change, including after editing `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
 

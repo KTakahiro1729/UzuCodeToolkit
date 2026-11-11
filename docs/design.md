@@ -154,6 +154,13 @@ Decoration is out of scope, but it must not break the rules above:
 - Ruby from the script (Aozora notation) shows above its word. It may run past
   its word rather than spread the word's letters apart.
 
+### Notice
+
+- A work may carry a note on itself (`notice` in `script.json`), such as one on
+  its wording. It sits above the first line for the whole read-through, as UI
+  text in the quieter colour with no background, left-aligned: an aside, not
+  story. It needs no tap.
+
 ### Stage direction and scene heading
 
 - A stage direction is read aloud like a line, by the player whose part holds

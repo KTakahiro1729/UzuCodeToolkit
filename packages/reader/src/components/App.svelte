@@ -124,6 +124,7 @@
   {:else}
     <div class="read" out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
       <ol class="chat" bind:this={chat}>
+        {#if script.notice}<li class="notice">{script.notice}</li>{/if}
         {#each shown as l, i}
           <li
             in:push
@@ -237,6 +238,18 @@
   li[data-direction='true'][data-side] p {
     background: none;
     color: var(--color-text);
+  }
+  /* The work's note on itself, above the first line: an aside, not story, so UI text in the
+     quieter colour, set apart from the lines by space. */
+  .notice {
+    display: block;
+    margin-bottom: 0.8em;
+    /* On the left edge of the stage directions' text. */
+    padding: 0 0.7em;
+    color: var(--color-text-quiet);
+    font-family: var(--font-ui);
+    font-size: max(16px, 0.75em);
+    line-height: 1.6;
   }
   /* A scene heading stands for what follows, so it is centred. */
   h3 {
