@@ -24,6 +24,7 @@ This is the idea Apple's iOS 7 guidelines call *deference*: "The user interface 
 
 - Neutral greys and white only, with no hue or tint. The characters' icons are the only colour on screen.
 - Light theme only: a white or near-white background with dark text.
+- Colours are tokens in `samples/hundred-arms/src/theme.css`; screens use the variables, never raw colours.
 - Meaning is carried by contrast. The current line stands out most, and your own current line inverts (dark bubble, light text).
 - No gradients, fades, shadows or glows.
 - Text keeps WCAG AA contrast (4.5:1), including dimmed earlier lines.
