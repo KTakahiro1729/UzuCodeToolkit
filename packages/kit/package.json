@@ -4,11 +4,9 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "UZU Code のマダミス向け部品 (UI 非依存)。読み合わせの担当決定・行送り・読み飛ばし、配役。",
+  "description": "Read-through and role assignment helpers for UZU Code (UI independent).",
   "exports": {
-    ".": "./src/index.ts",
-    "./dialogue": "./src/dialogue/index.ts",
-    "./roles": "./src/roles/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

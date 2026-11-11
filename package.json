@@ -6,15 +6,13 @@
   "license": "MIT",
   "workspaces": [
     "packages/*",
-    "templates/*",
     "samples/*"
   ],
   "scripts": {
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "harness": "npm run harness -w minimal-template",
-    "build": "npm run build -w minimal-template",
-    "sample": "npm run harness -w sample-hundred-arms"
+    "harness": "npm run harness -w sample-hundred-arms",
+    "build": "npm run build -w sample-hundred-arms"
   },
   "engines": {
     "node": ">=22.12"
