@@ -24,7 +24,7 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 | Install | `npm ci` (npm 10's `npm install` without a lockfile can crash; use npm 11) |
 | Unit tests | `npm test` |
 | Types | `npm run typecheck` |
-| Dev harness | `npm run harness`, then the URL in the log. `npx uzu dev --orientation portrait` (in the sample) for portrait |
+| Dev harness | `npm run harness`, then the URL in the log. `npx uzu dev --orientation portrait` (in the sample) for portrait. Open `/harness` on the same port for the harness with reset and rotate buttons (`samples/hundred-arms/dev-harness.ts`, dev server only) |
 
 `npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Restart the harness after changing server logic.
 
