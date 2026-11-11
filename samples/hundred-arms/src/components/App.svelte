@@ -206,10 +206,7 @@
   li[data-side='right'] p {
     background: var(--color-bubble-mine);
   }
-  /* The line being read now matches the advance button: blue when you read, grey when you wait. */
-  li[data-current='true'] p {
-    background: var(--color-button-off);
-  }
+  /* Your line being read now matches the advance button. The other role's lines stay white. */
   li[data-current='true'][data-side='right'] p {
     background: var(--color-mine-current);
     color: var(--color-mine-text);
