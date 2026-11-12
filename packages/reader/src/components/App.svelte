@@ -249,9 +249,8 @@
      quieter colour, set apart from the lines by space. */
   .notice {
     display: block;
-    margin-bottom: 0.8em;
-    /* On the left edge of the stage directions' text. */
-    padding: 0 0.7em;
+    /* On the left edge of the stage directions' text; extra room below sets it apart. */
+    padding: 0 0.7em 0.35em;
     color: var(--color-text-quiet);
     font-family: var(--font-ui);
     font-size: max(16px, 0.75em);
@@ -259,7 +258,8 @@
   }
   /* A scene heading stands for what follows, so it is centred. */
   h3 {
-    margin: 0.4em 0 0;
+    margin: 0;
+    padding-top: 0.4em;
     align-self: center;
     color: var(--color-text-quiet);
     font-weight: 400;
