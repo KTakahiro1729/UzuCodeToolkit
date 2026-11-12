@@ -2,21 +2,25 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 12:15 UTC
+Last checked: 2026-11-12 05:00 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
+No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End of game: end label on the last line, fade into the post-game screen | Review, merge | Ready. Also re-lands the "other role's lines always white" commit that missed #8. |
-| [#11](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/11) Tap-next button and hot swap | Review, merge | Ready. Independent of #10. |
+| [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Review, merge | Ready, but conflicts with main after #12 (App.svelte); being updated. [Screens](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38) |
+| Right margin for items 4–6 (#14) | Decision | Asked in the screen-preview thread. Lands in #14 once decided. |
 
 ## Done
 
 | PR | Result | Date |
 |---|---|---|
+| [#12](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/12) Any number of players, one player reading several roles, and 指環・三つの宝 as samples | Merged | 2026-11-12 |
+| [#13](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/13) Enforce parent-owned spacing with Stylelint | Merged | 2026-11-12 |
+| [#11](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/11) Tap-next button and hot swap | Merged | 2026-11-11 |
+| [#10](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/10) End of game: end label on the last line, fade into the post-game screen | Merged | 2026-11-11 |
 | [#9](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/9) Reset and rotate buttons in the dev harness | Merged | 2026-11-11 |
 | [#8](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/8) Current line takes the advance button's colour | Merged | 2026-11-11 |
 | [#6](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/6) Chat-app colours and design policy | Merged; also carried #3's design policy | 2026-11-11 |
