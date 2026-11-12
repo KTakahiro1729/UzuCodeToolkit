@@ -33,6 +33,7 @@ UZU documents no upper limit on players (`playerCount` is an integer of 1 or mor
 | Install | `npm ci` (npm 10's `npm install` without a lockfile can crash; use npm 11) |
 | Unit tests | `npm test` |
 | Types | `npm run typecheck` |
+| CSS lint (no outer `margin`; see docs/design.md Layout) | `npm run lint` |
 | Dev harness | `npm run harness` in a sample's folder (from the root: hundred-arms; `-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`packages/reader/dev-harness.js`, dev server only) |
 
 `npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Hot swap: vite swaps screen code and CSS in place; `npm run harness` (`packages/reader/harness.mjs`) restarts the harness when the server logic changes, and `/harness` puts the game state back.
