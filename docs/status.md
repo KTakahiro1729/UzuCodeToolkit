@@ -10,7 +10,7 @@ No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Review, merge | Ready. [Screens](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38) |
+| [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Review, merge | Ready, but conflicts with main after #12 (App.svelte); being updated. [Screens](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38) |
 | Right margin for items 4–6 (#14) | Decision | Asked in the screen-preview thread. Lands in #14 once decided. |
 
 ## Done
