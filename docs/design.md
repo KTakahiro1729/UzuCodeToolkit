@@ -70,7 +70,8 @@ on cards.
   landscape screen between lines.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
-  line of dialogue. No borders, dividers or cards.
+  line of dialogue. No borders, dividers or cards, except the side lines on a
+  stage direction you are reading.
 
 ### Alignment
 
@@ -112,7 +113,7 @@ Decoration is out of scope, but it must not break the rules above:
   universal-design gothic made for telling characters apart, so short labels
   stay legible at small sizes. Both are bundled subsets; no system fonts.
 - No text below 16px, except ruby: it gives the reading of the word under it
-  at half the text size.
+  at half the text size (owner's decision).
 
 ## Components
 
@@ -149,13 +150,26 @@ Decoration is out of scope, but it must not break the rules above:
 - A line spoken together shows the speakers' names joined (`name.and`) and the
   first speaker's icon; that speaker reads it. A line marked as continuing the
   previous speech shows no name.
-- Ruby from the script (Aozora notation) shows above its word.
+- A bubble is as wide as its longest line, so a wrapped line leaves no gap at
+  the right.
+- Ruby from the script (Aozora notation) shows above its word. It may run past
+  its word rather than spread the word's letters apart.
+
+### Notice
+
+- A work may carry a note on itself (`notice` in `script.json`), such as one on
+  its wording. It sits above the first line for the whole read-through, as UI
+  text in the quieter colour with no background, left-aligned: an aside, not
+  story. It needs no tap.
 
 ### Stage direction and scene heading
 
 - A stage direction is read aloud like a line, by the player whose part holds
-  it, but it is no one's speech: it spans the chat column, with no icon or
-  name, and takes the same colours as a line (yours tinted, current yours blue).
+  it, but it is no one's speech: it spans the chat column as plain text, with
+  no icon, name or background (owner's decision). While you read one, a line
+  in the advance button's colour stands at each side of it instead of a
+  coloured background (owner's decision); this is the one place lines are
+  drawn. Other players see it plain.
 - A scene heading sits centred above the line that opens the scene, in the
   quieter text colour, since it stands for what follows.
 

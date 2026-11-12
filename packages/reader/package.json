@@ -8,7 +8,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./logic": "./src/logic.ts",
-    "./dev-harness": "./dev-harness.ts"
+    "./dev-harness": "./dev-harness.js"
   },
   "scripts": {
     "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json"

@@ -30,6 +30,8 @@ export interface Script {
   lines: Line[];
   end?: string;
   afterword?: string;
+  /** A note on the work shown above its first line, such as one on its wording. */
+  notice?: string;
 }
 
 /** Lookups the screens and the logic share. */

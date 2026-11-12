@@ -1,6 +1,6 @@
 // Runs `uzu dev` in the current sample and restarts it whenever the server logic changes, so logic
 // edits show up without a manual restart. Screen code (Svelte, CSS) needs no
-// restart: vite swaps it in place. The /harness page (dev-harness.ts) puts the
+// restart: vite swaps it in place. The /harness page (dev-harness.js) puts the
 // game state back after a restart.
 import { spawn } from 'node:child_process';
 import { watch } from 'node:fs';

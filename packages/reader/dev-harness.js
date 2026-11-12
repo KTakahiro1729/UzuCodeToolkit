@@ -38,6 +38,7 @@ const PAGE = `<!DOCTYPE html>
   const params = new URLSearchParams(location.search);
   const forced = params.get('orientation');
   let orientation = null;
+  let work = null;
   // The harness reads its orientation from /_uzu_meta.json; override it here.
   const realFetch = window.fetch.bind(window);
   window.fetch = async (input, init) => {
@@ -46,6 +47,8 @@ const PAGE = `<!DOCTYPE html>
     const meta = await res.json();
     if (forced === 'portrait' || forced === 'landscape') meta.orientation = forced;
     orientation = meta.orientation;
+    // Which work this harness runs, so state saved from another sample is never put back.
+    work = JSON.stringify(meta.players.map((p) => p.characterId));
     // Load the player screens through the harness proxy, so they share this
     // page's origin and tap-next can reach their buttons.
     meta.scenarioUrl = location.origin + '/';
@@ -67,7 +70,8 @@ const PAGE = `<!DOCTYPE html>
   };
   // Hot swap: harness.mjs restarts the harness when the server logic changes,
   // which empties its in-memory room. Keep the latest state, and when the
-  // harness comes back, reload and put that state back. Uses its own channel
+  // harness comes back, reload and put that state back, only if it is the same
+  // work (another sample may now run on this port). Uses its own channel
   // to the harness admin API, since the stock one does not reconnect.
   const RESTORE = 'uzu-dev-restore';
   let saved = sessionStorage.getItem(RESTORE);
@@ -96,7 +100,7 @@ const PAGE = `<!DOCTYPE html>
     };
     admin.onopen = () => {
       if (!down) return;
-      if (last) sessionStorage.setItem(RESTORE, JSON.stringify(last));
+      if (last) sessionStorage.setItem(RESTORE, JSON.stringify({ work, state: last }));
       location.reload();
     };
     admin.onclose = () => {
@@ -110,7 +114,8 @@ const PAGE = `<!DOCTYPE html>
     const state = await adminCall('getRawState').catch(() => null);
     if (!state) return;
     if (saved) {
-      await adminCall('setRawState', [JSON.parse(saved)]).catch(() => {});
+      const { work: savedWork, state: savedState } = JSON.parse(saved);
+      if (savedWork === work) await adminCall('setRawState', [savedState]).catch(() => {});
       saved = null;
     } else last = state;
   }, 1000);
@@ -120,14 +125,13 @@ const PAGE = `<!DOCTYPE html>
 </html>
 `;
 
-type Next = () => void;
-type Res = { setHeader(k: string, v: string): void; end(body: string): void };
-type Server = { middlewares: { use(fn: (req: { url?: string }, res: Res, next: Next) => void): void } };
-
+// Plain JavaScript: each sample's vite.config.ts loads it from this package through Node, which
+// cannot run TypeScript from another package before Node 22.18.
+/** @returns {import('vite').Plugin} */
 export const devHarness = () => ({
   name: 'dev-harness',
-  apply: 'serve' as const,
-  configureServer(server: Server) {
+  apply: 'serve',
+  configureServer(server) {
     server.middlewares.use((req, res, next) => {
       if (req.url?.split('?')[0] !== '/harness') return next();
       res.setHeader('content-type', 'text/html; charset=utf-8');

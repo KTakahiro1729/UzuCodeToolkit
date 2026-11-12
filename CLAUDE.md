@@ -33,7 +33,7 @@ UZU documents no upper limit on players (`playerCount` is an integer of 1 or mor
 | Install | `npm ci` (npm 10's `npm install` without a lockfile can crash; use npm 11) |
 | Unit tests | `npm test` |
 | Types | `npm run typecheck` |
-| Dev harness | `npm run harness` in a sample's folder (from the root: hundred-arms; `-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`packages/reader/dev-harness.ts`, dev server only) |
+| Dev harness | `npm run harness` in a sample's folder (from the root: hundred-arms; `-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`packages/reader/dev-harness.js`, dev server only) |
 
 `npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Hot swap: vite swaps screen code and CSS in place; `npm run harness` (`packages/reader/harness.mjs`) restarts the harness when the server logic changes, and `/harness` puts the game state back.
 
@@ -48,7 +48,7 @@ UZU documents no upper limit on players (`playerCount` is an integer of 1 or mor
 Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of the characters that work shows, declared in its `src/fonts.css`. No CDN: certification forbids external network access.
 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
-- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, and `packages/reader/src/strings.json`.
+- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and `packages/reader/src/strings.json`.
 
 Rebuild a sample's subsets when those characters change, including after editing `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
 
