@@ -2,15 +2,17 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-12 03:43 UTC
+Last checked: 2026-11-12 04:54 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
+No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
 | [#12](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/12) Any number of players, one player reading several roles, and 指環・三つの宝 as samples | Review, merge | Ready. |
+| [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Review, merge | Ready. [Screens](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38) |
+| Right margin for items 4–6 (#14) | Decision | Asked in the screen-preview thread. Lands in #14 once decided. |
 
 ## Done
 
