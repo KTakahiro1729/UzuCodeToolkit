@@ -134,17 +134,15 @@
           >
             {#if l.scene}<h3>{l.scene}</h3>{/if}
             <div class="row">
-              {#if !isDirection(l)}
+              {#if !isDirection(l) && !l.cont}
                 <img src={`./assets/icon-${readerOf(l)}.webp`} alt={nameOf(l, STRINGS['name.and'])} />
+                <span class="name">{nameOf(l, STRINGS['name.and'])}</span>
               {/if}
-              <div class="body">
-                {#if !isDirection(l) && !l.cont}<span class="name">{nameOf(l, STRINGS['name.and'])}</span>{/if}
-                {#if isDirection(l)}
-                  <p>{@render text(l.text)}</p>
-                {:else}
-                  <p use:fit><span>{@render text(l.text)}</span></p>
-                {/if}
-              </div>
+              {#if isDirection(l)}
+                <p>{@render text(l.text)}</p>
+              {:else}
+                <p use:fit><span>{@render text(l.text)}</span></p>
+              {/if}
             </div>
           </li>
         {/each}
@@ -214,24 +212,22 @@
     flex-direction: column;
     gap: 0.45em;
   }
+  /* The speaker's icon and name on one row, the bubble under them. */
   .row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.45em;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.15em 0.35em;
     max-width: 90%;
   }
   li[data-side='right'] .row {
-    flex-direction: row-reverse;
+    grid-template-columns: 1fr auto;
     align-self: flex-end;
   }
   /* Stage directions are no one's speech: the full column, no icon or name. */
   li[data-direction='true'] .row {
     max-width: none;
     align-self: stretch;
-  }
-  li[data-direction='true'] .body {
-    flex: 1;
-    align-items: stretch;
   }
   /* Stage directions are narration, not speech: no bubble. While you read one, a line in the
      advance button's colour stands at each side of it. The lines are always there, uncoloured,
@@ -266,20 +262,14 @@
     font-size: 1em;
   }
   img {
-    flex: none;
-    width: 1.8em;
-    height: 1.8em;
+    grid-area: 1 / 1;
+    width: 1.3em;
+    height: 1.3em;
     border-radius: 50%;
     object-fit: cover;
   }
-  .body {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.15em;
-  }
-  li[data-side='right'] .body {
-    align-items: flex-end;
+  li[data-side='right'] img {
+    grid-column: 2;
   }
   /* Who speaks, by name: side and icon alone are not enough to tell roles apart. */
   .name {
@@ -288,7 +278,13 @@
     /* No text below 16px. */
     font-size: max(16px, 0.75em);
   }
+  li[data-side='right'] .name {
+    grid-column: 1;
+    justify-self: end;
+  }
   li p {
+    grid-column: 1 / -1;
+    justify-self: start;
     margin: 0;
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
@@ -315,8 +311,20 @@
     font-size: 0.5em;
     line-height: 1;
   }
+  /* The corner under the speaker is square, pointing to who speaks; a continuing line has none. */
+  .name + p {
+    border-top-left-radius: 0;
+  }
+  li[data-side='right'] .name + p {
+    border-top-left-radius: 0.8em;
+    border-top-right-radius: 0;
+  }
+  li[data-direction='true'] p {
+    justify-self: stretch;
+  }
   /* Your role's lines, as in chat apps. */
   li[data-side='right'] p {
+    justify-self: end;
     background: var(--color-bubble-mine);
   }
   /* Your line being read now matches the advance button. The other role's lines stay white. */

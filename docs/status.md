@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-12 05:00 UTC
+Last checked: 2026-11-12 05:04 UTC
 
 ## Waiting on the owner
 
@@ -10,7 +10,7 @@ No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Review, merge | Ready, but conflicts with main after #12 (App.svelte); being updated. [Screens](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38) |
+| [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Review, merge | Ready. Up to date with main. [Screens](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38) |
 | Right margin for items 4–6 (#14) | Decision | Asked in the screen-preview thread. Lands in #14 once decided. |
 
 ## Done
