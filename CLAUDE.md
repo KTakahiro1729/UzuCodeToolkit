@@ -24,6 +24,7 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 | Install | `npm ci` (npm 10's `npm install` without a lockfile can crash; use npm 11) |
 | Unit tests | `npm test` |
 | Types | `npm run typecheck` |
+| CSS lint (no outer `margin`; see docs/design.md Layout) | `npm run lint` |
 | Dev harness | `npm run harness` (`-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`samples/hundred-arms/dev-harness.ts`, dev server only) |
 
 `npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Hot swap: vite swaps screen code and CSS in place; `npm run harness` (`samples/hundred-arms/harness.mjs`) restarts the harness when the server logic changes, and `/harness` puts the game state back.
