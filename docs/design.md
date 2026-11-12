@@ -49,7 +49,7 @@ on cards.
   the last line it carries an end label from a key instead of the mark, since
   that tap ends the read-through rather than showing a next line.
 - Lines are told apart by side (yours right, as in chat apps), by the
-  speaker's icon and by the speaker's name above the bubble. Your role's
+  speaker's icon and name, on one row above the bubble. Your role's
   bubbles are tinted; the other role's are white. All lines keep full text
   contrast.
 - A player may read several roles (a part). Every line of those roles counts
@@ -147,8 +147,10 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Dialogue line (read-through only)
 
-- A bubble with the speaker's icon beside it and name above it. Your role's
-  lines on the right, the other role's on the left.
+- The speaker's small icon and name on one row, the bubble under them. Your
+  role's lines on the right, the other role's on the left.
+- The bubble's top corner on the speaker's side is square, pointing up to the
+  speaker; the other corners are round.
 - Only the button advances; tapping elsewhere does nothing, so a stray tap
   never skips a line.
 - A line spoken together shows the speakers' names joined (`name.and`) and the

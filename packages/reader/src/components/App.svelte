@@ -126,6 +126,7 @@
       <ol class="chat" bind:this={chat}>
         {#if script.notice}<li class="notice">{script.notice}</li>{/if}
         {#each shown as l, i}
+<<<<<<< HEAD:packages/reader/src/components/App.svelte
           <li
             in:push
             data-side={isMine(l) ? 'right' : 'left'}
@@ -146,6 +147,12 @@
                 {/if}
               </div>
             </div>
+=======
+          <li in:push data-side={l.speaker === myRole ? 'right' : 'left'} data-current={i === dialogue?.index}>
+            <img src={`./assets/icon-${l.speaker}.webp`} alt={SPEAKER_NAMES[l.speaker]} />
+            <span class="name">{SPEAKER_NAMES[l.speaker]}</span>
+            <p>{l.text}</p>
+>>>>>>> origin/claude/project-thread-7ed6g0:samples/hundred-arms/src/components/App.svelte
           </li>
         {/each}
       </ol>
@@ -208,6 +215,7 @@
     overflow-y: auto;
     scrollbar-width: none;
   }
+<<<<<<< HEAD:packages/reader/src/components/App.svelte
   /* One line, with the heading of the scene it opens above it. */
   li {
     display: flex;
@@ -222,6 +230,18 @@
   }
   li[data-side='right'] .row {
     flex-direction: row-reverse;
+=======
+  /* The speaker's icon and name on one row, the bubble under them. */
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.15em 0.35em;
+    max-width: 90%;
+  }
+  li[data-side='right'] {
+    grid-template-columns: 1fr auto;
+>>>>>>> origin/claude/project-thread-7ed6g0:samples/hundred-arms/src/components/App.svelte
     align-self: flex-end;
   }
   /* Stage directions are no one's speech: the full column, no icon or name. */
@@ -266,20 +286,14 @@
     font-size: 1em;
   }
   img {
-    flex: none;
-    width: 1.8em;
-    height: 1.8em;
+    grid-area: 1 / 1;
+    width: 1.3em;
+    height: 1.3em;
     border-radius: 50%;
     object-fit: cover;
   }
-  .body {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.15em;
-  }
-  li[data-side='right'] .body {
-    align-items: flex-end;
+  li[data-side='right'] img {
+    grid-column: 2;
   }
   /* Who speaks, by name: side and icon alone are not enough to tell roles apart. */
   .name {
@@ -288,11 +302,18 @@
     /* No text below 16px. */
     font-size: max(16px, 0.75em);
   }
+  li[data-side='right'] .name {
+    grid-column: 1;
+    justify-self: end;
+  }
   li p {
+    grid-area: 2 / 1 / 3 / 3;
+    justify-self: start;
     margin: 0;
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
-    border-radius: 0.8em;
+    /* The corner under the speaker is square, pointing to who speaks. */
+    border-radius: 0 0.8em 0.8em;
     /* Break between phrases, never mid-word. */
     word-break: auto-phrase;
     background: var(--color-bubble);
@@ -317,6 +338,8 @@
   }
   /* Your role's lines, as in chat apps. */
   li[data-side='right'] p {
+    justify-self: end;
+    border-radius: 0.8em 0 0.8em 0.8em;
     background: var(--color-bubble-mine);
   }
   /* Your line being read now matches the advance button. The other role's lines stay white. */
