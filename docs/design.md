@@ -69,6 +69,10 @@ on cards.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No borders, dividers or cards.
+- The parent owns spacing: the gap between siblings is the parent's `gap`, the
+  room inside an element is its own `padding`. No element sets outer `margin`
+  (only `0` or `auto`), so DevTools shows every space in one of two places.
+  `npm run lint` enforces this.
 
 ### Alignment
 
