@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-11 14:38 UTC
+Last checked: 2026-11-12 03:42 UTC
 
 ## Waiting on the owner
 
@@ -11,6 +11,7 @@ No open decisions. No CI checks are configured.
 | What | Kind | Notes |
 |---|---|---|
 | [#12](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/12) Any number of players, one player reading several roles, and 指環・三つの宝 as samples | Review, merge | Ready. |
+| [#13](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/13) Enforce parent-owned spacing with Stylelint | Review, merge | Ready. Adds a spacing rule to docs/design.md and `npm run lint`. No UI change. |
 
 ## Done
 
