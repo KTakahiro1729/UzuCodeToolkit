@@ -1,18 +1,19 @@
 <!--
   The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design.md, Top band).
-  Centre: the game's phase, in the quieter text colour. Right: both roles, name under icon, the
-  other left and yours right as in the chat, yours marked with a double circle. It does not signal
-  the turn; the advance button does.
+  Centre: the game's phase, in the quieter text colour. Right: every player's part, name under
+  icon, the others left and yours right as in the chat, yours marked with a double circle. A part
+  that doubles roles shows its first role's icon. It does not signal the turn; the advance button does.
 -->
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { ROLE_IDS, SPEAKER_NAMES } from '../scenario';
+  import { getScenario } from '../store.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
-  let { myRole, finished }: { myRole: string | undefined; finished: boolean } = $props();
+  let { myPart, finished }: { myPart: string | undefined; finished: boolean } = $props();
 
-  const roles = $derived(myRole ? [...ROLE_IDS.filter((r) => r !== myRole), myRole] : ROLE_IDS);
+  const { parts } = getScenario();
+  const shown = $derived(myPart ? [...parts.filter((p) => p.id !== myPart), ...parts.filter((p) => p.id === myPart)] : parts);
   const phase = $derived(STRINGS[finished ? 'phase.review' : 'phase.reading']);
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
@@ -24,9 +25,9 @@
     {/key}
   </div>
   <div class="roles">
-    {#each roles as role (role)}
+    {#each shown as part (part.id)}
       <span class="who">
-        <img src={`./assets/icon-${role}.webp`} alt="" data-you={role === myRole} />{SPEAKER_NAMES[role]}
+        <img src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />{part.name}
       </span>
     {/each}
   </div>
@@ -48,7 +49,10 @@
     padding: calc(var(--safe-top, 0px) + var(--band-top, 0px)) calc(var(--safe-right, 0px) + 0.8em) 0
       calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    /* The phase is centred while the players fit in the right half; with more players it gives
+       way to the left, keeping a gap, instead of running into them. */
+    grid-template-columns: minmax(0, 1fr) auto minmax(max-content, 1fr);
+    column-gap: 1em;
     align-items: center;
     background: var(--color-bubble);
     white-space: nowrap;
@@ -71,7 +75,7 @@
     grid-column: 3;
     justify-self: end;
     display: flex;
-    gap: 1em;
+    gap: 12px;
   }
   /* Icon above, name below. */
   .who {

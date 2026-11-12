@@ -1,0 +1,23 @@
+{
+  "name": "@uzu-toolkit/reader",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "The read-through screens and server logic shared by the samples (Svelte 5).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./logic": "./src/logic.ts",
+    "./dev-harness": "./dev-harness.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@uzu-toolkit/kit": "^0.1.0"
+  },
+  "peerDependencies": {
+    "@uzuhq/code-sdk": "^0.9.12",
+    "svelte": "^5.57.0"
+  }
+}
