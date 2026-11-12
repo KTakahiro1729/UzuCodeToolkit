@@ -1,0 +1,195 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
+<style>
+  /* Layout: a quiet bench. Screens side by side at one scale, the numbered parts list under them. */
+  :root {
+    --bg: #eef0f3; --panel: #ffffff; --fg: #1e2329; --muted: #5d6670; --line: #d5dae0;
+    --accent: #1b4fd8; --mark: #d9480f; --pad: rgba(46, 160, 67, .22);
+    --font: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #15181c; --panel: #1f2328; --fg: #e8ebee; --muted: #9aa3ad; --line: #343a41;
+    --accent: #7ea2ff; --mark: #ff8a4c; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #15181c; --panel: #1f2328; --fg: #e8ebee; --muted: #9aa3ad; --line: #343a41;
+    --accent: #7ea2ff; --mark: #ff8a4c; color-scheme: dark }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 14px; line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px 40px; }
+  .wrap { max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+  h1 { font-size: 18px; margin: 0; text-wrap: balance; }
+  .meta { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .bar[hidden] { display: none; }
+  .tabs { display: inline-flex; background: var(--panel); border-radius: 8px; padding: 3px; gap: 2px; }
+  .tabs button { font: inherit; border: 0; background: none; color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+  .tabs button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .tabs button:focus-visible, .parts button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .pick { display: inline-flex; align-items: center; gap: 8px; }
+  .pick select { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
+  .note { color: var(--muted); font-size: 12px; margin: 0; }
+  label.toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; }
+  .hint { color: var(--muted); margin: 0; }
+  .stage { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  figcaption { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .device { position: relative; overflow: hidden; border-radius: 10px; box-shadow: 0 0 0 1px var(--line); background: #000; }
+  .device iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; }
+  .parts { background: var(--panel); border-radius: 10px; padding: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 2px 8px; }
+  .parts button { font: inherit; color: var(--fg); text-align: left; background: none; border: 0; border-radius: 6px; padding: 5px 8px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+  .parts button:hover { background: var(--bg); }
+  .parts button[aria-pressed="true"] { background: var(--bg); color: var(--accent); }
+  .num { min-width: 20px; height: 20px; border-radius: 10px; background: var(--mark); color: #fff; font-size: 11px; font-weight: 700; display: inline-grid; place-items: center; font-variant-numeric: tabular-nums; }
+  .parts button[aria-pressed="true"] .num { background: var(--accent); }
+  .detail { background: var(--panel); border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .detail[hidden] { display: none; }
+  .detail h2 { font-size: 15px; margin: 0; display: flex; gap: 8px; align-items: center; }
+  .detail code { font-size: 12px; color: var(--muted); }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+  th, td { text-align: left; padding: 3px 14px 3px 0; white-space: nowrap; }
+  th { color: var(--muted); font-weight: 400; }
+  .legend { color: var(--muted); font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 4px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1 id="title"></h1>
+    <span class="meta" id="meta"></span>
+  </header>
+  <div class="bar">
+    <div class="tabs" role="group" id="tabs"></div>
+    <label class="toggle"><input type="checkbox" id="labels" checked> <span id="labels-text"></span></label>
+  </div>
+  <div class="bar" id="variants"></div>
+  <p class="hint" id="hint"></p>
+  <p class="note" id="v-note"></p>
+  <div class="stage" id="stage"></div>
+  <div class="parts" id="parts"></div>
+  <section class="detail" id="detail" hidden></section>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const T = DATA.strings;
+  const fmt = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k]);
+  const ORIENTATIONS = ['landscape', 'portrait'];
+  const stage = document.getElementById('stage'), partsEl = document.getElementById('parts'), detail = document.getElementById('detail');
+  let screen = DATA.screens[0].key, picked = null, labelsOn = true;
+  const frames = {};
+  const choice = DATA.variants.map(() => 0);
+
+  document.getElementById('title').textContent = fmt(T.title, { title: DATA.title });
+  document.getElementById('meta').textContent = fmt(T.meta, { commit: DATA.commit, player: DATA.player });
+  document.getElementById('labels-text').textContent = T.labels;
+  document.getElementById('hint').textContent = T.hint;
+  const tabs = document.getElementById('tabs');
+  tabs.setAttribute('aria-label', T.screens);
+  for (const s of DATA.screens) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = s.label; b.setAttribute('aria-pressed', String(s.key === screen));
+    b.onclick = () => {
+      screen = s.key; picked = null; detail.hidden = true;
+      for (const x of tabs.children) x.setAttribute('aria-pressed', String(x === b));
+      render();
+    };
+    tabs.append(b);
+  }
+  DATA.variants.forEach((v, i) => {
+    const label = document.createElement('label'); label.className = 'pick'; label.textContent = v.name + ' ';
+    const sel = document.createElement('select');
+    v.options.forEach((o, j) => sel.append(new Option(o.label, j)));
+    sel.onchange = () => { choice[i] = +sel.value; render(); };
+    label.append(sel); document.getElementById('variants').append(label);
+  });
+  document.getElementById('variants').hidden = !DATA.variants.length;
+  const chosen = () => DATA.variants.map((v, i) => v.options[choice[i]]);
+
+  function layout() {
+    const W = stage.clientWidth, L = DATA.sizes.landscape, P = DATA.sizes.portrait;
+    // One scale for both, side by side when that keeps them readable; otherwise stacked.
+    const s = Math.min(1, (W - 16) / (L.width + P.width));
+    const stacked = s < 0.6;
+    for (const [o, f] of Object.entries(frames)) {
+      const z = stacked ? Math.min(1, W / DATA.sizes[o].width) : s;
+      f.box.style.width = DATA.sizes[o].width * z + 'px';
+      f.box.style.height = DATA.sizes[o].height * z + 'px';
+      f.iframe.style.transform = `scale(${z})`;
+    }
+  }
+
+  function render() {
+    stage.textContent = '';
+    const css = chosen().map((o) => o.css || '').join('\n');
+    for (const o of ORIENTATIONS) {
+      const size = DATA.sizes[o];
+      const fig = document.createElement('figure');
+      const cap = document.createElement('figcaption');
+      cap.textContent = `${fmt(T.orientation, { o: T[o] })} ${size.width}×${size.height}`;
+      const box = document.createElement('div'); box.className = 'device';
+      const iframe = document.createElement('iframe');
+      iframe.title = fmt(T.orientation, { o: T[o] });
+      iframe.width = size.width; iframe.height = size.height;
+      iframe.style.width = size.width + 'px'; iframe.style.height = size.height + 'px';
+      iframe.srcdoc = DATA.docs[screen][o].html.replace('<!--PV-VARIANT-->', () => `<style>${css}</style>`);
+      box.append(iframe); fig.append(cap, box); stage.append(fig);
+      frames[o] = { box, iframe };
+    }
+    partsEl.textContent = '';
+    for (const p of DATA.docs[screen].parts) {
+      const b = document.createElement('button'); b.type = 'button'; b.dataset.n = p.n; b.setAttribute('aria-pressed', String(p.n === picked));
+      b.innerHTML = '<span class="num"></span><span></span>';
+      b.firstChild.textContent = p.n; b.lastChild.textContent = p.label;
+      b.onclick = () => pick(p.n);
+      partsEl.append(b);
+    }
+    document.getElementById('v-note').textContent = chosen().map((o) => o.note).filter(Boolean).join(' ');
+    layout();
+  }
+
+  const px = (v, base) => `${Math.round(v * 10) / 10}px <small>(${Math.round(v / base * 100) / 100}em)</small>`;
+  const four = (a, base) => a.every((v) => v === a[0]) ? px(a[0], base) : fmt(T.sides, a.map((v) => px(v, base)));
+
+  function pick(n) {
+    picked = n;
+    for (const b of partsEl.children) b.setAttribute('aria-pressed', String(+b.dataset.n === n));
+    const p = DATA.docs[screen].parts.find((q) => q.n === n);
+    const base = DATA.docs[screen].landscape.base;
+    detail.innerHTML = `<h2><span class="num">${n}</span><span></span> <code></code></h2>
+      <div class="tablewrap"><table><tr><th></th><th>${T.size}</th><th>${T.margin}</th><th>${T.padding}</th><th>${T.gap}</th><th>${T.font}</th></tr>
+      ${ORIENTATIONS.map((o) => `<tr id="row-${o}"></tr>`).join('')}</table></div>
+      <div class="legend"><span><span class="sw" style="background:var(--accent);opacity:.5"></span>${T.box}</span><span><span class="sw" style="background:var(--pad)"></span>${T.paddingArea}</span><span>${fmt(T.em, { base })}</span></div>`;
+    detail.querySelector('h2 span:nth-child(2)').textContent = p.label;
+    detail.querySelector('code').textContent = p.sel;
+    detail.hidden = false;
+    for (const f of Object.values(frames)) f.iframe.contentWindow?.postMessage({ pv: 'show', n }, '*');
+  }
+
+  function fill(o, n, q) {
+    const row = document.getElementById('row-' + o);
+    if (!row || n !== picked) return;
+    const base = DATA.docs[screen][o].base;
+    const name = `<th>${T[o]}</th>`;
+    row.innerHTML = q.hidden ? `${name}<td colspan="5">${T.hidden}</td>`
+      : `${name}<td>${q.w}×${q.h}px</td><td>${four(q.margin, base)}</td><td>${four(q.padding, base)}</td><td>${q.gap == null ? '－' : px(q.gap, base)}</td><td>${px(q.fontSize, base)}</td>`;
+  }
+
+  addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.pv === 'pick') pick(d.n);
+    if (d.pv === 'info') for (const [o, f] of Object.entries(frames)) if (f.iframe.contentWindow === e.source) fill(o, d.n, d.info);
+    if (d.pv === 'ready') {
+      e.source?.postMessage({ pv: 'labels', on: labelsOn }, '*');
+      if (picked) e.source?.postMessage({ pv: 'show', n: picked }, '*');
+    }
+  });
+  document.getElementById('labels').onchange = (e) => {
+    labelsOn = e.target.checked;
+    for (const f of Object.values(frames)) f.iframe.contentWindow?.postMessage({ pv: 'labels', on: labelsOn }, '*');
+  };
+  new ResizeObserver(layout).observe(stage);
+  render();
+</script>
