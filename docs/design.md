@@ -132,6 +132,14 @@ Decoration is out of scope, but it must not break the rules above:
   the primary's fill while selected (`pressed`).
 - A button greys only while it cannot be tapped, never to look quieter.
 
+### Whose turn (games)
+
+- As in the read-through: on your turn your button for the next step is
+  filled; on another player's turn that player's block (name, hand) sits on
+  white, and your buttons grey. Nothing else marks the turn: no outlines, no
+  tints. A game without player blocks (chess) says whose turn it is in a short
+  line instead.
+
 ### Time left
 
 - A timer shows the time left as m:ss (`TimeLeft`), from the game time the
