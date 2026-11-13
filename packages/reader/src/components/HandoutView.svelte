@@ -52,19 +52,25 @@
     {#snippet fields()}
       <div class="fields">
         {#each settings as f (f.id)}
+          <!-- Locked once done: the value shows as text, so nothing looks writable. -->
           <label>
-            <span>{f.label}</span>
-            <input
-              type="text"
-              maxlength={HANDOUT_VALUE_MAX}
-              placeholder={f.example && STRINGS['handout.example'] + f.example}
-              disabled={done}
-              value={value(f.id)}
-              oninput={(e) => {
-                typed[f.id] = e.currentTarget.value;
-                commit(f.id);
-              }}
-            />
+            <span>{f.label}{#if f.optional}<span class="optional">{STRINGS['handout.optional']}</span>{/if}</span>
+            {#if done}
+              <span class="value" class:blank={!value(f.id).trim()}>{value(f.id).trim() || STRINGS['handout.blank']}</span>
+            {:else}
+              <!-- Grows with what is typed, so the example and long answers show whole. -->
+              <textarea
+                rows="1"
+                maxlength={HANDOUT_VALUE_MAX}
+                placeholder={f.example && STRINGS['handout.example'] + f.example}
+                value={value(f.id)}
+                oninput={(e) => {
+                  typed[f.id] = e.currentTarget.value.replace(/\n/g, '');
+                  commit(f.id);
+                }}
+                onkeydown={(e) => e.key === 'Enter' && e.preventDefault()}
+              ></textarea>
+            {/if}
           </label>
         {/each}
       </div>
@@ -102,7 +108,7 @@
     gap: 0.3em;
     line-height: 1.5;
   }
-  input {
+  textarea {
     box-sizing: border-box;
     width: 100%;
     margin: 0;
@@ -114,12 +120,24 @@
     font: inherit;
     /* No smaller than 16px, which also keeps phones from zooming in on focus. */
     font-size: max(16px, 1em);
+    line-height: 1.5;
+    resize: none;
+    /* One line until the text needs more; older browsers still wrap inside one row's scroll. */
+    field-sizing: content;
   }
-  input::placeholder {
+  textarea::placeholder {
     color: var(--color-text-quiet);
   }
-  input:disabled {
-    color: var(--color-text);
+  textarea:focus-visible {
+    outline: 2px solid var(--color-mine-current);
+  }
+  /* Marks a setting that may stay blank, after its name. */
+  .optional {
+    padding-inline-start: 0.6em;
+    color: var(--color-text-quiet);
+  }
+  .blank {
+    color: var(--color-text-quiet);
   }
   /* Time left, then the two buttons, together in one row under the column. */
   .actions {
@@ -134,7 +152,7 @@
     color: var(--color-text-quiet);
     font-variant-numeric: tabular-nums;
   }
-  /* Asking for more time, or taking back done, is not the next step, so it is white, not filled. */
+  /* Asking for more time, or taking back done, is not the next step: white, not filled (docs/design.md). */
   .quiet {
     margin: 0;
     padding: 0.45em 0.8em;

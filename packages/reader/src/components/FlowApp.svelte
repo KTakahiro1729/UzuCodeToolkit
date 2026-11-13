@@ -11,6 +11,7 @@
   import type { FlowOptions } from '../flow';
   import { band, game, sendAction } from '../store.svelte';
   import Frame from './Frame.svelte';
+  import { sceneIn, sceneOut } from './motion';
   import PhaseList from './PhaseList.svelte';
   import Sheet from './Sheet.svelte';
   // UI strings by key.
@@ -66,7 +67,7 @@
       />
     {/key}
     {#if reopen}
-      <button type="button" class="reopen" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
+      <button type="button" class="reopen" in:sceneIn|global out:sceneOut|global onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
         {reopen.reopen?.label}
       </button>
     {/if}
