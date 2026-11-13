@@ -1,0 +1,34 @@
+{
+  "out": "src/fonts",
+  "ignore": "｜",
+  "story": [
+    {
+      "file": "script/script.json",
+      "paths": [
+        "title",
+        "lines[*].text"
+      ]
+    }
+  ],
+  "ui": [
+    {
+      "file": "script/script.json",
+      "paths": [
+        "cast[*].label"
+      ]
+    },
+    {
+      "file": "../../packages/reader/src/strings.json",
+      "keys": [
+        "phase.reading",
+        "phase.review",
+        "hint.readThenTap",
+        "review.heading",
+        "review.afterword",
+        "button.end",
+        "name.and",
+        "button.next"
+      ]
+    }
+  ]
+}
