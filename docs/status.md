@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 02:02 UTC
+Last checked: 2026-11-13 02:03 UTC
 
 ## Waiting on the owner
 
@@ -16,7 +16,7 @@ No open decisions. No CI checks are configured.
 
 Owner reviews are batched into two waves.
 
-- Wave A: the two Toolkit PRs (scene switching, HO) and the InterstellarBoardGame base. Not opened yet.
+- Wave A: the two Toolkit PRs (scene switching, then [#17](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/17) HO phase with reading timer) and the InterstellarBoardGame base. #17 is open and stacked on the scene-switching branch, which has no PR yet; merge that first.
 - Wave B: Toolkit game selection and playing cards, and the InterstellarBoardGame mini-games. Not opened yet.
 
 | What | Kind | Wave | Notes |
