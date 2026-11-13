@@ -9,7 +9,7 @@ const layout: ImportLayout = {
   reference: { landscape: [400, 200] },
   parts: {
     frame: { label: 'Frame', landscape: [20, 100, 360, 80] },
-    next: { label: 'Next', landscape: [300, 150, 80, 30] },
+    next: { label: 'Next', align: 'left', landscape: [300, 150, 80, 30] },
     plate: { label: 'Plate', landscape: [20, 70, 100, 20] },
   },
   reserved: { logo: { label: 'Logo', landscape: [10, 5, 20, 20] } },
@@ -159,7 +159,9 @@ describe('reading edited slides back into a layout', () => {
     expect(reportOf(r)).toBe('aligned next left -> center');
     const two = await importSlides(layout, await altDeck([labelled({ next: 'center' }), labelled({ next: 'right' })]));
     expect(two.aligned).toEqual([]);
-    expect(two.layout.parts.next!.align).toBeUndefined();
+    expect(two.layout.parts.next!.align).toBe('left');
+    const frame = await importSlides(layout, await altDeck([labelled({ frame: 'right' }), labelled({ frame: 'right' })]));
+    expect(reportOf(frame)).toBe('no changes');
     expect(reportOf(two)).toContain('conflict next is aligned differently');
   });
 

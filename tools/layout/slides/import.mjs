@@ -11,7 +11,8 @@
 // - A shape counts only if it has a box (an explicit position) and either a part's alt text or
 //   text. Text that is empty or starts with `#` marks a caption or decoration and is ignored;
 //   pictures and shapes inside groups are not read.
-// - A box's alignment is that of its first paragraph (left when none is given).
+// - A box's alignment is that of its first paragraph (left when none is given); it is read only
+//   for parts that have `align` (parts with text).
 // - A box is placed on the reference screen: the slide is scaled to the reference size.
 //
 // CLI:  node import.mjs <slides.pptx>... [--layout layout.json]   (rewrites the layout file when parts moved)
@@ -169,8 +170,10 @@ export async function importSlides(layout, buffer) {
       }
     }
   }
+  // Only parts with text say how it lines up (they have `align`); a picture's caption on a slide is placed freely.
   for (const [id, places] of aligns) {
-    const from = layout.parts[id].align ?? 'left';
+    const from = layout.parts[id].align;
+    if (from === undefined) continue;
     const changed = places.filter((p) => p.align !== from);
     if (changed.length === 0) continue;
     const to = changed[0].align;
