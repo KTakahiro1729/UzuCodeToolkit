@@ -18,7 +18,7 @@
   "handout.optional": "任意",
   "handout.body": "本文",
   "footer.flow": "ゲームの流れ",
-  "footer.handout": "HO",
+  "footer.handout": "ハンドアウト",
   "sheet.close": "閉じる",
   "game.play": "遊ぶ",
   "game.watching": "観戦中",
@@ -30,7 +30,7 @@
   "status.theirTurn": "相手の番です",
   "status.fillSettings": "設定を埋めると押せます",
   "status.allNext": "全員が押すと次へ進みます",
-  "status.anyoneNext": "誰かが押すと全員が次へ進みます",
+  "status.anyoneNext": "誰かが押すと進みます",
   "status.pickGame": "遊ぶゲームを選ぶと押せます",
   "status.timeLeft": "残り{time}",
   "vote.waiting": "あと{n}人の投票を待っています"

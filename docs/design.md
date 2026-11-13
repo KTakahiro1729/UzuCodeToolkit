@@ -281,7 +281,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   a button cannot be pressed (`status.*` strings): "他の人を待っています" after
   you tap next, "相手の番です" while another player reads, "設定を埋めると押せます"
   while the handout's next button is greyed, "全員が押すと次へ進みます" before you
-  tap the cast's next button, "誰かが押すと全員が次へ進みます" on a button any
+  tap the cast's next button, "誰かが押すと進みます" on a button any
   one player can tap for everyone. It states a fact of the screen; it never
   repeats a button's label or invents a rule. One sentence, 16px, quiet colour.
 - **Red is for danger only.** A dangerous action (one that loses what a player
