@@ -3,7 +3,7 @@
   play, then the next button. Playing: the game's own screen; the band names the game. Once the
   game is done, a back button under it returns to the list; there is none before. The game's
   screen gets only the seats that play it as `parts`; a spectator (gameSelectPhase's
-  `spectator`, passed here too) sees it with `me` not among them.
+  `spectator`, passed here too) sees it with `me` not among them and `watching` set.
 -->
 <script lang="ts">
   import { gameAction, type GameSelectState, playersFor } from '@uzu-toolkit/kit';
@@ -46,6 +46,7 @@
           {me}
           {part}
           parts={state.players ?? parts}
+          watching={!(me in (state.players ?? parts))}
           {names}
           send={(name: string, payload?: Record<string, unknown>) => send(gameAction(playing.id, name), payload)}
           {last}

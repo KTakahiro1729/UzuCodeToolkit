@@ -104,7 +104,10 @@ on cards.
 Decoration is out of scope, but it must not break the rules above:
 
 - Colours are tokens in `packages/reader/src/theme.css`; screens use the
-  variables, never raw colours.
+  variables, never raw colours. Those values are neutral defaults for the
+  samples. A work's look (colours, art, effects) is the work's own: it sets the
+  tokens in its own stylesheet, and a colour only its screens use (such as a
+  chess board's) becomes a token there too.
 - Every text colour meets WCAG AA (4.5:1) on its background.
 - No gradients, edge fades, shadows or glows.
 - No colour, size or weight that competes with the focus.
@@ -120,6 +123,24 @@ Decoration is out of scope, but it must not break the rules above:
   at half the text size (owner's decision).
 
 ## Components
+
+### Buttons
+
+- One `Button` everywhere (`packages/reader`). `primary` is the next step,
+  filled; one screen has at most one primary at a time. `secondary` is any
+  other choice, white. A choice that stays selected (such as your vote) takes
+  the primary's fill while selected (`pressed`).
+- A button greys only while it cannot be tapped, never to look quieter.
+
+### Time left
+
+- A timer shows the time left as m:ss (`TimeLeft`), from the game time the
+  state holds, so every player sees the same.
+
+### Watching a game
+
+- A seat that sits a game out watches it: it sees only what every player may
+  see, and no buttons of the game. The game's screen gets `watching`.
 
 ### Top band
 
