@@ -1,0 +1,40 @@
+{
+  "out": "src/fonts",
+  "ignore": "｜",
+  "story": [
+    {
+      "file": "script/script.json",
+      "paths": [
+        "title",
+        "lines[*].text"
+      ]
+    }
+  ],
+  "ui": [
+    {
+      "file": "script/script.json",
+      "paths": [
+        "cast[*].label",
+        "title",
+        "parts[*].name",
+        "lines[*].scene"
+      ]
+    },
+    {
+      "file": "../../packages/reader/src/strings.json",
+      "keys": [
+        "phase.review",
+        "review.heading",
+        "button.end",
+        "name.and",
+        "sheet.close",
+        "stage.yourTurn",
+        "stage.next",
+        "stage.narration",
+        "log.open",
+        "log.title",
+        "stage.nextLine"
+      ]
+    }
+  ]
+}

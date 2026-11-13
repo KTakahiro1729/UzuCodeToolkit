@@ -1,0 +1,1536 @@
+{
+  "title": "幾歳",
+  "cast": [
+    {
+      "id": "yae",
+      "label": "八重"
+    },
+    {
+      "id": "reiji",
+      "label": "怜司"
+    },
+    {
+      "id": "narration",
+      "label": "ナレーション",
+      "direction": true
+    }
+  ],
+  "parts": [
+    {
+      "id": "yae",
+      "name": "八重",
+      "description": "千歳の付き人",
+      "roles": [
+        "yae",
+        "narration"
+      ]
+    },
+    {
+      "id": "reiji",
+      "name": "怜司",
+      "description": "千歳の恋人で、舞台役者",
+      "roles": [
+        "reiji"
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "narration",
+      "text": "あゝあなた様、あなた様。お怒りでございますね。お哀しみでおいでですね。キッと歪んだこめかみと、眉間とまなじり、口の端！ なんとお美しいこと。儚いこと。",
+      "scene": "真冬・屋敷"
+    },
+    {
+      "speaker": "narration",
+      "text": "あゝあなた様。あなた様は一杯のカップ。水いっぱいの、水面がピンと張ったカップにございます。きっとそうにございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "黙れ！"
+    },
+    {
+      "speaker": "narration",
+      "text": "そうです！ そうでございます！ 溢してください。殺してください。私が最期に見たいのは、痛みと後悔と――あとそうでございますね――愛情？ いいえ、憎悪。憎悪に満ちたあなた様の顔だったのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "黙れと言っている"
+    },
+    {
+      "speaker": "yae",
+      "text": "何も喋ってございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それがイライラするのだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あらあらそれは、殺生な。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "笑うな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "笑うてございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "その声で笑うなと言っている。"
+    },
+    {
+      "speaker": "yae",
+      "text": "なるほど声にも顔はございますものね。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "八重ッ。"
+    },
+    {
+      "speaker": "narration",
+      "text": "吐き捨てるように、唾棄すべきように。私の名前、あなた様が呼ぶ私の、名前。抱き捨てられたような、薄いうすい痛み。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あら。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ふざけているのか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ふざけております。さもなくば、まっすぐ立っているふりができませんので。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なら座れ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あら、おやさしい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "優しいものか。とにかく座れ。鬱陶しいのだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "仰せのままに。"
+    },
+    {
+      "speaker": "narration",
+      "text": "なんと椅子は鳴りません。鳴るほどの余裕がございません。"
+    },
+    {
+      "speaker": "yae",
+      "text": "それで、お水はいかが？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "いらぬ。水はしまえ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "お屋敷まで、暑かったでしょうに。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "真冬に暑いわけあるか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "では、お水はいかが？ 外は寒かったでしょうに。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ますます道理が通らぬではないか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ええ。私は、おおむね道理が通らぬ方を選んでまいりました。"
+    },
+    {
+      "speaker": "narration",
+      "text": "よく知っておいででしょう。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ともかく、長居するつもりはない。とっとと遺品を出せ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "お水も飲まずに、催促ですか。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "水なんぞ飲みに来るものか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "千歳様ならば、きっと白湯を召されましたよ。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "貴様が千歳を口にするな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "そうそう、少し冷ましてからですのよ。熱いままですと、舌が負けるとの仰るの。かわいいでしょう？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "やめろと言った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "心得ております。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "心得ているなら、遺品を出せ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "でも、今年で最後でございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "だから来た。来年がないと思うと――"
+    },
+    {
+      "speaker": "yae",
+      "text": "寂しゅうございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "せいせいする。第一、お前は死にたがっていた口ではないか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "死ぬことと、会えなくなることは、別口の災いでございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……その言葉を使うな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "では……出来事？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それも違う。"
+    },
+    {
+      "speaker": "yae",
+      "text": "では、なんと？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "お前がお前の主を見殺しにした日だ。"
+    },
+    {
+      "speaker": "narration",
+      "text": "あら。まだこぼれておりません。カップはとっくにひたひたなのに、たいしたものです。私の方が、ずっと先にこぼれそうなのです。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "軽く返事をするな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "重うお返事申し上げますと、せっかく磨いた床が抜けます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "認めろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "何を。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あのとき、お前は千歳を助けられた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "さぁ……。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "とぼけるな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "とぼけているのではありません。沈んでおります。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "同じだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "同じで済ませてくださるなら、楽でございますね。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳を助けられたんだろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。たぶん。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ふざけるな！"
+    },
+    {
+      "speaker": "yae",
+      "text": "ふざけているというより、あざけっております。己とあなた様を。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "とにかくお前は戻れた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "戻りませんでした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なぜだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あなた様が重かったので。"
+    },
+    {
+      "speaker": "yae",
+      "text": "煙が濃かったので。"
+    },
+    {
+      "speaker": "yae",
+      "text": "足が震えましたので。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "嘘だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "怖かったので。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "まだあるだろう。"
+    },
+    {
+      "speaker": "narration",
+      "text": "あります。あります。ありますとも。奥歯の裏に貼りついた煤みたいな、舌でこすると増えるものが。それとも減るのかしら。ふふん、愉快ゆかい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "何がおかしい。"
+    },
+    {
+      "speaker": "yae",
+      "text": "私でございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳はお前の主だったろう！"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "言え。"
+    },
+    {
+      "speaker": "yae",
+      "text": "千歳さまが、私に言ったのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "言った？"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なんと。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あの方は、目だけでも人をおつかいになった。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "答えになってないだろう。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あなた様もよくご存じでしょう。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "質問をずらすな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "千歳さまは、私があなた様を好きなことを知っておいででした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "戯けるな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あの日も。私に話されました。あのまん丸いおめめで。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳を助けろって？"
+    },
+    {
+      "speaker": "yae",
+      "text": "いいえ。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "いや、そう言ったはずだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "そんなバカバカしいことをおっしゃるわけないのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なら何と言った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あなた様は何と仰いました？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺の話じゃない。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あなた様のお話です。ずっと。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳は何て言った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "先に、あなた様が仰いました。覚えておいでですね。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "覚えている。"
+    },
+    {
+      "speaker": "yae",
+      "text": "では。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "覚えてると言ってるだろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "口に出してくださいますか。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "断る。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ずるい方。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺はずるい。"
+    },
+    {
+      "speaker": "yae",
+      "text": "存じております。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺は……あいつに、立てと言った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。とっとと立てと。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "泣くなとも言った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。女々しく泣くなと。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あいつは……怪我をしてた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "足でございます。たいそう呻いておいででした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "左足だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "覚えておいでで。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "忘れるわけがないだろう。"
+    },
+    {
+      "speaker": "yae",
+      "text": "左足の裏から、甲へと貫き抜けていました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それ以上はいい！ あいつは何と言っていた！"
+    },
+    {
+      "speaker": "yae",
+      "text": "あゝ怒鳴り声、怖い。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "本当に怖い目に合わせようか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "望むところです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "殴り倒してやろうか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あの時みたいに？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "違う！"
+    },
+    {
+      "speaker": "narration",
+      "text": "こういう、違う、はたいてい当たりです。あなた様は、外れにそこまで怒りません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あいつは、俺を……。"
+    },
+    {
+      "speaker": "yae",
+      "text": "たいそうお怒りでした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "怒らせれば立つと思った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺を嫌えば、お前が俺を置いて行くと思った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "だからお前を殴った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "痛うございました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺は最低だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "そして浅はかなのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あぁそうさ、八重。俺はあの日、綺麗なことなんか考えてない。膝も、肺も、魂まで役立たずだった。なのに口だけはまだ、舞台に残された役者みたいに動いた。それだけだ。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳を怒らせれば立つと思った。お前を怒らせれば、俺を捨てると思った。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "置いて行かれる理由が欲しかった。最低だったから捨てられた、との札を引っさげて、あの楽屋で燃え尽きてしまえばよかったのだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ご立派な。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "軽い。"
+    },
+    {
+      "speaker": "yae",
+      "text": "重く申しますと。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "床が抜けるんだろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "覚えてくださって。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "茶化すな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "残念ながらお水しかございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "まぜっ返すな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "まぜっ返します。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "気持ち悪い女だな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "お飲みになりますか？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……貰おう。喉が渇いた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "（ゴクリ）"
+    },
+    {
+      "speaker": "yae",
+      "text": "どんなお味でしたか？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "水に酸いも甘いもあるものか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "残念。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……千歳は、俺の言葉を聞いた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。傷ついておいででした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "お前も。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。あなた様という人間がひどくにくらしく思えました。あの方がかわいそうに思えました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それでも、俺を助けた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なぜだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "頭を打っておいででしたので。それに近かったから。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "運んだ後は？ 千歳はまだ生きていただろう？"
+    },
+    {
+      "speaker": "yae",
+      "text": "意識はありませんでした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "息は！"
+    },
+    {
+      "speaker": "yae",
+      "text": "ありました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "だったら！ 助けられただろう！"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "narration",
+      "text": "灰は灰でも千歳は遺灰。青白い線香の煙。ならば私は何でしょう。きっと臭い灰でしょう。あの子の澄んだ黒髪でなしに、まるで私の濁ったちぢれ髪を焼いたような硫黄の臭い。その灰を落として溶いたのです、あなた様。えぇ、あなた様。彼女の髪がたいそうお好きだったでしょう？ だから私は妬いたのです。"
+    },
+    {
+      "speaker": "yae",
+      "text": "戻りませんでした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳は生きてた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺はな、あの数秒を何度も並べた。千歳とお前と俺を。病院の天井で、千歳の写真の前で、勝手に並べかえた。あぁそうさ、倒れこんだ柱は痛かったけれども！ なぁ！ あの古釘はなぁあ！ 千歳の左足を貫いたあの鉄錆の味を、舌を噛み千切ろうとするたびに想像してしまうのさ。今でも、想像しながらあの忌々しいハンカチへ呻くのさ！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なぁ、何秒だったんだ。お前が俺の息を、千歳の息を確かめた時間は。三秒なら責めていいのか。十秒なら殺していいのか。俺がもっと軽ければ、お前は千歳のところへ行ったのか。答えろ！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "答えないなら、俺もお前も落ちたままだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "知りません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なら何を知っている。何なら話せる。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あなた様を。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺を？"
+    },
+    {
+      "speaker": "yae",
+      "text": "連れてって、と。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……そう言ったのか？ 千歳は。"
+    },
+    {
+      "speaker": "yae",
+      "text": "それだけを。千歳さまは。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "嘘だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "はい？"
+    },
+    {
+      "speaker": "yae",
+      "text": "全部ではございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "言え。"
+    },
+    {
+      "speaker": "yae",
+      "text": "言えば、あなた様は私をお殺しになりますか。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "今すぐ殺す。"
+    },
+    {
+      "speaker": "yae",
+      "text": "喜んで。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "気持ちが悪い。"
+    },
+    {
+      "speaker": "yae",
+      "text": "お互い様です。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……"
+    },
+    {
+      "speaker": "yae",
+      "text": "いつもそうです。千歳さまのお話を、あなた様は私を見てされます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "本当に……気持ち悪いな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。はい、そうでございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "箱をよこせ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "どうぞ。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "開けるぞ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "止めないのか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "止めてほしいのでございますか。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "遅い。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……何も入っていないではないか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "元々は入ってございました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ならどこへ行った。"
+    },
+    {
+      "speaker": "yae",
+      "text": "灰になりました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……なぜ？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "お前が千歳から預かって、それで……第一、箱が無事ではないか！ 中身だけ燃える道理があるか！"
+    },
+    {
+      "speaker": "yae",
+      "text": "焼いてしまいました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ハァ！？ ふざけた真似を！"
+    },
+    {
+      "speaker": "yae",
+      "text": "そしてお水に入れました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "水って……この……。"
+    },
+    {
+      "speaker": "yae",
+      "text": "えぇ。このカップの水です。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺はそれを飲んだのか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "えぇ飲んでいただきました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……何を……燃やした灰を、か？"
+    },
+    {
+      "speaker": "yae",
+      "text": "命を。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "命？"
+    },
+    {
+      "speaker": "yae",
+      "text": "女の命といえば、髪でございましょう？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それを、燃やしたのか？"
+    },
+    {
+      "speaker": "yae",
+      "text": "千歳さまの髪は、それはそれはたいそういい薫りで燃えました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……それを……入れたのか、水に。"
+    },
+    {
+      "speaker": "yae",
+      "text": "結末を申し上げれば、そうなります。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "気持ち悪い。"
+    },
+    {
+      "speaker": "yae",
+      "text": "遺言でございましたので。添えた紙に、そうしてほしい、と。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "見せてみろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "紙ごと燃やしてしまいました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ふざけるな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "もう少し、お飲みになりますか？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……"
+    },
+    {
+      "speaker": "yae",
+      "text": "さぁ、もう一口"
+    },
+    {
+      "speaker": "reiji",
+      "text": "…………"
+    },
+    {
+      "speaker": "reiji",
+      "text": "（ゴクゴクゴク）"
+    },
+    {
+      "speaker": "yae",
+      "text": "気持ちが悪い。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "どうとでも言え。"
+    },
+    {
+      "speaker": "yae",
+      "text": "薄い青の。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なんの話だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ハンカチです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あぁ千歳の。"
+    },
+    {
+      "speaker": "yae",
+      "text": "昨年お渡ししましたね。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "いつも使っていたやつだな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "いいえ、あなた様に逢うときだけでした。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なぜだ？"
+    },
+    {
+      "speaker": "yae",
+      "text": "さぁ？ 私たちにはわからない、華族なりのおしゃれでしょうか？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……そのハンカチがどうした。"
+    },
+    {
+      "speaker": "yae",
+      "text": "匂い、しませんでしたでしょう？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "匂い？ 何の匂いだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "花椿、資生堂の。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それがどうしたというのだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "千歳さまはいつも、あのハンカチに花椿を振りかけておいででした。でも、その匂いはしなかったでしょう？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……不思議はあるまい。千歳が死んでから何年になる。"
+    },
+    {
+      "speaker": "yae",
+      "text": "いいえ、あの時も。私はあなたの口をあのハンカチで覆ったのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "とっさに受け取ったのではないのか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "すぐお気づきになるかと思いました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あの時は死にかけていた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "いいえ、鈍いだけです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "女のように鋭くて世間を渡り歩けるか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "男のように鈍ければ――"
+    },
+    {
+      "speaker": "reiji",
+      "text": "鈍ければ、なんだ。言ってみろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "いいえ……なんでも。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……もう帰るぞ。お前に用はない。"
+    },
+    {
+      "speaker": "yae",
+      "text": "お待ちください！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "しつこい！"
+    },
+    {
+      "speaker": "yae",
+      "text": "あのハンカチは、私のものでした。私が千歳さまと同じものを買って、ポケットに忍ばせていたのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それに何の意味がある。"
+    },
+    {
+      "speaker": "yae",
+      "text": "大切な意味があります。でも、香水は高うございました。私の給金ではとても……。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あの水が……物の値段というのはよくわからぬな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "おわかりでないのは女心です。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "いまさら知ったところで、物の役にも立つまい。回りくどい女心など、千歳一人で充分だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あれほどまっすぐな方を。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "たしかにお前よりはな。うねうねと曲がりくねって絡みついてくる。"
+    },
+    {
+      "speaker": "yae",
+      "text": "千歳さまは、そんな私の髪も梳いてくださいました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "付き人の髪をか？"
+    },
+    {
+      "speaker": "yae",
+      "text": "お戯れに、です。むろん常は、私が梳いておりました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……つまらん。何にしたってお前の話は回りくどいのだ。ああ了解した。結構けっこう。私は鈍くて愚かだ。恋人の遺品でなしに、その付き人がわけもわからず渡してきたハンカチに向かって日夜むせび泣いていた。ロミオもびっくりの勘違いだ！"
+    },
+    {
+      "speaker": "yae",
+      "text": "えぇ。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "で！ それがどうしたというのだ！ 家に帰ったら捨ててやる！ これで満足か？"
+    },
+    {
+      "speaker": "yae",
+      "text": "捨てるなら、おととしお渡しした手鏡も。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "あれも貴様の私物か！ ほかには！"
+    },
+    {
+      "speaker": "yae",
+      "text": "ございますよ。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "言え！"
+    },
+    {
+      "speaker": "yae",
+      "text": "水でございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "……は？"
+    },
+    {
+      "speaker": "yae",
+      "text": "ただしくは、灰でございましょうか。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "貴様……オェッ！"
+    },
+    {
+      "speaker": "yae",
+      "text": "まぁ、むせばないでください。第一、あなた様が悪いのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺が悪いわけあるか！"
+    },
+    {
+      "speaker": "yae",
+      "text": "一口でわかるではありませんか。あの滑らかな髪の灰が、あれほど酸っぱいわけがございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "わかるわけがないだろう！ 灰の味など、水の味などみな同じだ！"
+    },
+    {
+      "speaker": "yae",
+      "text": "もっと、甘うございました。あの方の髪は。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "喰ったのか！"
+    },
+    {
+      "speaker": "yae",
+      "text": "ご安心ください。飲んでいただいたのは、そうして生えた髪でございます。ですから、半ばは千歳さまの髪なのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "とうとう気がふれたか！"
+    },
+    {
+      "speaker": "yae",
+      "text": "気など当にふれております！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "殺されたいか！ 無惨に！"
+    },
+    {
+      "speaker": "yae",
+      "text": "もちろんです！"
+    },
+    {
+      "speaker": "narration",
+      "text": "あゝあなた様、あなた様。お怒りでございますね。お哀しみでおいでですね。キッと歪んだこめかみと、眉間とまなじり、口の端！ なんとお美しいこと。儚いこと。"
+    },
+    {
+      "speaker": "narration",
+      "text": "あゝあなた様。あなた様は一杯のカップ。水いっぱいの、水面がピンと張ったカップにございます。きっとそうにございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "黙れ！"
+    },
+    {
+      "speaker": "narration",
+      "text": "そうです！ そうでございます！ 溢してください。殺してください。私が最期に見たいのは――！"
+    },
+    {
+      "speaker": "yae",
+      "text": "怜司さま！！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "名前で呼ぶな！"
+    },
+    {
+      "speaker": "yae",
+      "text": "私は、お慕いしておりました！ あなた様のことも、千歳さまのことも！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "だったら、くたばってしまえばよかったのだ！ 夏の羽虫のように！ 火に飛び込んで死ぬのはお前でよかったのだ！ 俺でよかったのだ！"
+    },
+    {
+      "speaker": "yae",
+      "text": "もちろんそのつもりでした！"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ならばなぜそうしなかった！"
+    },
+    {
+      "speaker": "yae",
+      "text": "あの方が……私に命じたからです。あなた様を助けろと。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺は……ただの……大根役者だぞ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "まったくです。千歳さまに嫌われて、私に嫌われようと私を殴り飛ばして。それでも、千歳さま、なぜでございましょうか！ あの方は、あなた様に生きて欲しいとそう、こいねがわれたのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳ッ！"
+    },
+    {
+      "speaker": "yae",
+      "text": "見殺すしか……ございませんでしょう？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "八重……。"
+    },
+    {
+      "speaker": "yae",
+      "text": "……はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "殺されたいなら、今の言葉だけで十分だ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ありがとうございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "礼を言うな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "癖でございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "便利な癖だな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "不便でございます。お礼を言うたび、なお何か賜れる気がしてしまいます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "何が欲しい。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あなた様の、いちばん悪い顔。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "今のじゃ足りないか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "足りません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "贅沢だな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ええ。あなた様を助けた女でございますので。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "その言い方をするな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "では、あなた様を持ち帰った女。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "物みたいに言うな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "人のままでは、重すぎました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "八重。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺は、あの日、お前に助けられたくなかった。"
+    },
+    {
+      "speaker": "yae",
+      "text": "存じております。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "お前、俺に憎まれてる間、安心してただろ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "……はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺が千歳を思い出すたび、お前の名前も出る。"
+    },
+    {
+      "speaker": "yae",
+      "text": "出ます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それが嬉しかった。"
+    },
+    {
+      "speaker": "yae",
+      "text": "嬉しゅうございました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "千歳の死に寄生した。"
+    },
+    {
+      "speaker": "yae",
+      "text": "寄りかかりました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "言い返せよ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "……あなた様も、そうでございましょう。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺は善人じゃない。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺はあいつを傷つけた。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺はあいつを助けられなかった。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "はっきり言うな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "お茶を濁しても始まりません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "始めたいのではない。終えたいのだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "終えるにはどうしたら？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "俺が帰ればいいだろう。"
+    },
+    {
+      "speaker": "yae",
+      "text": "……そうでございますね。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "引き止めないのか？"
+    },
+    {
+      "speaker": "yae",
+      "text": "引き止めてほしいのですか？"
+    },
+    {
+      "speaker": "reiji",
+      "text": "まさか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "……お稽古、頑張ってください。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "せいぜいな。"
+    },
+    {
+      "speaker": "narration",
+      "text": "……千歳さま、このお屋敷も随分と広くなりました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "八重。"
+    },
+    {
+      "speaker": "yae",
+      "text": "はい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "その香水はどうしたんだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "私がいただきました。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なら来年は、それを着ておけ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "え……。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "わかったか？"
+    },
+    {
+      "speaker": "yae",
+      "text": "……はい。"
+    }
+  ]
+}

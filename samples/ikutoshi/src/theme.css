@@ -1,0 +1,14 @@
+:root {
+  --color-bg: #eee1cb;
+  --color-text: #251e18;
+  --color-text-quiet: #594636;
+  --color-bubble: #f1e6cf;
+  --color-bubble-mine: #dce9df;
+  --color-mine-current: #cfdfd5;
+  --color-mine-text: #251e18;
+  --color-button-off: #dcd0bf;
+  --color-scroll: #9e8c76;
+  --color-scrim: rgb(17 19 17 / 0.78);
+  --color-line: #806345;
+  --color-field: #fbf3e5;
+}

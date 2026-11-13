@@ -1,0 +1,25 @@
+{
+  "id": "uzu-toolkit-ikutoshi",
+  "build": "npm run build",
+  "output": "dist",
+  "playerCount": 2,
+  "orientation": "landscape",
+  "serverActionLogicPath": "./src/logic.ts",
+  "characters": [
+    {
+      "id": "yae",
+      "name": "八重",
+      "description": "千歳の付き人",
+      "icon": "./public/assets/icon-yae.webp"
+    },
+    {
+      "id": "reiji",
+      "name": "怜司",
+      "description": "千歳の恋人で、舞台役者",
+      "icon": "./public/assets/icon-reiji.webp"
+    }
+  ],
+  "dev": {
+    "command": "npm run dev"
+  }
+}
