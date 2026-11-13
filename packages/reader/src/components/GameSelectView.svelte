@@ -9,7 +9,9 @@
   import { gameAction, type GameSelectState, playersFor } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
   import type { GameView } from '../games';
+  import { fill } from '../fill';
   import { band } from '../store.svelte';
+  import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
@@ -25,9 +27,31 @@
     last,
     games,
     spectator,
-  }: PhaseViewProps<GameSelectState> & { games: readonly GameView[]; spectator?: string } = $props();
+    guide,
+    finish,
+  }: PhaseViewProps<GameSelectState> & {
+    games: readonly GameView[];
+    spectator?: string;
+    /** What to do now, at the top of the list. */
+    guide?: string;
+    /** The label of the button that leaves the list for the next phase; `button.next` without one. */
+    finish?: string;
+  } = $props();
 
-  const choices = $derived(games.filter((g) => playersFor(g, parts, spectator)));
+  const choices = $derived(
+    games.flatMap((g) => {
+      const players = playersFor(g, parts, spectator);
+      return players ? [{ game: g, players }] : [];
+    }),
+  );
+  /** Under a game's name: how many play, who watches, and the game's own line. */
+  const about = (players: Record<string, string>, description?: string): string => {
+    const n = Object.keys(players).length;
+    const out = [fill(STRINGS['gameSelect.players'], { n })];
+    if (n < Object.keys(parts).length && spectator) out.push(fill(STRINGS['gameSelect.watches'], { name: names[spectator] }));
+    if (description) out.push(description);
+    return out.join(STRINGS['list.sep']);
+  };
   const playing = $derived(games.find((g) => g.id === state.game));
   const over = $derived(playing ? playing.logic.done(state.play) : false);
 
@@ -59,12 +83,18 @@
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
+    {#if guide}<Guide text={guide} />{/if}
     <ul>
-      {#each choices as g (g.id)}
-        <li><button type="button" class="choice" onclick={() => send('pick', { id: g.id })}>{g.label}</button></li>
+      {#each choices as { game: g, players } (g.id)}
+        <li>
+          <button type="button" class="choice" onclick={() => send('pick', { id: g.id })}>
+            <span class="name">{g.label}</span>
+            <span class="about">{about(players, g.description)}</span>
+          </button>
+        </li>
       {/each}
     </ul>
-    <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
+    <NextButton onclick={() => send('next')}>{finish ?? STRINGS['button.next']}</NextButton>
   </div>
 {/if}
 
@@ -81,7 +111,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5em;
-    width: min(100%, 14em);
+    width: min(100%, 22em);
     max-height: 100%;
     align-self: center;
     margin: 0;
@@ -94,7 +124,7 @@
     ul {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      width: min(100%, 24em);
+      width: min(100%, 40em);
     }
   }
   button {
@@ -105,11 +135,27 @@
     color: var(--color-text);
     cursor: pointer;
   }
+  /* The name, and under it the quieter line on players and the game; left-aligned like the guide. */
   .choice {
     width: 100%;
-    padding: 0.7em 1em;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15em;
+    padding: 0.6em 1em;
     border-radius: 0.6em;
     background: var(--color-bubble);
+    text-align: left;
+  }
+  .name {
+    font-weight: bold;
+  }
+  .about {
+    color: var(--color-text-quiet);
+  }
+  .choosing > :global(p) {
+    max-width: 22em;
   }
   /* The game fills the screen; the back button sits under it. */
   .playing {

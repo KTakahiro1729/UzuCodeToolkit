@@ -124,6 +124,24 @@ Decoration is out of scope, but it must not break the rules above:
 
 ## Components
 
+### Guide
+
+- A phase's screen may open with what to do now, in a line or two of UI text
+  at the top (`guide`, the work's own words). It stays while the screen does
+  and needs no tap: no window to close. Only where players would otherwise
+  guess (why the game waits, what is secret), not to repeat the band.
+
+### Introduction with the cast
+
+- The introduction shows, under its story text, whom you play (`cast.you`,
+  the part's name bold) and every part as a white block: icon, name and one
+  line on who they are (the manifest's description). Yours comes first and
+  takes your role's tint.
+- Under it one ready button (`button.ready`) with how many are ready
+  (`n/total`). Once tapped it greys and says `ready.waiting`; the phase moves
+  on when everyone is ready.
+- On a landscape screen the story text and the cast stand side by side.
+
 ### Buttons
 
 - One `Button` everywhere (`packages/reader`). `primary` is the next step,
@@ -253,8 +271,11 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Game select
 
-- The games this many players can play, as a list of white blocks (game
-  names from the work's data), and the next button under it. A game that
+- The games this many players can play, as a list of white blocks: the game's
+  name, and under it in the quieter colour how many play, who watches when the
+  spectator sits out, and the game's own line (`description`), joined by
+  `list.sep`. The next button under the list may carry the work's own label
+  (such as 暇つぶしを終える), since leaving the list ends the phase. A game that
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
