@@ -36,6 +36,10 @@ Read this when you touch the introduction, an empty phase, the phase list or a p
 - A phase with no game of its own (an empty phase) shows the next button, centred, labelled `button.nextPhase` with the note `status.anyoneNext`, under optional story text (such as an introduction): left-aligned paragraphs in the story font, at the chat's reading width. Without text it holds the place of a phase not made yet. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
 - On the last line of a read-through that another phase follows, the advance button says `button.nextPhase` instead of `button.end`.
 
+## Timed phase
+
+- Story or instruction text at the chat's reading width, an optional guide on top. The footer's leftmost item is the time left, with pause and more time (same as the handout phase). The main button depends on the work's rule: none when only time ends the phase; `button.done` as a toggle with `status.needMore` for everyone or a majority; `button.nextPhase` with `status.anyoneNext` when anyone may end it; for one named part, the others see `status.facilitator`. Time up moves everyone on whatever the rule. A work with no timed phase ships none of this.
+
 ## Phase list
 
 - The work's phases in order, opened from the footer, so a player can see
