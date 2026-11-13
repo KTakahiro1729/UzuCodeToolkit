@@ -6,6 +6,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { fade } from 'svelte/transition';
+  import Button from './Button.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
@@ -36,7 +37,7 @@
 <section transition:fade={{ duration }} use:modal>
   <div class="head">
     <h2>{title}</h2>
-    <button type="button" onclick={onclose}>{STRINGS['sheet.close']}</button>
+    <Button variant="secondary" onclick={onclose}>{STRINGS['sheet.close']}</Button>
   </div>
   <div class="body">{@render children()}</div>
 </section>
@@ -75,15 +76,5 @@
     color: var(--color-text-quiet);
     font-size: max(16px, 0.8em);
     font-weight: 700;
-  }
-  button {
-    margin: 0;
-    padding: 0.45em 0.8em;
-    border: none;
-    border-radius: 999px;
-    background: var(--color-bubble);
-    color: var(--color-text);
-    font: inherit;
-    cursor: pointer;
   }
 </style>

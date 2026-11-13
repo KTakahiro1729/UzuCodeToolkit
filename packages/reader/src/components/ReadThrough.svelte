@@ -271,7 +271,7 @@
     margin: 0;
     /* Keep bubbles tight: padding here costs a lot of room on a phone. */
     padding: 0.35em 0.7em;
-    border-radius: 0.8em;
+    border-radius: var(--radius-read);
     /* Break between phrases, never mid-word. */
     word-break: auto-phrase;
     background: var(--color-bubble);
@@ -299,7 +299,7 @@
     border-top-left-radius: 0;
   }
   li[data-side='right'] .name + p {
-    border-top-left-radius: 0.8em;
+    border-top-left-radius: var(--radius-read);
     border-top-right-radius: 0;
   }
   li[data-direction='true'] p {

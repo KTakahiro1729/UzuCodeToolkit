@@ -102,7 +102,11 @@
         {#each choices as { game: g, players } (g.id)}
           <li>
             <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
-              <span class="name">{g.label}</span>
+              <span class="name"
+                >{#if selected === g.id}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"
+                    ><path d="M1 5l3.5 3.5L11 1.5" /></svg
+                  >{/if}{g.label}</span
+              >
               <span class="about" class:on={selected === g.id}>{about(players, g.description)}</span>
             </Button>
           </li>
@@ -154,20 +158,42 @@
       width: min(100%, 48em);
     }
   }
-  /* A game on the list: a white block as wide as the list, not a round button. */
-  li > :global(button) {
+  /* A game on the list: a choice (docs/design.md, Look by role), as wide as the list, not a
+     capsule: no fill and a line edge; the selected one takes the primary fill. The attribute
+     selectors outweigh Button's own variant and pressed rules. */
+  li > :global(button[data-variant='secondary']) {
     width: 100%;
     height: 100%;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.15em;
     padding: 0.6em 1em;
-    border-radius: 0.6em;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: none;
+    color: var(--color-text);
     text-align: left;
+  }
+  li > :global(button[aria-pressed='true']) {
+    background: var(--color-mine-current);
+    color: var(--color-mine-text);
   }
   /* The name, and under it the quieter line on players and the game. */
   .name {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
     font-weight: bold;
+  }
+  /* The selected mark before the name. */
+  .tick {
+    width: 0.8em;
+    height: 0.7em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   .about {
     color: var(--color-text-quiet);
