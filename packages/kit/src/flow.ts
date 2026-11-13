@@ -36,6 +36,15 @@ export interface PhaseLogic<P = any> {
   serverActions?: Record<string, (a: PhaseArgs<P, any> & { random: SeededRandom; after(d: Duration): GameTime }) => void>;
   /** True once the phase is over; the game then enters the next phase. */
   done(state: P): boolean;
+  /**
+   * A deadline kept in the phase's state, such as a timer's end: `at` reads it from the state
+   * (null for none), and the server calls `handler` once the time comes, then moves on as after
+   * an action. Runs only while the phase is current.
+   */
+  deadline?: {
+    at(state: P): GameTime | null | undefined;
+    handler(a: { state: P; parts: Record<string, string>; time: GameTime; random: SeededRandom }): void;
+  };
 }
 
 export interface FlowState {
@@ -111,6 +120,20 @@ export function flowLogic(
     },
     actions,
     serverActions,
+    deadlines: {
+      // The current phase's deadline; the SDK re-reads it whenever the state changes.
+      phase: {
+        at: ({ state }) => {
+          const { id, logic } = phases[state.at];
+          return state.ended ? null : logic.deadline?.at(state.phases[id]);
+        },
+        handler: ({ state, ctx }) => {
+          const { id, logic } = phases[state.at];
+          logic.deadline?.handler({ state: state.phases[id], parts: state.parts, time: ctx.time, random: ctx.random });
+          moveOn(state, ctx.time);
+        },
+      },
+    },
     update() {},
   };
 }
