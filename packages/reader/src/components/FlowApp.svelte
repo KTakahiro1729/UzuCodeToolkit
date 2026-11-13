@@ -1,7 +1,7 @@
 <!--
   A work as a list of phases: the band and, under it, the current phase's screen. Changing phase
   fades the old screen out and the new one in (./motion.ts). Right after a phase that can be
-  reopened, a quiet button beside the screen's main action sends everyone back to it
+  reopened, a secondary button beside the screen's main action sends everyone back to it
   (PhaseView.reopen).
   The footer holds the screen's main actions; in a work of more than one phase it also has
   read-back buttons: the phase list, and the content of phases already left that stays readable
@@ -14,6 +14,7 @@
   import { phaseAction } from '@uzu-toolkit/kit';
   import type { FlowOptions } from '../flow';
   import { band, game, sendAction } from '../store.svelte';
+  import Button from './Button.svelte';
   import Frame from './Frame.svelte';
   import FooterActions from './FooterActions.svelte';
   import PhaseList from './PhaseList.svelte';
@@ -78,9 +79,9 @@
     {/key}
     {#if reopen}
       <FooterActions place="aside">
-        <button type="button" class="reopen" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
+        <Button variant="secondary" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
           {reopen.reopen?.label}
-        </button>
+        </Button>
       </FooterActions>
     {/if}
     {#if open === FLOW}
@@ -127,17 +128,5 @@
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 0.3em;
-  }
-  /* Not the next step, so on the page colour rather than filled, beside it. */
-  .reopen {
-    margin: 0;
-    padding: 0.45em 0.8em;
-    border: none;
-    border-radius: 999px;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font: inherit;
-    font-family: var(--font-ui);
-    cursor: pointer;
   }
 </style>
