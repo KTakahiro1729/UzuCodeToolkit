@@ -106,7 +106,7 @@
         <li>
           <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
             <span class="name">{g.label}</span>
-            <span class="about">{about(players, g.description)}</span>
+            <span class="about" class:on={selected === g.id}>{about(players, g.description)}</span>
           </Button>
         </li>
       {/each}
@@ -168,7 +168,7 @@
     color: var(--color-text-quiet);
   }
   /* On the selected game's fill, the line takes the fill's text colour, for contrast. */
-  :global([aria-pressed='true']) > .about {
+  .about.on {
     color: inherit;
   }
   .choosing > :global(p) {
