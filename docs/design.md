@@ -97,7 +97,7 @@ Decoration is out of scope, but it must not break the rules above:
   tokens in its own stylesheet, and a colour only its screens use (such as a
   chess board's) becomes a token there too.
 - Every text colour meets WCAG AA (4.5:1) on its background.
-- No gradients, edge fades, shadows or glows.
+- No gradients, edge fades, shadows or glows in what the toolkit draws (its default look). A work's own images (backgrounds, characters, frames, nameplates, buttons) are its look and are free of this; text on them still meets AA.
 - No colour, size or weight that competes with the focus.
 
 ### Look by role
