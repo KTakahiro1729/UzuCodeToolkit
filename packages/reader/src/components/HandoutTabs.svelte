@@ -190,7 +190,7 @@
     align-items: center;
     gap: 0.3em;
     margin: 0;
-    padding: 0.5em 0.9em;
+    padding: 0.5em 0.6em;
     border: none;
     border-radius: 0.6em 0.6em 0 0;
     background: none;
