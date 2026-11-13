@@ -6,8 +6,12 @@
 // does. --png writes <key>-landscape.png and <key>-portrait.png for each screen into <dir>. The page is
 // written when no mode is given or when out.html is; --check and --png alone write no page.
 // --size picks the screen size: lower (780×360), device (844×390, the default), wide (1194×834) or reference (874×402, the design guide's).
-// With --check, --size takes several, comma separated, or `all` (lower, device and wide: certification's three), and checks each
-// in turn; the PNGs and the page are made at the first.
+// With --check, --size takes several, comma separated, or `all` (lower, device and wide: certification's three; and for a
+// portrait work also `desktop`), and checks each in turn; the PNGs and the page are made at the first.
+// --check looks only at the orientation the work's manifest.json fixes (`orientation`): the app holds a phone to it, so the
+// other one is never played. `desktop` (1280×720, landscape) is the window of a PC, where a portrait work may be opened wide.
+// `--orientation both|landscape|portrait`, or `orientation` in the config, overrides what --check looks at (a work that
+// serves both says `both`).
 // --only takes screen numbers or keys, comma separated (01,05): the other screens are skipped,
 // steps included. A screen can run steps first (click, fill, set the state; in any seat's screen).
 // A step that takes longer than --step-timeout (default 15 s), or a run longer than --timeout
@@ -31,6 +35,8 @@ const SIZE_SETS = {
   device: { landscape: { width: 844, height: 390 }, portrait: { width: 390, height: 844 } },
   wide: { landscape: { width: 1194, height: 834 }, portrait: { width: 834, height: 1194 } },
   reference: { landscape: { width: 874, height: 402 }, portrait: { width: 402, height: 874 } },
+  // A PC's window, whose shape is free: where a portrait work may be opened wide (it should hold a column in the middle).
+  desktop: { landscape: { width: 1280, height: 720 } },
 };
 const HUD = { x: 138, y: 52 }; // What the dev harness reports as the UZU HUD.
 
@@ -45,11 +51,8 @@ const pngDir = flag('--png');
 const JOBS = Math.max(1, Math.floor(Number(flag('--jobs') ?? 1)) || 1);
 const configFile = flag('--config');
 const sizeArg = flag('--size') ?? 'device';
-const sizeNames = sizeArg === 'all' ? ['lower', 'device', 'wide'] : sizeArg.split(',').map((n) => n.trim()).filter(Boolean);
-for (const n of sizeNames) if (!SIZE_SETS[n]) throw new Error(`unknown --size ${n}: ${Object.keys(SIZE_SETS).join(', ')}, all`);
-if (sizeNames.length > 1 && !check) throw new Error('--size with several sizes needs --check (a page or PNGs are made at one size)');
-// The first size is the one the PNGs and the page are made at.
-const SIZES = SIZE_SETS[sizeNames[0]];
+const orientationArg = flag('--orientation');
+
 const only = flag('--only')?.split(',').map((k) => k.trim()).filter(Boolean);
 const STEP_MS = Number(flag('--step-timeout') ?? 15) * 1000; // longest a step may take, and how long it waits for its element.
 const TOTAL_MS = Number(flag('--timeout') ?? 600) * 1000; // longest the whole run may take.
@@ -58,12 +61,33 @@ const [sample, outArg] = args.filter((a) => a !== '--check' && a !== '--times');
 if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>] [--size lower|device|wide|reference] [--jobs <n>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]');
 const out = outArg ?? join(tmpdir(), 'screen-preview.html');
 const wantPage = !!outArg || !(check || pngDir);
+
 // The given config, the sample's own, or the shared read-through one.
 const configPath = configFile
   ? resolve(configFile)
   : [resolve(sample, 'preview.config.mjs'), resolve('packages/reader/preview.config.mjs')].find(existsSync);
 const config = (await import(pathToFileURL(configPath).href)).default;
 const title = config.title ?? JSON.parse(readFileSync(resolve(sample, 'script/script.json'), 'utf8')).title;
+// The orientation the work's manifest fixes (none: both are looked at).
+const manifestOrientation = (() => {
+  try {
+    const o = JSON.parse(readFileSync(resolve(sample, 'manifest.json'), 'utf8')).orientation;
+    return o === 'landscape' || o === 'portrait' ? o : undefined;
+  } catch {
+    return undefined;
+  }
+})();
+// The flag wins, then the config's `orientation` (a work that serves both says `both` there), then the manifest.
+const wanted = orientationArg ?? config.orientation;
+if (wanted && !['both', 'landscape', 'portrait'].includes(wanted)) throw new Error('orientation takes both, landscape or portrait');
+const checkOrientation = wanted ? (wanted === 'both' ? undefined : wanted) : manifestOrientation;
+const sizeNames = sizeArg === 'all'
+  ? ['lower', 'device', 'wide', ...(checkOrientation === 'portrait' ? ['desktop'] : [])]
+  : sizeArg.split(',').map((n) => n.trim()).filter(Boolean);
+for (const n of sizeNames) if (!SIZE_SETS[n]) throw new Error(`unknown --size ${n}: ${Object.keys(SIZE_SETS).join(', ')}, all`);
+if (sizeNames.length > 1 && !check) throw new Error('--size with several sizes needs --check (a page or PNGs are made at one size)');
+// The first size is the one the PNGs and the page are made at.
+const SIZES = SIZE_SETS[sizeNames[0]];
 // Playwright is not a dependency of the repo: use the one installed where this runs.
 const { chromium } = createRequire(resolve('package.json'))('playwright');
 
@@ -410,6 +434,8 @@ async function run(steps, screenSeat, key) {
     for (const [si, sizeName] of sizeNames.entries())
     for (const [o, size] of Object.entries(SIZE_SETS[sizeName])) {
       const first = si === 0;
+      // A check looks only at the work's own orientation (the PC window is the exception: it is wide whatever the work is).
+      if (check && !(pngDir || wantPage) && checkOrientation && sizeName !== 'desktop' && o !== checkOrientation) continue;
       const tag = sizeNames.length > 1 ? `${sizeName} ${o}` : o;
       w.where = `${s.key} ${tag}`;
       await within(STEP_MS * 3, `${s.key} ${tag}`, async () => {

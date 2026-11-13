@@ -10,6 +10,7 @@ Write down, for each thing the plan says, the part that answers it (plan-to-part
 
 **Ask the author first** (these change how the game plays, and are costly to redo):
 
+- the screen's orientation, when the plan does not say: landscape only, portrait only, or both. It decides `manifest.json`'s `orientation` and what the checks look at (below);
 - a game's rules and how it is won, when the plan only names the game;
 - who may move the game on in a phase, and who sees what alone;
 - the number of players and the parts they play;
@@ -98,10 +99,20 @@ From the work's root, with the harness running (`npm run harness`, then `/harnes
 |---|---|
 | Tests, types, CSS | `npm test`, `npm run typecheck`, `npm run lint` |
 | Every phase plays through with every seat; a plain action that reads the clock or a random number fails | `allPhases(...)` in a test (`tools/e2e/all-phases.mjs`) |
-| Overflow, in certification's three sizes, both orientations | `node toolkit/tools/screen-preview/capture.mjs --check --size all --config shots.mjs .` |
+| Overflow, in certification's three sizes, in the orientation `manifest.json` fixes (a portrait work also in a wide PC window) | `node toolkit/tools/screen-preview/capture.mjs --check --size all --config shots.mjs .` |
 | Screens, numbered, to show the author | `--png <dir>` or the page, with the same `--config` |
 
 `shots.mjs` is the work's list of screens. `phaseScreens` makes one for every toolkit phase without a line of steps (see [screen-preview.md](screen-preview.md), "Catalogue of a work"); write by hand only what it cannot reach (a game in progress, a sheet). The work chooses how much to shoot with `only` and `shots`.
+
+The answer to the orientation question sets:
+
+| Answer | `manifest.json` | `shots.mjs` | The checks look at |
+|---|---|---|---|
+| Landscape only | `"orientation": "landscape"` | nothing | landscape in each size |
+| Portrait only | `"orientation": "portrait"` | nothing | portrait in each size, and `desktop` (a wide PC window) |
+| Both | leave `orientation` out (the SDK's type makes it optional; how the app treats a work without it is not stated in the docs read for this toolkit, so check UZU's docs or ask the organisers) | `orientation: 'both'` in `catalogue({ ... })` | both orientations in each size |
+
+A work serves the orientation its manifest fixes (the app holds a phone to it); it need not serve the other. On a PC the window has any shape, so a portrait work keeps its column in the middle (`max-width`, centred) when opened wide; the check's `desktop` size looks at that. A work that serves both says `orientation: 'both'` in `shots.mjs`.
 
 Fix what the checks list before showing anything. Show the author the screens only once, when the work stands; do not re-shoot while you work.
 
