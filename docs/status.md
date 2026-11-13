@@ -6,11 +6,7 @@ Last checked: 2026-11-13 02:03 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
-
-| What | Kind | Notes |
-|---|---|---|
-| [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Review, merge | Ready. Screenshots in the project files under `screenshots/overflow-check/`. |
+Nothing right now. No open decisions. No CI checks are configured.
 
 ### Later waves
 
@@ -27,6 +23,7 @@ Owner reviews are batched into two waves.
 
 | PR | Result | Date |
 |---|---|---|
+| [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Merged | 2026-11-13 |
 | [#15](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/15) Screen preview tool; right margin for items 4–6 set to 1.5em | Merged | 2026-11-13 |
 | [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Merged | 2026-11-13 |
 | [#12](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/12) Any number of players, one player reading several roles, and 指環・三つの宝 as samples | Merged | 2026-11-12 |
