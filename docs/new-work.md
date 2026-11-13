@@ -98,6 +98,8 @@ From the work's root, with the harness running (`npm run harness`, then `/harnes
 |---|---|
 | Tests, types, CSS | `npm test`, `npm run typecheck`, `npm run lint` |
 | Every phase plays through with every seat; a plain action that reads the clock or a random number fails | `allPhases(...)` in a test (`tools/e2e/all-phases.mjs`) |
+| Defects no screen shows: no `firstFrameReady`, a file name or address certification forbids, `Date.now`/`Math.random` in server logic, a lock or rotation of the screen | `checkWork(dir)` in a test (`tools/check/static.mjs`; `node toolkit/tools/check/static.mjs .` to read it). Errors fail; warnings (px sizes, a portrait work with no `max-width`, no toolkit part) are a list to report, not to fix |
+| A phase still ends when a player has left | `allPhases({ ..., away: '<part>' })`: that seat never acts. Optional: a work may require a seat in a phase on purpose |
 | Overflow, in certification's three sizes, both orientations | `node toolkit/tools/screen-preview/capture.mjs --check --size all --config shots.mjs .` |
 | Screens, numbered, to show the author | `--png <dir>` or the page, with the same `--config` |
 

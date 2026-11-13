@@ -2,7 +2,7 @@
 // player's screen recorded a prediction warning (a plain action that read the clock or a random
 // number, which would drift online). Needs Playwright (as tools/screen-preview does).
 // Usage, in a test: `await allPhases({ phases: work.phases, drive: { intro: ready, opening: readThrough(opening) } })`.
-// Phases not named in `drive` are moved on by seat 0 sending `next`. Types: all-phases.d.mts.
+// Phases not named in `drive` are moved on by the first seat sending `next`. `away: 'part'` plays the same with that seat gone. Types: all-phases.d.mts.
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -41,8 +41,11 @@ const next = async ({ seats, send }) => send(seats[0], 'next');
  * @param {Record<string, Function>} [o.drive] How to play a phase, by phase ID.
  * @param {string} [o.cwd] The work's folder (default: the current one).
  * @param {number} [o.stepTimeoutMs] How long one action may take to show in the state.
+ * @param {string | readonly string[]} [o.away] Part(s) whose seat has left: it never acts, and the drivers get no seat for it.
+ *   Every phase must still end without it (a work where one player's leaving strands the others fails with the phase's ID).
  */
-export async function allPhases({ phases, drive = {}, cwd = process.cwd(), stepTimeoutMs = 5000 }) {
+export async function allPhases({ phases, drive = {}, cwd = process.cwd(), stepTimeoutMs = 5000, away = [] }) {
+  const gone = new Set([away].flat());
   const { chromium } = createRequire(resolve(cwd, 'package.json'))('playwright');
   const dev = spawn('npx', ['uzu', 'dev'], { cwd, detached: true, stdio: ['ignore', 'pipe', 'inherit'], shell: process.platform === 'win32' });
   let browser;
@@ -83,18 +86,20 @@ export async function allPhases({ phases, drive = {}, cwd = process.cwd(), stepT
       const snap = await snapshot();
       const id = phases[snap.at].id;
       if (guard > phases.length * 4) throw new Error(`stuck in phase ${id}`);
-      const seats = Object.keys(snap.parts).map((s) => ({ id: s, part: snap.parts[s] }));
+      const seats = Object.keys(snap.parts).map((s) => ({ id: s, part: snap.parts[s] })).filter((s) => !gone.has(s.part));
+      if (!seats.length) throw new Error('every seat is away');
       // The action goes in from the seat's own screen, so the client predicts it as a player's tap would.
       const send = async (seat, name, payload = {}) => {
         const prev = JSON.stringify(await snapshot());
         await frameOf(index[seat.id]).evaluate(([t, p]) => window.__flow_dev.send(t, p), [`${id}:${name}`, payload]);
         await change(prev, stepTimeoutMs).catch(() => {
-          throw new Error(`phase ${id}: ${name} from ${seat.part} changed nothing (rejected?)`);
+          throw new Error(`phase ${id}: ${name} from ${seat.part} changed nothing (rejected?)${gone.size ? `, with ${[...gone].join(', ')} away` : ''}`);
         });
       };
       await (drive[id] ?? next)({ seats, send, phase: snap.phases[id] });
       const after = await snapshot();
-      if (after.at === snap.at && !after.ended) throw new Error(`phase ${id} did not finish`);
+      if (after.at === snap.at && !after.ended)
+        throw new Error(gone.size ? `phase ${id} did not finish with ${[...gone].join(', ')} away: the others cannot move it on` : `phase ${id} did not finish`);
     }
 
     const warnings = [];

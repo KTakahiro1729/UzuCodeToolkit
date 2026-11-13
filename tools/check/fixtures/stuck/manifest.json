@@ -1,0 +1,13 @@
+{
+  "id": "fixture-stuck",
+  "build": "npm run build",
+  "output": "dist",
+  "playerCount": 2,
+  "orientation": "landscape",
+  "serverActionLogicPath": "./src/logic.ts",
+  "characters": [
+    { "id": "a", "name": "A", "description": "a", "icon": "./icon.webp" },
+    { "id": "b", "name": "B", "description": "b", "icon": "./icon.webp" }
+  ],
+  "dev": { "command": "npm run dev" }
+}
