@@ -2,7 +2,7 @@
 // edits show up without a manual restart. Screen code (Svelte, CSS) needs no
 // restart: vite swaps it in place. The /harness page (dev-harness.js) puts the
 // game state back after a restart.
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { watch } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,11 +40,17 @@ const restart = () => {
 
 for (const path of WATCHED) watch(path, { recursive: true }, restart);
 
-for (const signal of ['SIGINT', 'SIGTERM']) {
+// A closed terminal window sends SIGHUP; stop the servers then too, and on any other way out.
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
   process.on(signal, async () => {
     await stop();
     process.exit(0);
   });
 }
+process.on('exit', () => {
+  if (!child || child.exitCode !== null) return;
+  if (WINDOWS) spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore' });
+  else process.kill(-child.pid, 'SIGTERM');
+});
 
 start();

@@ -3,9 +3,71 @@
 // number, which would drift online). Needs Playwright (as tools/screen-preview does).
 // Usage, in a test: `await allPhases({ phases: work.phases, drive: { intro: ready, opening: readThrough(opening) } })`.
 // Phases not named in `drive` are moved on by the first seat sending `next`. `away: 'part'` plays the same with that seat gone. Types: all-phases.d.mts.
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
+
+const WINDOWS = process.platform === 'win32';
+const running = new Set();
+
+/**
+ * Stops the child and everything it started. `npx` and the shell are only wrappers; the servers are
+ * further down, and `uzu dev` starts vite in a session of its own, so only `uzu dev` itself can stop
+ * it: ask it to quit (SIGTERM) before forcing anything. On Windows `taskkill /T` walks the tree.
+ */
+const killTree = (child, signal = 'SIGTERM') => {
+  running.delete(child);
+  if (child.pid === undefined) return;
+  try {
+    if (WINDOWS) spawnSync('taskkill', ['/T', '/F', '/PID', String(child.pid)], { stdio: 'ignore' });
+    else process.kill(-child.pid, signal); // the child leads its own group (detached)
+  } catch {
+    // already gone
+  }
+};
+
+/** Asks the tree to quit and waits for it, forcing it after a few seconds. */
+const stopTree = async (child) => {
+  killTree(child);
+  if (WINDOWS || child.exitCode !== null) return;
+  const gone = new Promise((done) => child.once('exit', done));
+  await Promise.race([gone, new Promise((done) => setTimeout(done, 5000))]);
+  killTree(child, 'SIGKILL');
+};
+
+// The finally below does not run when the test process is stopped (Ctrl+C, a test runner that
+// ends its worker): kill what is still running on the way out. Only SIGKILL cannot be caught.
+process.on('exit', () => running.forEach(killTree));
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  process.on(signal, () => {
+    running.forEach(killTree);
+    process.exit(1);
+  });
+}
+
+// What the handlers above cannot cover: the test process killed outright (SIGKILL, a runner that
+// force-ends its worker, a closed terminal window on Windows). A small process of its own watches
+// for the parent to go, then kills the tree. It leaves when the tree is gone.
+const WATCHER = `
+const [child, windows] = process.argv.slice(1).map(Number);
+process.stdin.resume();
+process.stdin.on('end', () => {
+  try {
+    if (windows) require('node:child_process').spawnSync('taskkill', ['/T', '/F', '/PID', String(child)], { stdio: 'ignore' });
+    else {
+      process.kill(-child, 'SIGTERM');
+      setTimeout(() => { try { process.kill(-child, 'SIGKILL'); } catch {} }, 3000);
+    }
+  } catch {}
+});
+`;
+// The pipe from the test process ends when that process does, however it ends.
+const watch = (child) => {
+  if (child.pid === undefined) return;
+  const watcher = spawn(process.execPath, ['-e', WATCHER, child.pid, WINDOWS ? 1 : 0], { detached: !WINDOWS, stdio: ['pipe', 'ignore', 'ignore'], windowsHide: true });
+  watcher.unref();
+  watcher.stdin.unref();
+};
 
 /** Every seat says it is ready (readyPhase). */
 export const ready = async ({ seats, send }) => {
@@ -47,8 +109,12 @@ const next = async ({ seats, send }) => send(seats[0], 'next');
 export async function allPhases({ phases, drive = {}, cwd = process.cwd(), stepTimeoutMs = 5000, away = [] }) {
   const gone = new Set([away].flat());
   const { chromium } = createRequire(resolve(cwd, 'package.json'))('playwright');
-  const dev = spawn('npx', ['uzu', 'dev'], { cwd, detached: true, stdio: ['ignore', 'pipe', 'inherit'], shell: process.platform === 'win32' });
+  // Not detached on Windows: there the whole tree is killed by taskkill, and a detached child gets a console of its own.
+  const dev = spawn('npx', ['uzu', 'dev'], { cwd, detached: !WINDOWS, stdio: ['ignore', 'pipe', 'inherit'], shell: WINDOWS });
+  running.add(dev);
+  watch(dev);
   let browser;
+  let startTimer;
   try {
     const url = await new Promise((done, fail) => {
       let log = '';
@@ -58,8 +124,9 @@ export async function allPhases({ phases, drive = {}, cwd = process.cwd(), stepT
         if (m) done(m[1]);
       });
       dev.once('exit', () => fail(new Error(`uzu dev exited early:\n${log}`)));
-      setTimeout(() => fail(new Error(`uzu dev did not start:\n${log}`)), 60_000);
+      startTimer = setTimeout(() => fail(new Error(`uzu dev did not start:\n${log}`)), 60_000);
     });
+    clearTimeout(startTimer);
     browser = await chromium.launch();
     const page = await browser.newPage();
     await page.goto(url);
@@ -107,11 +174,8 @@ export async function allPhases({ phases, drive = {}, cwd = process.cwd(), stepT
     const unique = [...new Map(warnings.map((w) => [`${w.action}/${w.api}`, w])).values()];
     if (unique.length) throw new Error(`prediction warnings (read the clock or a random number in a plain action): ${JSON.stringify(unique)}`);
   } finally {
-    await browser?.close();
-    try {
-      process.kill(-dev.pid, 'SIGTERM');
-    } catch {
-      dev.kill();
-    }
+    clearTimeout(startTimer);
+    await browser?.close().catch(() => {});
+    await stopTree(dev);
   }
 }
