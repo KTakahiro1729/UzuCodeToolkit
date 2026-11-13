@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import script from '../script/script.json';
 import logic from '../src/logic';
 
-const ctx = {} as never;
+const ctx = { time: 0 } as never;
 
 describe('hundred-arms sample', () => {
   it('script.json matches original.txt character for character', () => {

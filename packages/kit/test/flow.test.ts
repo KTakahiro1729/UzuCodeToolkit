@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyPhase, type FlowState, flowLogic, type PhaseLogic } from '../src';
 
-const ctx = {} as never;
+const ctx = { time: 0 } as never;
 const players = [
   { id: 'seat-a', nickname: 'A', iconUrl: '' },
   { id: 'seat-b', nickname: 'B', iconUrl: '' },

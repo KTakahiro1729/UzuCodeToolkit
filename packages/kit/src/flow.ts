@@ -4,7 +4,7 @@
  * work's GameLogic. A phase's state is made when the game enters it and kept after it ends.
  */
 
-import type { GameLogic, SeededRandom } from '@uzuhq/code-sdk';
+import type { Duration, GameLogic, GameTime, SeededRandom } from '@uzuhq/code-sdk';
 import { assignParts } from './parts';
 
 export interface PhaseArgs<P, A = Record<string, unknown>> {
@@ -17,15 +17,23 @@ export interface PhaseArgs<P, A = Record<string, unknown>> {
   /** Seat ID -> part ID. */
   parts: Record<string, string>;
   payload: A;
+  /** The game time of the action (ctx.time): the same value when the action is replayed. */
+  time: GameTime;
 }
 
 export interface PhaseLogic<P = any> {
-  /** Called when the game enters the phase; there is no state for it before. Deterministic. */
-  setup(parts: Record<string, string>): P;
+  /**
+   * Called when the game enters the phase; there is no state for it before. Deterministic.
+   * `time` is the game time of entering, for deadlines kept in the phase's state.
+   */
+  setup(parts: Record<string, string>, time: GameTime): P;
   /** Run both in client prediction and on the server: deterministic; reject by throwing. */
   actions?: Record<string, (a: PhaseArgs<P, any>) => void>;
-  /** Run on the server only; shuffles and other random draws go here, with `random`. */
-  serverActions?: Record<string, (a: PhaseArgs<P, any> & { random: SeededRandom }) => void>;
+  /**
+   * Run on the server only; shuffles and other random draws go here, with `random`. `after(d)` is
+   * the game time `d` ms from now, for a deadline kept in the phase's state.
+   */
+  serverActions?: Record<string, (a: PhaseArgs<P, any> & { random: SeededRandom; after(d: Duration): GameTime }) => void>;
   /** True once the phase is over; the game then enters the next phase. */
   done(state: P): boolean;
 }
@@ -57,22 +65,22 @@ export function flowLogic(
   if (phases.length === 0) throw new Error('a flow needs at least one phase');
   if (new Set(phases.map((p) => p.id)).size !== phases.length) throw new Error('phase IDs must differ');
 
-  const enter = (state: FlowState): void => {
+  const enter = (state: FlowState, time: GameTime): void => {
     const { id, logic } = phases[state.at];
-    state.phases[id] = logic.setup(state.parts);
+    state.phases[id] = logic.setup(state.parts, time);
   };
   const isDone = (state: FlowState): boolean => phases[state.at].logic.done(state.phases[phases[state.at].id]);
-  const moveOn = (state: FlowState): void => {
+  const moveOn = (state: FlowState, time: GameTime): void => {
     while (state.at < phases.length - 1 && isDone(state)) {
       state.at += 1;
-      enter(state);
+      enter(state, time);
     }
     state.ended = isDone(state);
   };
-  type Args = { state: FlowState; playerId: string; payload: any };
-  const argsFor = (phaseId: string, { state, playerId, payload }: Args): PhaseArgs<unknown> => {
+  type Args = { state: FlowState; playerId: string; payload: any; ctx: { time: GameTime } };
+  const argsFor = (phaseId: string, { state, playerId, payload, ctx }: Args): PhaseArgs<unknown> => {
     if (phases[state.at].id !== phaseId) throw new Error(`not in phase ${phaseId}`);
-    return { state: state.phases[phaseId], playerId, part: state.parts[playerId], parts: state.parts, payload };
+    return { state: state.phases[phaseId], playerId, part: state.parts[playerId], parts: state.parts, payload, time: ctx.time };
   };
 
   const actions: GameLogic<FlowState>['actions'] = {};
@@ -81,24 +89,24 @@ export function flowLogic(
     for (const [name, run] of Object.entries(logic.actions ?? {})) {
       actions[phaseAction(id, name)] = (a) => {
         run(argsFor(id, a));
-        moveOn(a.state);
+        moveOn(a.state, a.ctx.time);
       };
     }
     for (const [name, run] of Object.entries(logic.serverActions ?? {})) {
       serverActions[phaseAction(id, name)] = (a) => {
         // The same name in actions runs first and may already have moved the game on.
         if (logic.actions?.[name] && phases[a.state.at].id !== id) return;
-        run({ ...argsFor(id, a), random: a.ctx.random });
-        moveOn(a.state);
+        run({ ...argsFor(id, a), random: a.ctx.random, after: a.ctx.after });
+        moveOn(a.state, a.ctx.time);
       };
     }
   }
 
   return {
-    setup({ players }) {
+    setup({ players, ctx }) {
       const state: FlowState = { parts: assignParts(players, partIds), at: 0, phases: {}, ended: false };
-      enter(state);
-      moveOn(state);
+      enter(state, ctx.time);
+      moveOn(state, ctx.time);
       return state;
     },
     actions,

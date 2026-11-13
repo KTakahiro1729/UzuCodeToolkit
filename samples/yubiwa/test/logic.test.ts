@@ -4,7 +4,7 @@ import manifest from '../manifest.json';
 import script from '../script/script.json';
 import logic from '../src/logic';
 
-const ctx = {} as never;
+const ctx = { time: 0 } as never;
 
 describe('read-through', () => {
   it('each seat reads the lines of its part and the script reaches the end', () => {
