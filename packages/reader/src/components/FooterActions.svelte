@@ -2,7 +2,7 @@
   Puts a screen's actions into the footer, the one place for main actions on every screen: the
   content stays in the screen's own markup and styles and is moved into the footer's cell.
   It fades out and in with the screen (./motion.ts); the old and new actions share the cell.
-  `main` is the main button (and any capsule beside it), the last one the button to press now;
+  `main` is the main button, the last one the button to press now; two or more buttons there are fused into one capsule;
   `aside` holds the items to its left (`Slot`: more time, the next phase, the time left). Why a
   button cannot be pressed, or what it waits for, is its `note`, not a line of its own.
   `place="status"` is the older way, a line above the row; the row shows only while something is
@@ -58,6 +58,24 @@
   .actions > :global(button:last-child) {
     flex: 1 1 6em;
     min-width: 6em;
+  }
+  /*
+   * Two or more buttons that could each be the main one are fused into a single capsule: the
+   * outer ends round, the joints square with a thin seam of the background between them.
+   */
+  .actions[data-uzu-actions='main'] > :global(button:not(:only-child)) {
+    border-radius: 0;
+  }
+  .actions[data-uzu-actions='main'] > :global(button:not(:only-child):first-child) {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+  }
+  .actions[data-uzu-actions='main'] > :global(button:not(:only-child):last-child) {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+  }
+  .actions[data-uzu-actions='main']:has(> :global(button + button)) {
+    gap: 2px;
   }
   /* The items beside the main button keep to one row. */
   .actions[data-uzu-actions='aside'] {
