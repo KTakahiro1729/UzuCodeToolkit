@@ -187,10 +187,12 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Introduction with the cast
 
-- The introduction shows its story text, then the game's flow (`FlowStrip`), then whom you play (`cast.you`,
-  the part's name bold) and every part as a white block: icon, name and one
-  line on who they are (the manifest's description). Yours comes first and
-  takes your role's tint.
+- The introduction shows its story text, then the game's flow (`FlowStrip`),
+  then the cast. Your part has a block of its own (`cast.mine`; icon, the
+  part's name bold, one line on who they are) in your role's tint. The other
+  parts follow under `cast.others` as plain text on the page, with no block
+  (small icon, name, one line), so nothing in the list looks like a choice
+  that can be changed.
 - In the footer one ready button (`button.ready`), with no count of who is
   ready (owner's decision). Once tapped it keeps its name, turns outlined in a
   dark 2px edge with a tick (never red), and the band checks your icon (`readyDone`); tapping it again

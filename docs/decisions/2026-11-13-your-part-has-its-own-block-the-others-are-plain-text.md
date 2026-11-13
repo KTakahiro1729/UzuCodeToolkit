@@ -1,0 +1,3 @@
+# Your part has its own block; the other parts are plain text
+
+On the introduction, a list of white cards with only yours tinted looked like a choice that could be changed. Your part now sits alone in a tinted block headed `cast.mine`; the other parts are plain text under `cast.others`, with no card, so only yours looks like a thing. Not taken: a ruled list with an "you" mark (A), icons and names only with descriptions for yours alone (C, which drops the other parts' descriptions), and equal white cards with a "you" tag (D, which keeps the card shape of a choice). Replaces the `cast.you` sentence. Code: `CastView.svelte`; `docs/design.md`, Introduction with the cast.
