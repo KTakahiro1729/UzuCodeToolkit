@@ -20,7 +20,6 @@
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings';
-  import { waitNote } from '../wait';
 
   // `state` is renamed: the name clashes with the $state rune.
   let {
@@ -99,7 +98,7 @@
   {#snippet extras()}
     <Slot icon="plus" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Slot>
   {/snippet}
-  <NextButton on={done} disabled={!done && !filled} note={done ? waitNote(Object.values(phase.ready).filter((r) => !r).length) : !filled ? STRINGS['status.fillSettings'] : undefined} onclick={() => (done ? send('unready') : finish())}>
+  <NextButton on={done} disabled={!done && !filled} note={done ? STRINGS['status.waitOthers'] : !filled ? STRINGS['status.fillSettings'] : undefined} onclick={() => (done ? send('unready') : finish())}>
     {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.done']}
   </NextButton>
 </TransitionFooter>

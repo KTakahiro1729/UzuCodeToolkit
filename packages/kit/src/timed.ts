@@ -2,7 +2,7 @@
  * A phase of text that runs for a time, such as a reading or a briefing: a timer shows the time
  * left, any player can pause it or ask for more, and the phase ends when the time runs out or
  * when enough players say they are done. Which players that takes is `rule` (see transition.ts):
- * everyone, a majority, anyone, one designated part, or none (the time alone ends it).
+ * everyone, anyone, one designated part, or none (the time alone ends it).
  * A work uses it for any phase it likes; nothing in the toolkit needs it.
  */
 

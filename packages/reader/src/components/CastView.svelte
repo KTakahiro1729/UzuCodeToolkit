@@ -15,7 +15,6 @@
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
   import STRINGS from '../strings';
-  import { waitNote } from '../wait';
 
   let {
     state,
@@ -72,7 +71,7 @@
   </div>
 </div>
 <FooterActions>
-  <NextButton on={ready} note={ready ? waitNote(Object.keys(parts).length - state.ready.length) : undefined} onclick={() => send(ready ? 'unready' : 'ready')}>
+  <NextButton on={ready} note={ready ? STRINGS['status.waitOthers'] : undefined} onclick={() => send(ready ? 'unready' : 'ready')}>
     {#if ready}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.ready']}
   </NextButton>
 </FooterActions>

@@ -50,12 +50,7 @@ describe('timedPhase', () => {
     act(state, 'done', 's3');
     expect(logic.done(state)).toBe(true);
   });
-  it('ends on a majority, or on any one player', () => {
-    const m = make('majority');
-    m.act(m.state, 'done', 's1');
-    expect(m.logic.done(m.state)).toBe(false);
-    m.act(m.state, 'done', 's2');
-    expect(m.logic.done(m.state)).toBe(true);
+  it('ends on any one player', () => {
     const a = make('anyone');
     a.act(a.state, 'done', 's3');
     expect(a.logic.done(a.state)).toBe(true);

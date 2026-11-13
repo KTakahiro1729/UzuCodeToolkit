@@ -85,15 +85,14 @@ describe('static checks', () => {
 });
 
 describe('static warnings never fail the check', () => {
-  it('warns of a portrait work with no max-width, fixed px sizes, no orientation and no toolkit part', () => {
+  it('warns of a portrait work with no max-width and of fixed px sizes', () => {
     const portrait = work({ 'manifest.json': JSON.stringify({ orientation: 'portrait' }), 'src/main.ts': 'startFlow(logic);\n' });
     expect(rules(checkWork(portrait).warnings)).toContain('no-max-width');
-    expect(rules(checkWork(work({ 'manifest.json': '{}' })).warnings)).toContain('no-orientation');
+    expect(checkWork(work({ 'manifest.json': '{}' })).warnings).toEqual([]);
     const px = checkWork(work({ 'src/a.css': '.a { font-size: 14px; border: 1px solid; }\n' }));
     expect(px.errors).toEqual([]);
     expect(rules(px.warnings)).toEqual(['px-fixed']);
-    expect(rules(checkWork(work()).warnings)).not.toContain('no-toolkit');
-    expect(rules(checkWork(work({ 'src/main.ts': 'firstFrameReady();\n' })).warnings)).toContain('no-toolkit');
+    expect(checkWork(work({ 'src/main.ts': 'firstFrameReady();\n' })).warnings).toEqual([]);
   });
   it('does not warn of a 1px line or px in a border', () => {
     expect(checkWork(work({ 'src/a.css': '.a { border: 2px solid; width: 1px; }\n' })).warnings).toEqual([]);

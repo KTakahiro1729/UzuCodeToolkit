@@ -13,10 +13,8 @@
 //   orientation      manifest.orientation is not landscape or portrait; the work locks or rotates the screen
 //                    itself; or the orientation it passes to startFlow()/run() differs from the manifest's.
 // Warnings (a choice the author may have good reason for; never fail):
-//   no-orientation   the manifest names no orientation.
 //   no-max-width     a portrait work with no max-width anywhere: a wide PC window stretches it.
 //   px-fixed         sizes written in px (the screen's em is what scales).
-//   no-toolkit       the work uses no toolkit part.
 //   font-glyph       Japanese text in the work's JSON data or source that neither bundled font subset holds: it would be
 //                    drawn in a fallback font. (The listed sources of fonts.config.json are an error in the fonts test;
 //                    this scan finds text that no list names. A string that is never shown can trigger it, hence a warning.)
@@ -132,8 +130,7 @@ export function checkWork(dir) {
 
   // orientation: the manifest, and what the work passes to the SDK
   const orientation = manifest.orientation;
-  if (orientation === undefined) add(warnings, 'no-orientation', manifestFile, 0, 'manifest.json names no orientation (landscape or portrait).');
-  else if (orientation !== 'landscape' && orientation !== 'portrait') add(errors, 'orientation', manifestFile, 0, `manifest orientation "${orientation}" is not landscape or portrait.`);
+  if (orientation !== undefined && orientation !== 'landscape' && orientation !== 'portrait') add(errors, 'orientation', manifestFile, 0, `manifest orientation "${orientation}" is not landscape or portrait.`);
   for (const [f, text] of stripped)
     for (const m of text.matchAll(/\borientation\s*:\s*['"](landscape|portrait)['"]|\bstartReader\([^)]*,\s*['"](landscape|portrait)['"]\s*\)/g))
       if ((orientation === 'landscape' || orientation === 'portrait') && (m[1] ?? m[2]) !== orientation) add(errors, 'orientation', f, lineOf(text, m.index), `passes orientation "${m[1] ?? m[2]}" but manifest.json says "${orientation}".`);
@@ -169,9 +166,6 @@ export function checkWork(dir) {
       }
     }
   }
-
-  // no-toolkit
-  if (!/@uzu-toolkit\//.test(all)) add(warnings, 'no-toolkit', dir, 0, 'No toolkit part is imported; phases, handouts and read-through come from @uzu-toolkit/kit and @uzu-toolkit/reader.');
 
   return { errors, warnings };
 }

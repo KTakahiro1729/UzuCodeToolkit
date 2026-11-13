@@ -1,5 +1,7 @@
 # Checks fail only on defects the official docs name; style is a warning
 
+Superseded in part by 2026-11-13-the-toolkit-drops-options-no-work-uses.md (the warnings `no-orientation` and `no-toolkit`).
+
 The static check (`tools/check/static.mjs`) and the away-seat run (`allPhases({ away })`) follow the rule "the toolkit prevents a mistake no eye can see" without tightening what an author may do.
 
 - **Errors**: a missing `firstFrameReady` (also through `startFlow`/`startReader`), a file name outside `[A-Za-z0-9_.-]`, an outside address, an absolute path, `Date.now`/`new Date`/`Math.random` and the like in the server logic and what it imports, a screen lock or CSS rotation by the work, and an orientation that differs from the manifest's. Each is named in certification or breaks online play, and the author cannot see it. A line that must stay says `uzu-check-ignore` in a comment.
