@@ -13,7 +13,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "harness": "npm run harness -w sample-hundred-arms",
     "build": "npm run build -w sample-hundred-arms",
-    "lint": "stylelint \"packages/*/src/**/*.{css,svelte}\" \"samples/*/src/**/*.{css,svelte}\""
+    "lint": "stylelint \"packages/*/src/**/*.{css,svelte}\" \"samples/*/src/**/*.{css,svelte}\"",
+    "fonts": "sh scripts/subset-fonts.sh"
   },
   "engines": {
     "node": ">=22.12"
