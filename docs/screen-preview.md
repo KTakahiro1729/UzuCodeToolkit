@@ -49,3 +49,26 @@ sets one.
 
 Name parts the way the owner talks about them. Keep numbers stable between
 captures, so add new parts at the end.
+
+## Check for overflow
+
+```bash
+node tools/screen-preview/capture.mjs --check samples/yubiwa
+```
+
+walks the same screens in both orientations, writes no page, and lists what
+spills over ([`overflow.js`](../tools/screen-preview/overflow.js)), exiting 1
+if anything does:
+
+| Kind | Means |
+|---|---|
+| `screen` | A box runs past the viewport |
+| `inset` | Text or an image sits under the safe area or the UZU HUD (backgrounds may reach under them) |
+| `parent` | A box runs past its parent, or text past its own box, where they show overflow |
+| `clipped` | An element that hides overflow cuts its content off, or a scroll list runs sideways |
+
+Each line gives the side, how many px it is out by, the element and the start
+of its text. Inside a scroll list only the list itself has to fit. Mark an
+element `data-overflow-ok` where spilling over is meant; the check skips it and
+everything in it. It sees only the screens and the text the config reaches, so
+run it on every sample after a layout change.
