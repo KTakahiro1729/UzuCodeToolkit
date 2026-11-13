@@ -12,6 +12,7 @@
 
   const at = $derived(game.state?.at ?? 0);
   const phase = $derived(phases[at]);
+  const names = $derived(Object.fromEntries(parts.map((p) => [p.id, p.name])));
   const myPart = $derived(game.me ? game.state?.parts[game.me] : undefined);
 </script>
 
@@ -24,6 +25,7 @@
         me={game.me}
         part={myPart}
         parts={game.state.parts}
+        {names}
         send={(name: string, payload: Record<string, unknown> = {}) => sendAction(phaseAction(phase.id, name), payload)}
         last={at === phases.length - 1}
       />

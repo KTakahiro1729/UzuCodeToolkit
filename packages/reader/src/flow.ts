@@ -13,6 +13,8 @@ export interface PhaseViewProps<P = any> {
   part: string;
   /** Seat ID -> part ID. */
   parts: Record<string, string>;
+  /** Part ID -> its display name (manifest characters[].name). */
+  names: Record<string, string>;
   /** Send one of this phase's actions (sent as `${phaseId}:${name}`). */
   send(name: string, payload?: Record<string, unknown>): void;
   /** True in the work's last phase. */
