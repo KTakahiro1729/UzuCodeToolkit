@@ -222,6 +222,20 @@ Decoration is out of scope, but it must not break the rules above:
 - Text typed into a setting is the one text the bundled subsets cannot hold,
   so it may fall back to a system face.
 
+### Game select
+
+- The games this many players can play, as a list of white blocks (game
+  names from the work's data), and the next button under it. A game that
+  does not take this many players is left out, unless the work names a
+  spectator part and the game takes everyone else: that part then watches
+  (owner's decision for InterstellarBG, where the half-GM part watches).
+- While a game is played, the game fills the screen, the band names it, and a
+  back button sits under it. Back is plain quiet text while the game runs and
+  becomes the filled button once the game is done, since going back is then
+  the one thing left to do. Back works at any time, so a game with no end
+  never traps the players.
+- Playing cards are Kennard's deck, each face loaded the first time it shows.
+
 ### Other screens
 
 - Screens other than the read-through, such as the afterword, do not use the

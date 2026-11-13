@@ -14,8 +14,8 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 
 | Path | Role |
 |---|---|
-| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`) and ruby (`parseRuby`). Called from both server actions and the view |
-| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
+| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`) and playing cards (`deck`, `deal`). Called from both server actions and the view |
+| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `HandoutView`, `GameSelectView`, `PlayingCard`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
 | `samples/hundred-arms` | Sample work 百本腕と勇者. Two players |
 | `samples/yubiwa` | Sample work 指環 (江戸川乱歩, Aozora Bunko). Two players |
 | `samples/mittsu-no-takara` | Sample work 三つの宝 (芥川龍之介, Aozora Bunko). Three players, two of them doubling roles |
@@ -70,5 +70,6 @@ scripts/subset-fonts.sh samples/<name>
 - Code: MIT (`LICENSE`)
 - Script text (`samples/hundred-arms/script/`): CC BY 4.0, author あろすてりっく (`script/LICENSE.md`). Never change any script's wording; each sample has a test that checks `script.json` against `original.txt`.
 - 指環 and 三つの宝 (`samples/yubiwa/script/`, `samples/mittsu-no-takara/script/`): public domain in Japan, from Aozora Bunko (`script/LICENSE.md`).
+- Playing cards (`packages/reader/src/cards/`): CC0, Adrian Kennard's SVG deck (`cards/LICENSE.md`).
 - Fonts (`samples/*/src/fonts/`): SIL Open Font License 1.1 (`OFL-ShipporiMincho.txt`, `OFL-BIZUDPGothic.txt`)
 - The official sample densetsu-no-tantei has no license notice, so do not copy its code.
