@@ -210,7 +210,8 @@ Decoration is out of scope, but it must not break the rules above:
 - The column scrolls; under it, always in view, one row: the time left, the
   extension button (`handout.extend`), and the done button (`handout.done`).
   The done button is the next step, so it is the filled one; it stays greyed
-  until every setting is filled in. The extension button is white, not filled,
+  until every setting is filled in (a setting marked optional may stay blank).
+  The extension button is white, not filled,
   since it is not the next step.
 - Once you tap done, your settings lock, the extension button goes and the
   done button greys and says `handout.waiting`.

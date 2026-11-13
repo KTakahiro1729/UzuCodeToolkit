@@ -84,3 +84,54 @@ describe('phase deadline', () => {
     expect(state.at).toBe(2);
   });
 });
+
+describe('reopen', () => {
+  /** Over on `end`; reopen undoes it unless `lock` was sent. */
+  const reopenable: PhaseLogic<{ over: boolean; lock: boolean }> = {
+    setup: () => ({ over: false, lock: false }),
+    actions: {
+      end({ state }) {
+        state.over = true;
+      },
+      lock({ state }) {
+        state.lock = true;
+        state.over = true;
+      },
+    },
+    done: (state) => state.over,
+    reopen({ state }) {
+      if (state.lock) throw new Error('locked');
+      state.over = false;
+    },
+  };
+  const logic = flowLogic(
+    [
+      { id: 'read', logic: reopenable },
+      { id: 'next', logic: emptyPhase() },
+      { id: 'last', logic: emptyPhase() },
+    ],
+    ['x', 'y'],
+  );
+  const send = (state: FlowState, name: string) => logic.actions[name]({ state, playerId: 'seat-a', payload: {}, ctx });
+
+  it('goes back from the next phase and sets it up again later', () => {
+    const state = logic.setup({ players, ctx });
+    send(state, 'read:end');
+    expect(state.at).toBe(1);
+    send(state, 'read:reopen');
+    expect(state.at).toBe(0);
+    expect(state.phases).toEqual({ read: { over: false, lock: false } });
+    send(state, 'read:end');
+    expect(state.phases.next).toEqual({ next: false });
+  });
+  it('refuses once anyone acts in the next phase, or when the phase says no', () => {
+    const state = logic.setup({ players, ctx });
+    expect(() => send(state, 'read:reopen')).toThrow();
+    send(state, 'read:end');
+    send(state, 'next:next');
+    expect(() => send(state, 'read:reopen')).toThrow();
+    const locked = logic.setup({ players, ctx });
+    send(locked, 'read:lock');
+    expect(() => send(locked, 'read:reopen')).toThrow();
+  });
+});
