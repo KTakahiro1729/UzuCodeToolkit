@@ -1,9 +1,10 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 // @ts-expect-error the types sit beside it, but the config's module resolution does not pick up .d.mts here
 import { allPhases } from '../../../tools/e2e/all-phases.mjs';
+import { FONT_FILES } from '../../../tools/fonts/fonts.mjs';
 import { checkWork } from '../../../tools/check/static.mjs';
 
 /**
@@ -96,6 +97,28 @@ describe('static warnings never fail the check', () => {
   });
   it('does not warn of a 1px line or px in a border', () => {
     expect(checkWork(work({ 'src/a.css': '.a { border: 2px solid; width: 1px; }\n' })).warnings).toEqual([]);
+  });
+});
+
+describe('text no font subset holds', () => {
+  const subsets = (name: string) => readFileSync(resolve(__dirname, '../../../samples/hundred-arms/src/fonts', name));
+  const withFonts = (changes: Record<string, string | null> = {}) => {
+    const dir = work({ 'fonts.config.json': JSON.stringify({ out: 'src/fonts' }), ...changes });
+    mkdirSync(join(dir, 'src/fonts'), { recursive: true });
+    for (const n of [...FONT_FILES.story, ...FONT_FILES.ui]) writeFileSync(join(dir, 'src/fonts', n), subsets(n));
+    return dir;
+  };
+  it('warns of a character in a data file or a screen that the subsets lack, and only warns', () => {
+    const data = checkWork(withFonts({ 'script/lines.json': JSON.stringify({ lines: [{ text: '龘' }] }) }));
+    expect(data.errors).toEqual([]);
+    expect(data.warnings.filter((w) => w.rule === 'font-glyph').map((w) => w.file)).toEqual(['script/lines.json']);
+    const view = checkWork(withFonts({ 'src/View.svelte': '<p>鬱</p>\n' }));
+    expect(view.warnings.filter((w) => w.rule === 'font-glyph').map((w) => w.file)).toEqual(['src/View.svelte']);
+  });
+  it('stays quiet for held characters, a comment, and a work with no fonts.config.json', () => {
+    const quiet = checkWork(withFonts({ 'script/lines.json': JSON.stringify({ t: '百' }), 'src/View.svelte': '<!-- 鬱 -->\n<p>百</p>\n' }));
+    expect(quiet.warnings.filter((w) => w.rule === 'font-glyph')).toEqual([]);
+    expect(checkWork(work({ 'script/lines.json': JSON.stringify({ t: '龘' }) })).warnings).toEqual([]);
   });
 });
 

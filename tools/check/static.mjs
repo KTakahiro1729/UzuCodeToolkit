@@ -17,9 +17,13 @@
 //   no-max-width     a portrait work with no max-width anywhere: a wide PC window stretches it.
 //   px-fixed         sizes written in px (the screen's em is what scales).
 //   no-toolkit       the work uses no toolkit part.
+//   font-glyph       Japanese text in the work's JSON data or source that neither bundled font subset holds: it would be
+//                    drawn in a fallback font. (The listed sources of fonts.config.json are an error in the fonts test;
+//                    this scan finds text that no list names. A string that is never shown can trigger it, hence a warning.)
 // A line that must stay can say `uzu-check-ignore` in a comment on it or on the line above.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
+import { FONT_FILES, fontCodePoints } from '../fonts/fonts.mjs';
 
 const CODE = new Set(['.ts', '.js', '.mjs', '.svelte']);
 const STYLE = new Set(['.css', '.svelte', '.html']);
@@ -70,6 +74,12 @@ const logicGraph = (dir, entry) => {
   visit(entry);
   return [...seen];
 };
+
+const JAPANESE = /[\u3000-\u30ff\u3400-\u9fff\uff00-\uffef]/u;
+const stringsIn = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(stringsIn) : []);
+
+/** Japanese characters (kana, kanji, full-width marks) of `text` that no bundled font subset holds. */
+const unfont = (text, have, skip) => [...new Set([...text].filter((c) => JAPANESE.test(c) && !skip.has(c) && !have.has(c.codePointAt(0))))];
 
 /**
  * @param {string} dir The work's folder (where manifest.json is).
@@ -138,6 +148,27 @@ export function checkWork(dir) {
       for (const h of hits(raw, blank(raw, extname(f)), /\bDate\.now\s*\(|\bnew\s+Date\b|\bperformance\.now\s*\(|\bMath\.random\s*\(|\bcrypto\.(?:getRandomValues|randomUUID)\s*\(/g))
         add(errors, 'nondeterminism', f, h.line, `${h.match.replace(/\s*\($/, '')} in server logic: an action runs in prediction and on the server and would differ. Use the action's time, or a serverAction's random.`);
     }
+
+  // font-glyph: against the subsets the work's fonts.config.json builds
+  const fontConfig = join(dir, 'fonts.config.json');
+  if (existsSync(fontConfig)) {
+    const config = JSON.parse(readFileSync(fontConfig, 'utf8'));
+    const out = resolve(dir, config.out ?? 'src/fonts');
+    const files = [...FONT_FILES.story, ...FONT_FILES.ui].map((n) => join(out, n)).filter(existsSync);
+    if (files.length) {
+      const have = new Set(files.flatMap((f) => [...fontCodePoints(f)]));
+      const skip = new Set([...(config.ignore ?? '')]);
+      const data = [...walk(join(dir, 'script')), ...walk(join(dir, 'src'))].filter((f) => extname(f) === '.json');
+      for (const f of data) {
+        const lost = unfont(stringsIn(JSON.parse(readFileSync(f, 'utf8'))).join(''), have, skip);
+        if (lost.length) add(warnings, 'font-glyph', f, 0, `${lost.length} character(s) in no font subset, drawn in a fallback font: ${lost.slice(0, 20).join('')}. List the file in fonts.config.json and run npm run fonts.`);
+      }
+      for (const [f, text] of stripped) {
+        const lost = unfont(text, have, skip);
+        if (lost.length) add(warnings, 'font-glyph', f, 0, `${lost.length} character(s) in no font subset, drawn in a fallback font: ${lost.slice(0, 20).join('')}.`);
+      }
+    }
+  }
 
   // no-toolkit
   if (!/@uzu-toolkit\//.test(all)) add(warnings, 'no-toolkit', dir, 0, 'No toolkit part is imported; phases, handouts and read-through come from @uzu-toolkit/kit and @uzu-toolkit/reader.');
