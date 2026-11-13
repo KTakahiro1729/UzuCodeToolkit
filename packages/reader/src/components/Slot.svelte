@@ -18,7 +18,7 @@
     children,
   }: {
     /** `sheet` (something to read), `clock` (time), `plus` (more), `next` (on to the next phase). */
-    icon: 'sheet' | 'clock' | 'plus' | 'next';
+    icon: 'sheet' | 'clock' | 'plus' | 'next' | 'pause' | 'play';
     onclick?: () => void;
     disabled?: boolean;
     /** The open one of several (the handouts' sheet). */
@@ -34,6 +34,8 @@
   <svg viewBox="0 0 16 16" aria-hidden="true">
     {#if icon === 'sheet'}<rect x="3" y="1.5" width="10" height="13" rx="1.5" /><path d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3" />
     {:else if icon === 'clock'}<circle cx="8" cy="8" r="6.2" /><path d="M8 4.5V8l2.5 1.5" />
+    {:else if icon === 'pause'}<path d="M6 3.5v9M10 3.5v9" />
+    {:else if icon === 'play'}<path d="M5 3l8 5-8 5z" />
     {:else if icon === 'plus'}<path d="M8 3v10M3 8h10" />
     {:else}<path d="M3 3.5l5 4.5-5 4.5M8.5 3.5L13.5 8l-5 4.5" />{/if}
   </svg>
@@ -55,7 +57,7 @@
     align-items: center;
     justify-content: center;
     margin: 0;
-    padding: 0 0.25em;
+    padding: 0 0.1em;
     border: none;
     background: none;
     color: var(--color-text-quiet);

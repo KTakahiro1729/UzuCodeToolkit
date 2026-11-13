@@ -155,3 +155,4 @@ export function startReader(script: Script, logic: GameLogic<FlowState>, orienta
     orientation,
   });
 }
+export { default as TransitionFooter } from './components/TransitionFooter.svelte';

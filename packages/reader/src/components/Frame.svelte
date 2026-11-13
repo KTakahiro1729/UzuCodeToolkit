@@ -158,7 +158,7 @@
   .act {
     display: flex;
     align-items: stretch;
-    gap: 0.4em;
+    gap: 0.2em;
     /* On a wide screen the row keeps to the thumb's side, so the main button is not a bar across the screen. */
     width: 100%;
     max-width: 34em;

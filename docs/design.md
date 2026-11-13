@@ -264,9 +264,9 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 - The main action area: a full-width white block along the bottom edge, the
   band's counterpart, on every screen, as one row.
-- **The main button** is at the right edge and takes the room the items leave; **it is
+- **The main button** is at the right edge, one fixed width; **it is
   always the one to press now** (the send button of a chat), in every phase. It is the
-  filled one, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
+  filled one, a fixed 7.4em wide in every state, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
   screen) with room for a label and a note, so the footer keeps its height in every
   state. Screens put it there with `FooterActions`. Buttons beside it that could
   each be the main one are fused with it into one capsule (round at the outer ends, a thin
@@ -282,7 +282,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   its label, inside the button (`Button` `note`, `status.*` strings): "他の人を待っています"
   after you tap ready or done, "相手の番です" while another player reads, "設定が未記入"
   while the handout's done button is greyed, "ゲームを選ぶと押せます" on the play button,
-  "全員で進みます" on a next-phase button any one player can tap for everyone. A button that
+  "押すと全員が進みます" on a next-phase button any one player can tap for everyone. A button that
   can be pressed and says what it does by its label alone has no note: text is read only
   where its absence would leave the player guessing. It states a fact of the screen; it
   never repeats the label or invents a rule. 16px, quiet colour.
@@ -403,8 +403,9 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
-- In the footer, always in view: the time left and the extension (`handout.extend`,
-  one more minute for everyone) as items at the left (`Slot`), and the done button
+- In the footer, always in view: the time left (leftmost, large and dark), then pause or
+  resume (any player, for everyone) and the extension (`handout.extend`,
+  one more minute for everyone) as items at the left (`Slot`, laid out by `TransitionFooter`), and the done button
   (`button.done`) as the main button. The done button is the next step, so it is the filled
   one; it stays greyed until every setting is filled in (a setting marked optional may stay
   blank), and says so in its note. The extension is an item, not a capsule, since it is not the

@@ -40,7 +40,7 @@
    */
   .actions {
     --button-pad-y: 0.62em;
-    --button-pad-x: 0.9em;
+    --button-pad-x: 0.55em;
     display: flex;
     justify-content: flex-end;
     align-items: stretch;
@@ -53,9 +53,10 @@
     /* Room for a label and a note, so the footer never changes height; also 9mm or more to tap at the screen's edge. */
     min-height: 3.5em;
   }
+  /* The main button has one width in every state and phase, so it stays where the thumb expects it. */
   .actions > :global(button:last-child) {
-    flex: 1 1 6em;
-    min-width: 6em;
+    flex: none;
+    width: 7.4em;
   }
   /*
    * Two or more buttons that could each be the main one are fused into a single capsule: the
@@ -79,7 +80,7 @@
   .actions[data-uzu-actions='aside'] {
     flex-wrap: nowrap;
     justify-content: flex-start;
-    gap: 0.4em;
+    gap: 0.2em;
   }
   /* A line of text alone in the row (such as the watching mark) stays centred. */
   .actions > :global(p) {
