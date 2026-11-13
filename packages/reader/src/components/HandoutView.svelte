@@ -10,12 +10,12 @@
   running out loses none.
 -->
 <script lang="ts">
-  import { type Handout, type HandoutState, HANDOUT_VALUE_MAX, settingsOf } from '@uzu-toolkit/kit';
-  import { gameTime, minus } from '@uzuhq/code-sdk';
+  import { type Handout, type HandoutState, HANDOUT_VALUE_MAX, secondsLeft, settingsOf } from '@uzu-toolkit/kit';
+  import { gameTime } from '@uzuhq/code-sdk';
   import type { PhaseViewProps } from '../flow';
   import { sceneIn, sceneOut } from './motion';
   import HandoutTabs from './HandoutTabs.svelte';
-  import FooterActions from './FooterActions.svelte';
+  import TransitionFooter from './TransitionFooter.svelte';
   import Slot from './Slot.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
@@ -42,12 +42,12 @@
   // Seconds left, from the game clock (it freezes while the game is paused).
   let left = $state(0);
   $effect(() => {
-    const tick = () => (left = Math.max(0, Math.ceil(minus(phase.endsAt, gameTime()) / 1000)));
+    // While paused the time left stands at the moment of the pause.
+    const tick = () => (left = secondsLeft(phase.endsAt, phase.pausedAt ?? gameTime()));
     tick();
     const t = setInterval(tick, 500);
     return () => clearInterval(t);
   });
-  const clock = $derived(`${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`);
 
   function commit(id: string): void {
     if (value(id) !== phase.values[part]?.[id]) send('set', { id, value: value(id) });
@@ -92,16 +92,15 @@
     {/snippet}
   </HandoutTabs>
 </div>
-<!-- Beside the main button: more time and the time left; the main button says why it cannot be pressed. -->
-<FooterActions place="aside">
-  <Slot icon="plus" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Slot>
-  <Slot icon="clock" class="time"><span>{STRINGS['time.left']}</span> <b class="clock">{clock}</b></Slot>
-</FooterActions>
-<FooterActions>
+<!-- The time left first (always the leftmost), then pause and more time; the main button says why it cannot be pressed. -->
+<TransitionFooter {left} paused={!!phase.pausedAt} onpause={() => send('pause')} onresume={() => send('resume')}>
+  {#snippet extras()}
+    <Slot icon="plus" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Slot>
+  {/snippet}
   <NextButton on={done} disabled={!done && !filled} note={done ? STRINGS['status.waitOthers'] : !filled ? STRINGS['status.fillSettings'] : undefined} onclick={() => (done ? send('unready') : finish())}>
     {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.done']}
   </NextButton>
-</FooterActions>
+</TransitionFooter>
 
 <style>
   /* Fills the area between the band and the footer with the tabs and their text. */
@@ -153,13 +152,6 @@
   .optional {
     padding-inline-start: 0.6em;
     color: var(--color-text-quiet);
-  }
-  /* The time left: large and dark, the one number to watch. */
-  .clock {
-    font-size: 1.5em;
-    line-height: 1.1;
-    color: var(--color-text);
-    font-variant-numeric: tabular-nums;
   }
   /* Done: the button keeps its name, outlined in a dark 2px edge with a tick, so it reads as pressed. */
   .tick {

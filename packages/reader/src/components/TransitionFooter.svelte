@@ -1,0 +1,59 @@
+<!--
+  The footer of a phase that ends by time (docs/decisions: a phase moves on by time or by people).
+  The time left is the leftmost item, large and dark; its operations follow it (pause or resume,
+  then `extras`, such as more time); the main button, if the phase has one, is the children and
+  stays at the right edge. A phase that only waits for its time has no main button: give no children.
+-->
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+  import FooterActions from './FooterActions.svelte';
+  import Slot from './Slot.svelte';
+  import STRINGS from '../strings';
+  import { formatClock } from '@uzu-toolkit/kit';
+
+  let {
+    left,
+    paused = false,
+    onpause = undefined,
+    onresume = undefined,
+    extras = undefined,
+    children = undefined,
+  }: {
+    /** Whole seconds left. */
+    left: number;
+    paused?: boolean;
+    /** Given with `onresume`, the pause item shows. */
+    onpause?: () => void;
+    onresume?: () => void;
+    extras?: Snippet;
+    /** The main button (and any button fused with it). */
+    children?: Snippet;
+  } = $props();
+</script>
+
+<FooterActions place="aside">
+  <Slot icon="clock" class="time{paused ? ' paused' : ''}"><span>{STRINGS['time.left']}</span> <b class="clock">{formatClock(left)}</b></Slot>
+  {#if onpause && onresume}
+    {#if paused}
+      <Slot icon="play" onclick={onresume}>{STRINGS['footer.resume']}</Slot>
+    {:else}
+      <Slot icon="pause" onclick={onpause}>{STRINGS['footer.pause']}</Slot>
+    {/if}
+  {/if}
+  {@render extras?.()}
+</FooterActions>
+{#if children}<FooterActions>{@render children()}</FooterActions>{/if}
+
+<style>
+  /* The time left: large and dark, the one number to watch; quiet while paused. */
+  :global(.slot.time .clock) {
+    font-size: 1.9em;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.slot.time.paused .clock) {
+    color: var(--color-text-quiet);
+  }
+</style>
