@@ -55,8 +55,9 @@
   }
   /* The main button has one width in every state and phase, so it stays where the thumb expects it. */
   .actions > :global(button:last-child) {
-    flex: none;
-    width: 7.4em;
+    /* Fixed, and gives way only when the items beside it leave too little room. */
+    flex: 0 1 7.4em;
+    min-width: 6.4em;
   }
   /*
    * Two or more buttons that could each be the main one are fused into a single capsule: the

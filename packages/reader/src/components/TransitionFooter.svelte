@@ -81,7 +81,7 @@
     display: none;
   }
   :global(.slot.time .clock.urgent) {
-    padding: 0 0.25em;
+    padding: 0 0.1em;
     border: 2px solid var(--color-text);
     border-radius: 0.4em;
     font-weight: 800;
