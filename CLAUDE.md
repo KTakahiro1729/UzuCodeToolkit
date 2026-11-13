@@ -4,7 +4,7 @@ Toolkit for making murder-mystery games with UZU Code (`run()` from `@uzuhq/code
 
 ## Design policy
 
-Read [docs/design.md](docs/design.md) before any UI work. It holds the functional design rules every screen follows.
+Read [docs/design.md](docs/design.md) before any UI work: the short list of rules every screen follows. Then read only the component spec in `docs/design/` for the part you change (the index is at the end of design.md). Do not read the other specs.
 
 ## Language
 
@@ -47,7 +47,7 @@ A work changes its look without a toolkit change. Find the smallest piece below 
 
 The dev harness and the screen preview find the main action, the phase name and the scrolling list by three marks: `data-uzu-actions="main"` (set by `FooterActions`), `data-uzu-phase` and `data-uzu-scroll`. A custom shell or screen keeps them (docs/screen-preview.md). The logic tests, the work's flow test and the build-size test do not depend on the screens.
 
-Add to the toolkit only what the work cannot do with the pieces above.
+Add to the toolkit only what the work cannot do with the pieces above, and only if it prevents a mistake no eye can see on the screen or a second work uses it (docs/decisions: the-toolkit-takes-what-prevents-an-error-no-eye-can-see).
 
 ## Commands (from the repo root)
 
@@ -91,7 +91,7 @@ scripts/subset-fonts.sh samples/<name> # one project; a work runs: sh toolkit/sc
 
 There is no changelog; the merged pull requests are the history (GitHub's generated release notes can list them). Say in the pull request description what a work built on the toolkit has to do after taking the change (a part's props, a string key, a data format, a command, the fonts), or that it has to do nothing.
 
-Owner decisions are one file each in `docs/decisions/` (format in its `README.md`). Read them before working. A pull request that records a decision adds its own file there; it does not edit another file or an index.
+Owner decisions are one file each in `docs/decisions/` (format in its `README.md`). They give the reason behind a rule; the spec is design.md. Do not read them through: search by word before you change a rule. A pull request that records a decision adds its own file there; it does not edit another file or an index.
 
 ## Licenses
 

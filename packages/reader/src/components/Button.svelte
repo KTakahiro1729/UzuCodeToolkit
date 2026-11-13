@@ -1,5 +1,5 @@
 <!--
-  A button on any screen (docs/design.md, Buttons and Look by role). Always a capsule.
+  A button on any screen (docs/design/chrome.md, Buttons, and design.md, Look by role). Always a capsule.
   `primary` is the next step, filled; one screen has at most one primary at a time. `secondary`
   is any other action, cancel and undo: no fill, a 1px --color-line edge. `pressed` marks a
   choice that is yours now (such as your vote) with the primary's fill. A button greys only

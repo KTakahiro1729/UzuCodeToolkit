@@ -1,6 +1,6 @@
 <!--
   The work's phases in order, numbered, for a player to see where the game is and what comes next
-  (docs/design.md, Phase list). Phases in a row that share a label (such as the handouts and the
+  (docs/design/phases.md, Phase list). Phases in a row that share a label (such as the handouts and the
   pause after them) are one entry. Each entry is a card of its own. Content only: the footer's
   sheet gives it its title, background and close button. By default it fills the cell it sits in
   and scrolls itself, the current entry in view; `inline` leaves it at its full height inside a

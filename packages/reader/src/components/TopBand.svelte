@@ -1,5 +1,5 @@
 <!--
-  The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design.md, Top band).
+  The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design/chrome.md, Top band).
   Centre: the game's phase, in the quieter text colour; in a work of several phases a button that opens the phase list. Right: every player's part, name under
   icon, the others left and yours right as in the chat, yours marked with a double circle. A part
   that doubles roles shows its first role's icon; a check marks a player done with a phase
