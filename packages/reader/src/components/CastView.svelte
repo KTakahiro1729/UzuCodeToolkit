@@ -33,9 +33,9 @@
   const [before, after] = STRINGS['cast.you'].split('{name}');
 </script>
 
-<div class="cast" class:guided={guide} in:sceneIn|global out:sceneOut|global>
-  {#if guide}<Guide text={guide} />{/if}
+<div class="cast" in:sceneIn|global out:sceneOut|global>
   <div class="body">
+    {#if guide}<Guide text={guide} />{/if}
     {#if paragraphs.length}
       <div class="text">
         {#each paragraphs as p}<p>{p}</p>{/each}
@@ -65,16 +65,13 @@
 </FooterActions>
 
 <style>
-  /* Guide, then the text and the cast; the cast scrolls if it runs long. */
+  /* The guide, the text and the cast scroll together if they run long. */
   .cast {
     min-height: 0;
     display: grid;
     grid-template-rows: minmax(0, 1fr);
     gap: 1em;
     justify-items: center;
-  }
-  .cast.guided {
-    grid-template-rows: auto minmax(0, 1fr);
   }
   .body {
     width: 100%;
@@ -163,6 +160,10 @@
       grid-template-columns: 1fr 1fr;
       align-items: start;
       gap: 2em;
+    }
+    /* The guide across both columns. */
+    .body > :global(.guide) {
+      grid-column: 1 / -1;
     }
   }
 </style>

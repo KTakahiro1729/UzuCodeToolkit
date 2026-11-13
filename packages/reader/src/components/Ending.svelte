@@ -1,7 +1,8 @@
 <!--
   The end of a work: the title and end mark, then the post-game screen with the author's
   afterword, if any. The end mark holds for a moment, then gives way to the post-game screen;
-  onreview() fires at that moment, so the band's phase can change with the screen.
+  onreview() fires as the end mark starts to fade out, so the band's phase fades out and back in
+  with the screen (./motion.ts).
 -->
 <script lang="ts">
   import type { Script } from '../script';
@@ -10,9 +11,11 @@
 
   let { script, onreview }: { script: Script; onreview?: () => void } = $props();
 
-  // The afterword replaces the title and end mark after 3 s (the CSS below).
+  // The afterword replaces the title and end mark after 3 s (the CSS below); the end mark fades
+  // out over the 200 ms before that, unless motion is reduced.
   $effect(() => {
-    const t = setTimeout(() => onreview?.(), 3000);
+    const fading = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
+    const t = setTimeout(() => onreview?.(), 3000 - fading);
     return () => clearTimeout(t);
   });
 </script>
