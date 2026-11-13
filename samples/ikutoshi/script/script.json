@@ -1,0 +1,124 @@
+{
+  "title": "幾歳",
+  "cast": [
+    {
+      "id": "yae",
+      "label": "八重",
+      "description": "千歳に仕えた女性"
+    },
+    {
+      "id": "reiji",
+      "label": "怜司",
+      "description": "千歳を知る男性"
+    },
+    {
+      "id": "narrator",
+      "label": "語り",
+      "direction": true
+    }
+  ],
+  "parts": [
+    {
+      "id": "yae",
+      "name": "八重",
+      "roles": [
+        "yae",
+        "narrator"
+      ],
+      "description": "八重と地の文を読む役"
+    },
+    {
+      "id": "reiji",
+      "name": "怜司",
+      "roles": [
+        "reiji"
+      ],
+      "description": "怜司を読む役"
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "narrator",
+      "scene": "冬の屋敷",
+      "text": "あゝあなた様、あなた様。お怒りでございますね。お哀しみでおいでですね。"
+    },
+    {
+      "speaker": "narrator",
+      "text": "キッと歪んだこめかみと、眉間とまなじり、口の端！　なんとお美しいこと。儚いこと。"
+    },
+    {
+      "speaker": "narrator",
+      "text": "あゝあなた様。あなた様は一杯のカップ。水いっぱいの、水面がピンと張ったカップにございます。きっとそうにございます。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "黙れ！"
+    },
+    {
+      "speaker": "narrator",
+      "text": "そうです！　そうでございます！　溢してください。殺してください。私が最期に見たいのは、痛みと後悔と――あとそうでございますね――愛情？　いいえ、憎悪。憎悪に満ちたあなた様の顔だったのです。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "黙れと言っている"
+    },
+    {
+      "speaker": "yae",
+      "text": "何も喋ってございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "それがイライラするのだ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あらあらそれは、殺生な。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "笑うな。"
+    },
+    {
+      "speaker": "yae",
+      "text": "笑うてございません。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "その声で笑うなと言っている。"
+    },
+    {
+      "speaker": "yae",
+      "text": "なるほど声にも顔はございますものね。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "八重ッ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あら。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "ふざけているのか。"
+    },
+    {
+      "speaker": "yae",
+      "text": "ふざけております。さもなくば、まっすぐ立っているふりができませんので。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "なら座れ。"
+    },
+    {
+      "speaker": "yae",
+      "text": "あら、おやさしい。"
+    },
+    {
+      "speaker": "reiji",
+      "text": "優しいものか。とにかく座れ。鬱陶しいのだ。"
+    }
+  ],
+  "end": "（了）",
+  "notice": "GitHubブランチは冒頭の動作確認用抜粋です。全篇の台本・画像アセットは別途配布のZIPを使用してください。"
+}
