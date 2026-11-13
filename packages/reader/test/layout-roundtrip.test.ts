@@ -52,7 +52,7 @@ describe('slides written out and read back', () => {
     const aligned = copy();
     aligned.parts.log!.align = 'right';
     const result = await importSlides(copy() as never, await deckOf(aligned, 'landscape'));
-    expect(result.aligned).toEqual([{ id: 'log', from: 'left', to: 'right' }]);
+    expect(result.aligned).toEqual([{ id: 'log', from: 'center', to: 'right' }]);
     expect(result.layout.parts.log!.align).toBe('right');
   });
 
