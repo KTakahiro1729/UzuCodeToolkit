@@ -15,6 +15,8 @@ export interface ImageEntry {
   height: number;
   stretch: boolean;
   opaque: boolean;
+  /** Set on the your-colour variant of an image: the file it is a variant of. */
+  mineOf?: string;
   boxes: { id: string; label: string; stretch: boolean; box: readonly number[] }[];
 }
 export function pickOrientation(layout: BriefLayout, asked?: string): 'landscape' | 'portrait';
