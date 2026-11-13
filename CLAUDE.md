@@ -62,7 +62,7 @@ Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
 - BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (a sample shows no other screen, and every string the subset holds adds weight).
 
-Which files and fields feed each font is the project's `fonts.config.json` (format in the header of `tools/fonts/fonts.mjs`; a work that takes the toolkit as a submodule has its own, and points at wherever the toolkit keeps `strings.json`). A test in each project calls `missingGlyphs` and fails when a subset lacks a glyph. Rebuild when it fails, or when those characters change, including after editing a read-through string (every project, since `strings.json` is shared). Needs [fonttools](https://github.com/fonttools/fonttools) (`pip install fonttools brotli`):
+Which files and fields feed each font is the project's `fonts.config.json` (format in the header of `tools/fonts/fonts.mjs`; a work that takes the toolkit as a submodule has its own, and points at wherever the toolkit keeps `strings.json`; a work that overrides strings lists the file holding its overrides as a `ui` source too). A test in each project calls `missingGlyphs` and fails when a subset lacks a glyph. Rebuild when it fails, or when those characters change, including after editing a read-through string (every project, since `strings.json` is shared). Needs [fonttools](https://github.com/fonttools/fonttools) (`pip install fonttools brotli`):
 
 ```bash
 npm run fonts                          # every sample
