@@ -8,6 +8,7 @@
 <script lang="ts">
   import type { Part } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
+  import { sceneIn, sceneOut } from './motion';
 
   let {
     parts,
@@ -22,8 +23,9 @@
 
 <header>
   <div class="phase">
+    <!-- Like the screen under it: the old label fades out, then the new one fades in. -->
     {#key phase}
-      <span transition:fade={{ duration }}>{phase}</span>
+      <span in:sceneIn out:sceneOut>{phase}</span>
     {/key}
   </div>
   <div class="roles">
@@ -78,7 +80,7 @@
     color: var(--color-text-quiet);
     font-size: 18px;
   }
-  /* The old and new phase overlap while one fades into the other. */
+  /* The old and new phase share the cell, one fading out before the other fades in. */
   .phase > span {
     grid-area: 1 / 1;
   }
