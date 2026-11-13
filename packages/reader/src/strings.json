@@ -29,5 +29,6 @@
   "gameSelect.players": "{n}人",
   "gameSelect.watches": "{name}は観戦",
   "list.sep": "・",
-  "button.unready": "準備できたを取り消す"
+  "button.unready": "準備できたを取り消す",
+  "vote.waiting": "あと{n}人の投票を待っています"
 }

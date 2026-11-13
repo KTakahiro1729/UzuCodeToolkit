@@ -1,17 +1,20 @@
 <!--
   A work as a list of phases: the band and, under it, the current phase's screen. Changing phase
   fades the old screen out and the new one in (./motion.ts). Right after a phase that can be
-  reopened, a quiet button beside the screen's main action sends everyone back to it
+  reopened, a secondary button beside the screen's main action sends everyone back to it
   (PhaseView.reopen).
   The footer holds the screen's main actions; in a work of more than one phase it also has
   read-back buttons: the phase list, and the content of phases already left that stays readable
   (PhaseView.keep, such as the handouts). Each opens as a sheet over the screen, for you alone,
-  with the main actions still under it; a phase change closes it.
+  with the main actions still under it; a phase change closes it. On a screen wide enough for
+  columns, the last kept phase stays in view beside the screen instead (Frame's aside), and its
+  footer button is hidden there.
 -->
 <script lang="ts">
   import { phaseAction } from '@uzu-toolkit/kit';
   import type { FlowOptions } from '../flow';
   import { band, game, sendAction } from '../store.svelte';
+  import Button from './Button.svelte';
   import Frame from './Frame.svelte';
   import FooterActions from './FooterActions.svelte';
   import PhaseList from './PhaseList.svelte';
@@ -31,6 +34,8 @@
   );
   // The footer's entries: the phase list, then each kept phase the game has left.
   const kept = $derived(phases.slice(0, at).filter((p) => p.keep && game.state?.phases[p.id]));
+  // What stays beside the screen on a wide screen: the last kept phase.
+  const side = $derived(kept.at(-1));
   let open = $state<string | null>(null);
   const sheet = $derived(open === FLOW ? null : kept.find((p) => p.id === open));
   $effect(() => {
@@ -59,7 +64,7 @@
 </script>
 
 {#if game.state && game.me && phase}
-  <Frame {parts} {myPart} done={doneParts} phase={band.label ?? phase.label} nav={phases.length > 1 ? nav : undefined}>
+  <Frame {parts} {myPart} done={doneParts} phase={band.label ?? phase.label} nav={phases.length > 1 ? nav : undefined} aside={side?.keep ? aside : undefined}>
     {#key phase.id}
       <phase.view
         {...phase.props}
@@ -74,9 +79,9 @@
     {/key}
     {#if reopen}
       <FooterActions place="aside">
-        <button type="button" class="reopen" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
+        <Button variant="secondary" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
           {reopen.reopen?.label}
-        </button>
+        </Button>
       </FooterActions>
     {/if}
     {#if open === FLOW}
@@ -91,10 +96,14 @@
   </Frame>
 {/if}
 
+{#snippet aside()}
+  {#if side?.keep}<side.keep.view {...propsFor(side)} send={() => {}} last={false} />{/if}
+{/snippet}
+
 {#snippet nav()}
   <button type="button" class="tab" aria-pressed={open === FLOW} onclick={() => toggle(FLOW)}>{STRINGS['footer.flow']}</button>
   {#each kept as p (p.id)}
-    <button type="button" class="tab" aria-pressed={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</button>
+    <button type="button" class="tab" data-aside={p === side ? '' : undefined} aria-pressed={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</button>
   {/each}
 {/snippet}
 
@@ -119,17 +128,5 @@
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 0.3em;
-  }
-  /* Not the next step, so on the page colour rather than filled, beside it. */
-  .reopen {
-    margin: 0;
-    padding: 0.45em 0.8em;
-    border: none;
-    border-radius: 999px;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font: inherit;
-    font-family: var(--font-ui);
-    cursor: pointer;
   }
 </style>

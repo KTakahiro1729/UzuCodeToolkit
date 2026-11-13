@@ -71,6 +71,16 @@ on cards.
 - Phone first; sizes in em, based on the screen's short side.
 - The chat column has a reading width, so the eye does not cross a wide
   landscape screen between lines.
+- A screen with room for columns gets them, measured in the screen's own em:
+  2 columns from 40em wide and 480px tall (tablets held sideways, laptops), 3
+  from 60em (full-HD monitors). Phones keep one column in both orientations;
+  sideways they lack the height. Each column is then at least about 19em, near
+  a phone held upright.
+- Once the handouts are over, they stay in view as columns beside the screen
+  (the handouts left, the screen in the last column) instead of opening as a
+  sheet, and their footer button is hidden. The footer's actions centre under
+  the screen's column, so the advance button stays under the lines. Screens
+  before the handouts keep their single reading column, centred.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No borders, dividers or cards, except the side lines on a

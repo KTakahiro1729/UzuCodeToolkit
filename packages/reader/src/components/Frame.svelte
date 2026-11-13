@@ -3,6 +3,11 @@
   bottom edge (the screen's main actions, put there with FooterActions, and the read-back
   buttons) and, between them, one cell for the scene. Scenes share the cell, so the old one can
   fade out where the new one fades in.
+  A wide screen (40em wide and 480px tall, in the screen's own em) has room for 2 columns, a
+  wider one (60em) for 3. There `aside` (what can be read back, such as the handouts) takes every
+  column but the last, the scene takes the last, and the footer's actions centre under the scene.
+  Elsewhere `aside` is hidden. A read-back button marked `data-aside` names what `aside` shows, so
+  it is hidden while `aside` is.
 -->
 <script lang="ts">
   import type { Part } from '@uzu-toolkit/kit';
@@ -16,6 +21,7 @@
     done = [],
     phase,
     nav,
+    aside,
     children,
   }: {
     /** Every seat's part, in the work's order. */
@@ -28,6 +34,8 @@
     phase: string;
     /** Buttons that open what can be read back (the phase list, the handouts); none for a one-phase work. */
     nav?: Snippet;
+    /** What stays in view beside the scene on a wide screen; hidden on narrower ones. */
+    aside?: Snippet;
     children: Snippet;
   } = $props();
 
@@ -35,7 +43,8 @@
   let footerHeight = $state(0);
 </script>
 
-<main style:--footer-height={`${footerHeight}px`}>
+<div class="screen">
+<main class:aside={!!aside} style:--footer-height={`${footerHeight}px`}>
   <TopBand {parts} {myPart} {done} {phase} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
   <footer bind:offsetHeight={footerHeight}>
@@ -45,15 +54,25 @@
     </div>
     {#if nav}<nav>{@render nav()}</nav>{/if}
   </footer>
+  {#if aside}<aside>{@render aside()}</aside>{/if}
   {@render children()}
 </main>
+</div>
 
 <style>
   :global(body) {
     margin: 0;
   }
-  main {
+  /* The query container for the column count; its em is the screen's own. */
+  .screen {
     position: fixed;
+    inset: 0;
+    container: screen / size;
+    /* Sizes are in em; the base scales with the screen's short side. */
+    font-size: clamp(16px, 4.4vmin, 28px);
+  }
+  main {
+    position: absolute;
     inset: 0;
     box-sizing: border-box;
     /* One cell: the chat and the end screen overlap while one gives way to the other. */
@@ -66,13 +85,55 @@
     background: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
-    /* Sizes are in em; the base scales with the screen's short side. */
-    font-size: clamp(16px, 4.4vmin, 28px);
     overflow: hidden;
     user-select: none;
   }
   main > :global(:not(footer)) {
     grid-area: 1 / 1;
+  }
+  aside {
+    display: none;
+  }
+  /*
+   * Columns: the aside takes all but the last, the scene (and a sheet over it) the last. The
+   * footer keeps the same columns, so its actions centre under the scene and the read-back
+   * buttons sit under the aside.
+   */
+  @container screen (min-width: 40em) and (min-height: 480px) {
+    main.aside {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1.2em;
+    }
+    main.aside > :global(:not(footer)) {
+      grid-area: 1 / -2;
+    }
+    main.aside > aside {
+      grid-area: 1 / 1 / 2 / -2;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+    }
+    main.aside > footer {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1.2em;
+    }
+    main.aside .act {
+      grid-column: -2;
+      grid-row: 1;
+    }
+    main.aside nav {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    main.aside nav :global([data-aside]) {
+      display: none;
+    }
+  }
+  @container screen (min-width: 60em) and (min-height: 480px) {
+    main.aside,
+    main.aside > footer {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   /*
    * The main action area, white and full width along the bottom edge as the band's counterpart.

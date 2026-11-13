@@ -2,11 +2,22 @@
   A handout in tabs, one text per tab, so a long handout does not run as one scroll: the shared
   text, your part's own text, how your part sees the others, and the settings (`fields`, given by
   the screen: inputs while reading, the values afterwards). The tab bar stays put; the text under
-  it scrolls, and starts from the top when the tab changes. An optional `guide` (what to do now)
+  it scrolls, and starts from the top when the tab changes; the tab and the scroll position are
+  remembered per `memory` key, so reopening resumes where the reader left off. An optional `guide` (what to do now)
   opens the first tab and scrolls away with its text. `mark` puts a dot on the settings tab
   while something there still needs you.
 -->
+<script lang="ts" module>
+  /**
+   * Where each reader left off, kept on this device only: the tab and how far its text is
+   * scrolled. It outlives the screen, so closing the handout sheet and opening it again (or
+   * coming back to the handouts) resumes there. `memory` in the props names the place.
+   */
+  const left: Record<string, { tab: string; scroll: number }> = {};
+</script>
+
 <script lang="ts">
+  import { onMount } from 'svelte';
   import type { Handout } from '@uzu-toolkit/kit';
   import type { Snippet } from 'svelte';
   import Guide from './Guide.svelte';
@@ -20,7 +31,16 @@
     fields,
     mark = false,
     guide,
-  }: { handout: Handout; part: string; partName: string; fields?: Snippet; mark?: boolean; guide?: string } = $props();
+    memory = 'handout',
+  }: {
+    handout: Handout;
+    part: string;
+    partName: string;
+    fields?: Snippet;
+    mark?: boolean;
+    guide?: string;
+    memory?: string;
+  } = $props();
 
   const own = $derived(handout.parts[part]);
   type Tab = 'common' | 'own' | 'impressions' | 'fields';
@@ -32,15 +52,21 @@
       fields && own?.settings?.length && { id: 'fields', label: STRINGS['handout.tabFields'] },
     ].filter(Boolean) as { id: Tab; label: string }[],
   );
-  let tab = $state<Tab>('common');
+  let tab = $state<Tab>((left[memory]?.tab as Tab | undefined) ?? 'common');
   // The chosen tab, or the first when another part's handout has no such tab.
   const current = $derived(tabs.some((t) => t.id === tab) ? tab : tabs[0]?.id);
   let scroller = $state<HTMLElement>();
 
   function choose(id: Tab): void {
     tab = id;
+    left[memory] = { tab: id, scroll: 0 };
     scroller?.scrollTo({ top: 0 });
   }
+  // Resume the scroll of the remembered tab once the text is there.
+  onMount(() => {
+    if (left[memory]?.tab === current) scroller?.scrollTo({ top: left[memory].scroll });
+  });
+  const remember = () => (left[memory] = { tab: current, scroll: scroller?.scrollTop ?? 0 });
 </script>
 
 <div class="tabs-wrap">
@@ -51,7 +77,7 @@
       </button>
     {/each}
   </div>
-  <div class="panel" class:first={current === tabs[0]?.id} role="tabpanel" bind:this={scroller}>
+  <div class="panel" class:first={current === tabs[0]?.id} role="tabpanel" bind:this={scroller} onscroll={remember}>
     {#if guide && current === tabs[0]?.id}<Guide text={guide} />{/if}
     {#if current === 'common'}
       {#each handout.common as para}<p>{para}</p>{/each}

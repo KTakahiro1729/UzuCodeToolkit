@@ -22,6 +22,7 @@ export type { GameView } from './games';
 export type { Script } from './script';
 export { default as Button } from './components/Button.svelte';
 export { default as TimeLeft } from './components/TimeLeft.svelte';
+export { default as Vote } from './components/Vote.svelte';
 export { default as Guide } from './components/Guide.svelte';
 export { default as CastView } from './components/CastView.svelte';
 export { default as EmptyView } from './components/EmptyView.svelte';

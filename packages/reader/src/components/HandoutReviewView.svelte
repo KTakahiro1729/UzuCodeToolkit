@@ -40,7 +40,7 @@
     {/each}
   </div>
   {#if handoutState}
-    <HandoutSheet {handout} state={handoutState} part={who} {names} ownLabel={STRINGS['handout.body']} {guide} />
+    <HandoutSheet {handout} state={handoutState} part={who} {names} ownLabel={STRINGS['handout.body']} {guide} memory="review" />
   {/if}
 </div>
 <FooterActions>
