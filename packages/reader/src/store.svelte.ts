@@ -23,10 +23,9 @@ export function sendAction(type: string, payload: Record<string, unknown>): void
 /**
  * The footer's two action cells, set by the frame: `main` for the screen's main action (the
  * advance or next button, the handout's clock and buttons), `aside` for a quieter action beside
- * it (going back to the handouts), `status` for the lower row's state (the handout's time left). Screens put their actions there with FooterActions.
+ * it (going back to the handouts). Screens put their actions there with FooterActions.
  */
-export const footerSlots = $state<{ main: HTMLElement | null; aside: HTMLElement | null; status: HTMLElement | null }>({
+export const footerSlots = $state<{ main: HTMLElement | null; aside: HTMLElement | null }>({
   main: null,
   aside: null,
-  status: null,
 });

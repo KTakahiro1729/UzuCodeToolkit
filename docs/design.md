@@ -283,8 +283,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   "全員で進みます" on a next-phase button any one player can tap for everyone. A button that
   can be pressed and says what it does by its label alone has no note: text is read only
   where its absence would leave the player guessing. It states a fact of the screen; it
-  never repeats the label or invents a rule. 16px, quiet colour. The older line above the
-  row (`FooterActions place="status"`) shows only while something is in it.
+  never repeats the label or invents a rule. 16px, quiet colour.
 - **Labels say what moves.** The read-through's advance button is `▼ 次のせりふ`; a button
   that moves the game to the next phase reads `次のフェーズへ` (`button.nextPhase`) without
   the phase's name (a narrow button may say `次へ` with the longer sentence as its note);

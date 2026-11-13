@@ -5,8 +5,6 @@
   `main` is the main button, the last one the button to press now; two or more buttons there are fused into one capsule;
   `aside` holds the items to its left (`Slot`: more time, the next phase, the time left). Why a
   button cannot be pressed, or what it waits for, is its `note`, not a line of its own.
-  `place="status"` is the older way, a line above the row; the row shows only while something is
-  in it, so a screen that does not use it takes no height.
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -14,7 +12,7 @@
   import { footerSlots } from '../store.svelte';
   import { sceneIn, sceneOut } from './motion';
 
-  let { place = 'main', children }: { place?: 'main' | 'aside' | 'status'; children: Snippet } = $props();
+  let { place = 'main', children }: { place?: 'main' | 'aside'; children: Snippet } = $props();
 
   // Svelte removes a block's nodes where it put them, so a node moved to the footer would outlive
   // the screen that made it (the old screen's actions stayed after a phase change). Remove it
@@ -33,7 +31,7 @@
   }
 </script>
 
-<div class="actions" class:status={place === 'status'} data-uzu-actions={place} use:portal in:sceneIn|global out:sceneOut|global>{@render children()}</div>
+<div class="actions" data-uzu-actions={place} use:portal in:sceneIn|global out:sceneOut|global>{@render children()}</div>
 
 <style>
   /*
@@ -82,14 +80,6 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     gap: 0.4em;
-  }
-  /* The state line of the upper row: quiet, 16px, the clock (if any) and the sentence side by side. */
-  .actions.status {
-    font-size: 1em;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0 0.8em;
-    color: var(--color-text-quiet);
   }
   /* A line of text alone in the row (such as the watching mark) stays centred. */
   .actions > :global(p) {
