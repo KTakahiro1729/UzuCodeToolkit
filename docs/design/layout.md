@@ -29,7 +29,7 @@ The toolkit's one layout so far is the read-through's: `packages/reader/src/layo
 |---|---|
 | `reference` | The reference screen per orientation, `[width, height]` in px. An orientation left out is not supported. Landscape alone unless the spec asks for portrait |
 | `parts` | Keyed by part id (letters and digits; the id is how slides are read back, so it never changes). Each has a `label` for people, a box `[x, y, width, height]` per orientation, and optionally `image` and `stretch` |
-| `image` | The picture drawn in the box, `assets/<image>.webp` in the work. Parts naming the same image share it, so a work keeps one frame, one nameplate. `{role}` stands for the role shown (`stand-{role}`). No `image`: the screen draws the part from colour tokens, as it also does while the image is missing |
+| `image` | The picture drawn in the box, `assets/<image>.webp` in the work. Parts naming the same image share it, so a work keeps one frame, one nameplate. `{role}` stands for the role shown (`stand-{role}`). A part that takes your colour in some scene (`mine`) also has `<image>-mine`, used on your turn, since the colour is what shows the turn. No `image`: the screen draws the part from colour tokens, as it also does while the image (or its `-mine` picture) is missing |
 | `stretch` | The image keeps its ends and stretches in width to the box (a nameplate fitting its name). Without it the image is drawn at the box's size |
 | `reserved` | What UZU draws over the screen (logo, indicator, toast). Shown on the slides, never used by a part |
 | `margin` | Edges that stay empty |

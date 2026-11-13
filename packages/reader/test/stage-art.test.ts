@@ -10,7 +10,7 @@ const landscapeOnly = (): ScreenLayout => {
 
 describe('image parts of the stage read-through', () => {
   it('lists each image the layout draws once, without the characters', () => {
-    expect(imageNames(READ_THROUGH_LAYOUT).sort()).toEqual(['bg', 'button', 'frame', 'panel', 'plate']);
+    expect(imageNames(READ_THROUGH_LAYOUT).sort()).toEqual(['bg', 'button', 'frame', 'frame-mine', 'panel', 'plate', 'plate-mine']);
   });
 
   it('a part is drawn from its image only once the image has loaded', () => {
@@ -19,6 +19,11 @@ describe('image parts of the stage read-through', () => {
     expect(artOf(READ_THROUGH_LAYOUT, 'frame', { frame: true })).toBe('url("./assets/frame.webp")');
     // The three nameplates share one picture.
     for (const part of ['plate1', 'plateNarration', 'plate2']) expect(artOf(READ_THROUGH_LAYOUT, part, { plate: true })).toBe('url("./assets/plate.webp")');
+  });
+
+  it('on your turn a part takes its -mine picture, or the colour tokens when the work has none', () => {
+    expect(artOf(READ_THROUGH_LAYOUT, 'frame', { frame: true, 'frame-mine': true }, true)).toBe('url("./assets/frame-mine.webp")');
+    expect(artOf(READ_THROUGH_LAYOUT, 'frame', { frame: true }, true)).toBeUndefined();
   });
 
   it('a part with no image in the layout stays drawn from the colour tokens', () => {

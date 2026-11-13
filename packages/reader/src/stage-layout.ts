@@ -110,9 +110,16 @@ export function nameWidthsOf(layout: ScreenLayout, o: Orientation): { full: numb
   return { full: w1, narration: rectOf(layout, 'plateNarration', o)[2], gap: rectOf(layout, 'plate2', o)[0] - x1 - w1 };
 }
 
-/** The image files a layout draws (not the characters', which are named by role), each once. */
+/**
+ * The image files a layout draws (not the characters', which are named by role), each once. A part
+ * that takes your colour in some scene also has a `-mine` picture for then (`plate-mine`), since
+ * the colour is what tells you it is your turn.
+ */
 export function imageNames(layout: ScreenLayout): string[] {
-  const names = Object.values(layout.parts).flatMap((p) => (p.image && !p.image.includes('{') ? [p.image] : []));
+  const mine = new Set(layout.scenes.flatMap((s) => s.mine));
+  const names = Object.entries(layout.parts).flatMap(([id, p]) =>
+    p.image && !p.image.includes('{') ? (mine.has(id) ? [p.image, `${p.image}-mine`] : [p.image]) : [],
+  );
   return [...new Set(names)];
 }
 
@@ -121,11 +128,15 @@ export const imageUrl = (name: string): string => `./assets/${name}.webp`;
 
 /**
  * A part's image as a CSS `url()`: only once that picture has loaded; a part without an image, or
- * whose picture is missing, is drawn from the colour tokens instead.
+ * whose picture is missing, is drawn from the colour tokens instead. When the part takes your
+ * colour now, its `-mine` picture; without one the part falls back to the colour tokens too, so
+ * your turn never looks like another's.
  */
-export function artOf(layout: ScreenLayout, part: string, ready: Readonly<Record<string, boolean>>): string | undefined {
+export function artOf(layout: ScreenLayout, part: string, ready: Readonly<Record<string, boolean>>, mine = false): string | undefined {
   const image = layout.parts[part]?.image;
-  return image && ready[image] ? `url("${imageUrl(image)}")` : undefined;
+  if (!image) return undefined;
+  const name = mine ? `${image}-mine` : image;
+  return ready[name] ? `url("${imageUrl(name)}")` : undefined;
 }
 
 /** CSS for a part's place, in `--u` (a reference px in screen px, set on the stage). */

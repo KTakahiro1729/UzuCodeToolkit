@@ -63,11 +63,11 @@
       probe.src = imageUrl(name);
     }
   });
-  const art = (part: string) => artOf(layout, part, ready);
+  const art = (part: string, mine = false) => artOf(layout, part, ready, mine);
   const bg = $derived(art('bg'));
-  const frameArt = $derived(art('frame'));
-  const one = $derived(art(scene?.direction ? 'plateNarration' : 'plate1'));
-  const two = $derived(art('plate2'));
+  const frameArt = $derived(art('frame', !!scene?.mine));
+  const one = $derived(art(scene?.direction ? 'plateNarration' : 'plate1', !!scene?.mine));
+  const two = $derived(art('plate2', !!scene?.next?.mine && !scene?.mine));
   const buttonArt = $derived(art('next'));
   const panelArt = $derived(art('panel'));
 
