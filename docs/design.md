@@ -189,6 +189,24 @@ Decoration is out of scope, but it must not break the rules above:
   then the post-game screen fades in, so the two never show through each
   other. The band's phase changes as the post-game screen comes in.
 
+### Handout
+
+- One reading column at the chat's reading width: an area (a white block, as
+  the afterword's) per text, each with its label on the text's left edge. The
+  shared text (`handout.common`), then your part's own text under its heading,
+  how your part sees the others (`handout.impressions`), and the settings your
+  part fills in (`handout.fields`), each a name with an input under it. The
+  example, when there is one, sits in the empty input.
+- The column scrolls; under it, always in view, one row: the time left, the
+  extension button (`handout.extend`), and the done button (`handout.done`).
+  The done button is the next step, so it is the filled one; it stays greyed
+  until every setting is filled in. The extension button is white, not filled,
+  since it is not the next step.
+- Once you tap done, your settings lock, the extension button goes and the
+  done button greys and says `handout.waiting`.
+- Text typed into a setting is the one text the bundled subsets cannot hold,
+  so it may fall back to a system face.
+
 ### Other screens
 
 - Screens other than the read-through, such as the afterword, do not use the

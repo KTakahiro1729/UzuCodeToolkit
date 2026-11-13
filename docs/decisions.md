@@ -18,3 +18,8 @@ Owner decisions for this repository, newest last.
 - **Stage directions have no background.** They read as narration, as plain text across the chat column; the advance button alone shows whose turn it is.
 - **Ruby above the word, at half size.** Readings from the script show as ruby above their word, the one exception to the 16px minimum, rather than inline in brackets at full size. Ruby may run past its word instead of spreading the word's letters.
 - **A stage direction you read gets side lines.** While you read a stage direction, a line in the advance button's colour stands at each side of it, instead of colouring the whole block.
+
+## 2026-11-13
+
+- **Handout (HO) phase.** Every player reads the shared text and their own part's text, fills in the settings their part asks for, and taps done; the phase ends when everyone is done. Done needs every setting filled in and cannot be undone. Settings stay in the phase state by part and setting ID, so later phases can use them. Labels come from the work's data; the screen's own labels from `strings.json`.
+- **HO reading time.** A timer shows the time left (the work sets it; 5 minutes in InterstellarBG). When it runs out the phase ends, done or not; settings left blank stay empty. Before that, any player still reading can ask for more time, which adds 2 minutes for everyone. Time is the SDK's game time, so actions stay deterministic.
