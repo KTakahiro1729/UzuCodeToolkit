@@ -37,7 +37,8 @@ export function buildDeck(layout, orientation) {
   pptx.layout = `${layout.screen}-${orientation}`;
   pptx.title = `${layout.screen} ${orientation}`;
 
-  // Text is the label only; its alignment is the part's `align` (default left), anchored middle.
+  // Text is the label only. A part with `align` carries text: aligned so and anchored in the middle.
+  // Any other box (a picture's) keeps its caption at the top left, where boxes drawn over it leave it readable.
   const addBox = (slide, id, label, rect, c, opts = {}) => {
     const [x, y, w, h] = rect;
     const small = w < 80 || h < 30;
@@ -48,7 +49,7 @@ export function buildDeck(layout, orientation) {
       line: { color: c.line, width: 1 },
       color: c.text,
       fontSize: small ? 7 : h < 40 ? 8 : 11,
-      align: opts.align ?? 'left', valign: opts.valign ?? 'middle', margin: 2, fit: 'none', wrap: !small,
+      align: opts.align ?? 'left', valign: opts.valign ?? (opts.align ? 'middle' : 'top'), margin: 2, fit: 'none', wrap: !small,
       objectName: id,
     });
   };

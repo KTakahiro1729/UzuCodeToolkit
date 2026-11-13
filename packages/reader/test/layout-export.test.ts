@@ -103,5 +103,7 @@ describe('layout export to slides', () => {
     expect(box('plate1').algn).toBe('l');
     const xml = await (await JSZip.loadAsync(readFileSync(file!))).file('ppt/slides/slide1.xml')!.async('string');
     expect(xml).toContain('anchor="ctr"');
+    const c1 = xml.split('<p:sp>').find((sp) => sp.includes('descr="uzu:c1"'))!;
+    expect(c1).toContain('anchor="t"');
   });
 });
