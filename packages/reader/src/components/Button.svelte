@@ -1,8 +1,10 @@
 <!--
-  A button on any screen (docs/design.md, Buttons). `primary` is the next step, filled; one
-  screen has at most one primary at a time. `secondary` is any other choice, white. `pressed`
-  marks a secondary choice that is yours now (such as your vote) with the primary's fill. A
-  button greys only while it cannot be tapped.
+  A button on any screen (docs/design.md, Buttons and Look by role). Always a capsule.
+  `primary` is the next step, filled; one screen has at most one primary at a time. `secondary`
+  is any other action, cancel and undo: no fill, a 1px --color-line edge. `pressed` marks a
+  choice that is yours now (such as your vote) with the primary's fill. A button greys only
+  while it cannot be tapped: --color-button-off fill, quiet text and no edge, so it never looks
+  like a secondary button. Every variant keeps a 1px border, so the size never changes.
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -34,7 +36,7 @@
     gap: 0.5em;
     margin: 0;
     padding: 0.45em 1.2em;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 999px;
     background: var(--color-mine-current);
     color: var(--color-mine-text);
@@ -43,15 +45,18 @@
     cursor: pointer;
   }
   button[data-variant='secondary'] {
-    background: var(--color-bubble);
+    background: none;
+    border-color: var(--color-line);
     color: var(--color-text);
   }
   button[aria-pressed='true'] {
     background: var(--color-mine-current);
+    border-color: var(--color-mine-current);
     color: var(--color-mine-text);
   }
   button:disabled {
     background: var(--color-button-off);
+    border-color: transparent;
     color: var(--color-text-quiet);
     cursor: default;
   }

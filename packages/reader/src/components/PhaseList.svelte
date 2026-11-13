@@ -3,7 +3,8 @@
   (docs/design.md, Phase list). Phases in a row that share a label (such as the handouts and the
   pause after them) are one entry. Content only: the footer's sheet gives it its title, background
   and close button. It fills the cell it sits in and scrolls itself, the current entry in view.
-  Reading only: nothing here moves the game.
+  Reading only: nothing here moves the game, so no entry has a fill or an edge that would read as a
+  choice. The current entry is bold with a small bar at its start; entries already over are quieter.
 -->
 <script lang="ts">
   import type { PhaseView } from '../flow';
@@ -70,10 +71,10 @@
   }
   li {
     flex: none;
+    position: relative;
     display: flex;
     gap: 0.8em;
     padding: 0.6em 1em;
-    border-radius: 0.6em;
     line-height: 1.5;
   }
   .num {
@@ -85,9 +86,20 @@
   li[data-state='done'] {
     color: var(--color-text-quiet);
   }
-  /* Where the game is now: the one entry with a background, in bold. */
+  /* Where the game is now: bold, with a short bar in the text colour at its start (not the
+     primary colour, which means "tap"). The bar sits in the row's padding, so the row keeps the
+     same layout and height as the others. */
   li[data-state='now'] {
-    background: var(--color-bubble);
+    color: var(--color-text);
     font-weight: 700;
+  }
+  li[data-state='now']::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0.3em;
+    inset-block: 0.75em;
+    width: 0.3em;
+    border-radius: 999px;
+    background: var(--color-text);
   }
 </style>
