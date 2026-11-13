@@ -18,3 +18,11 @@ Owner decisions for this repository, newest last.
 - **Stage directions have no background.** They read as narration, as plain text across the chat column; the advance button alone shows whose turn it is.
 - **Ruby above the word, at half size.** Readings from the script show as ruby above their word, the one exception to the 16px minimum, rather than inline in brackets at full size. Ruby may run past its word instead of spreading the word's letters.
 - **A stage direction you read gets side lines.** While you read a stage direction, a line in the advance button's colour stands at each side of it, instead of colouring the whole block.
+
+## 2026-11-13
+
+- **InterstellarBG takes the toolkit as a git submodule.** The new work (`KTakahiro1729/InterstellarBoardGame`) is where the toolkit grows the least it needs; it pins a toolkit commit and moves it on when the toolkit changes.
+- **General features go into the toolkit.** Whatever the work needs that another work could use (phases, the handout screen, game selection, playing-card parts) is built here; only the work's own content (script, handout text, its games' rules) stays in the work.
+- **A work runs as phases.** A work is a fixed list of phases in order; a read-through is one phase and a work can have several. Details in `CLAUDE.md`, Phases.
+- **Unwritten parts are empty phases.** A phase whose content is not decided yet (in InterstellarBG, 「その時……」 and the ending until their scripts exist) is an empty phase: the band names it and a next button that any player can tap moves on. How 「その時……」 mixes reading and a game is open until its script exists.
+- **Secrets are hidden on screen only.** Secrets such as a word-wolf topic or a hand of cards are hidden on screen only. Shared state reaches every player, and no secrecy mechanism is built.

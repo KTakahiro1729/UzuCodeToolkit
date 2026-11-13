@@ -59,3 +59,28 @@ describe('flowLogic', () => {
     expect(() => flowLogic([{ id: 'a', logic: emptyPhase() }, { id: 'a', logic: emptyPhase() }], ['x'])).toThrow();
   });
 });
+
+describe('phase deadline', () => {
+  /** Over when its timer runs out. */
+  const timed: PhaseLogic<{ endsAt: number; over: boolean }> = {
+    setup: (_parts, time) => ({ endsAt: (time as unknown as number) + 300, over: false }),
+    done: (state) => state.over,
+    deadline: {
+      at: (state) => state.endsAt as never,
+      handler({ state }) {
+        state.over = true;
+      },
+    },
+  };
+  const logic = flowLogic([{ id: 'intro', logic: emptyPhase() }, { id: 'read', logic: timed }, { id: 'end', logic: emptyPhase() }], ['x', 'y']);
+
+  it("reads the current phase's deadline and moves on when it comes", () => {
+    const state = logic.setup({ players, ctx });
+    const deadline = logic.deadlines!.phase;
+    expect(deadline.at({ state } as never)).toBeUndefined();
+    logic.actions['intro:next']({ state, playerId: 'seat-a', payload: {}, ctx: { time: 1000 } as never });
+    expect(deadline.at({ state } as never)).toBe(1300);
+    deadline.handler({ state, ctx: { time: 1300 } } as never);
+    expect(state.at).toBe(2);
+  });
+});
