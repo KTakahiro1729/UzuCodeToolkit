@@ -278,17 +278,28 @@ Decoration is out of scope, but it must not break the rules above:
 - The games this many players can play, as a list of white blocks: the game's
   name, and under it in the quieter colour how many play, who watches when the
   spectator sits out, and the game's own line (`description`), joined by
-  `list.sep`. The next button under the list may carry the work's own label
-  (such as 暇つぶしを終える), since leaving the list ends the phase. A game that
+  `list.sep`. The next button may carry the work's own label (such as
+  暇つぶしを終える), since leaving the list ends the phase. A game that
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
+- A tap on the list only selects a game (filled, as a pressed choice); the
+  play button (`game.play`) under the list starts it for everyone, and stays
+  greyed until a game is selected (owner's decision). One tap by any player
+  never starts a game nobody can leave.
+- Beside the play button, the next button (`button.next`) is white: leaving
+  the phase is not the next step on this screen, and it cannot be undone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result
   stays and the back button appears under it.
-- On a landscape screen the list has two columns, so it fits above the next
-  button without scrolling.
+- The row under the game is kept from the start, so the game never shrinks or
+  jumps when the back button appears. A game taller than its space scrolls
+  there; it never runs under the row.
+- A seat that sits the game out sees `game.watching` in that row, in the
+  quieter text colour, until the back button takes its place.
+- On a landscape screen the list has two columns, so it fits above the buttons
+  without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Other screens

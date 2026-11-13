@@ -1,7 +1,8 @@
 <!--
   One playing card, face up, or its back when `card` is null. The faces are Adrian Kennard's CC0
   deck (../cards/), each loaded on first use, so a work without cards loads none. The card is
-  `width` wide (em) at the deck's 5:7 shape.
+  `width` wide (em) at the deck's 5:7 shape. The corner index is a third of the width tall, so
+  keep `width` at 3 or more to keep it at 16px or more (docs/design.md, Type).
 -->
 <script module lang="ts">
   import type { Card } from '@uzu-toolkit/kit';
