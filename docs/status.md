@@ -6,11 +6,7 @@ Last checked: 2026-11-13 03:12 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
-
-| What | Kind | Notes |
-|---|---|---|
-| InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) | Merge | Ready: submodule moved to #20's merge commit (reported by its thread; not visible from here). |
+Nothing right now. No open decisions. No CI checks are configured.
 
 ## Done
 
@@ -18,6 +14,7 @@ Word Wolf topic pairs (InterstellarBoardGame): checked by the owner and kept as 
 
 | PR | Result | Date |
 |---|---|---|
+| InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) Follow #20 | Merged (reported) | 2026-11-13 |
 | [#20](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/20) Move work-specific parts into the Toolkit (with the size-check test) | Merged | 2026-11-13 |
 | [#19](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/19) Phases, handouts, game select and playing cards for InterstellarBG | Merged | 2026-11-13 |
 | [#18](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/18) Run a work as a list of phases | Closed; folded into #19 | 2026-11-13 |
