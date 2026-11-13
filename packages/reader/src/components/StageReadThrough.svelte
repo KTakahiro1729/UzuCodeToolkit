@@ -404,7 +404,9 @@
     background: var(--color-text);
     color: var(--color-bubble);
   }
+  /* A button picture is made for the layout's box, so the button fills the box. */
   .next.art :global(button[data-variant]) {
+    flex: 1 0 auto;
     border-color: transparent;
     background: var(--art) center / 100% 100% no-repeat;
     color: var(--color-text);
