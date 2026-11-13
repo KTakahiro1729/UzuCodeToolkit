@@ -2,11 +2,15 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 02:01 UTC
+Last checked: 2026-11-13 02:02 UTC
 
 ## Waiting on the owner
 
-Nothing right now. No open decisions. No CI checks are configured.
+No open decisions. No CI checks are configured.
+
+| What | Kind | Notes |
+|---|---|---|
+| [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Review, merge | Ready. Screenshots in the project files under `screenshots/overflow-check/`. |
 
 ### Later waves
 
