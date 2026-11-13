@@ -1,9 +1,9 @@
 <!--
-  The introduction with the cast (readyPhase()): optional story text, then whom you play and every
+  The introduction with the cast (readyPhase()): optional story text, the game's flow, then whom you play and every
   part (icon, name, one line on who they are), yours first and tinted. The next button sits in the footer;
   once you tap it, it keeps its name, turns outlined in a dark 2px edge with a tick and the band checks your
   icon; tapping it again takes it back.
-  The phase ends when everyone is ready. On a landscape screen the text and the cast stand side by side.
+  The phase ends when everyone is ready. On a landscape screen the text over the flow stands beside the cast.
 -->
 <script lang="ts">
   import type { Part, ReadyState } from '@uzu-toolkit/kit';
@@ -37,11 +37,14 @@
 <div class="cast" in:sceneIn|global out:sceneOut|global>
   <div class="scroll body">
     {#if guide}<Guide text={guide} />{/if}
-    {#if paragraphs.length}
-      <div class="text">
-        {#each paragraphs as p}<p>{p}</p>{/each}
-      </div>
-    {/if}
+    <div class="side">
+      {#if paragraphs.length}
+        <div class="text">
+          {#each paragraphs as p}<p>{p}</p>{/each}
+        </div>
+      {/if}
+      <div class="flow"><FlowStrip /></div>
+    </div>
     <div class="parts">
       {#if mine}<p class="you">{before}<strong>{mine.name}</strong>{after}</p>{/if}
       <ul>
@@ -54,7 +57,6 @@
         {/each}
       </ul>
     </div>
-    <div class="flow"><FlowStrip /></div>
   </div>
 </div>
 <FooterActions>
@@ -77,6 +79,12 @@
     max-width: 30em;
     min-height: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+  }
+  /* The text and the flow: one block, so a wide screen stacks them beside the cast. */
+  .side {
     display: flex;
     flex-direction: column;
     gap: 1.2em;
@@ -160,8 +168,7 @@
       gap: 2em;
     }
     /* The guide across both columns. */
-    .body > :global(.guide),
-    .flow {
+    .body > :global(.guide) {
       grid-column: 1 / -1;
     }
   }

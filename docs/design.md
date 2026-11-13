@@ -187,7 +187,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Introduction with the cast
 
-- The introduction shows, under its story text, whom you play (`cast.you`,
+- The introduction shows its story text, then the game's flow (`FlowStrip`), then whom you play (`cast.you`,
   the part's name bold) and every part as a white block: icon, name and one
   line on who they are (the manifest's description). Yours comes first and
   takes your role's tint.
@@ -196,7 +196,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   dark 2px edge with a tick (never red), and the band checks your icon (`readyDone`); tapping it again
   takes it back (owner's decision, a toggle: `Button` `on`). The
   phase moves on when everyone is ready.
-- On a landscape screen the story text and the cast stand side by side.
+- On a landscape screen the story text over the flow stands beside the cast.
 
 ### Buttons
 
