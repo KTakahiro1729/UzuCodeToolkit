@@ -150,3 +150,10 @@ of its text. Inside a scroll list only the list itself has to fit. Mark an
 element `data-overflow-ok` where spilling over is meant; the check skips it and
 everything in it. It sees only the screens and the text the config reaches, so
 run it on every sample after a layout change.
+
+The overflow check cannot see a button that is cut off inside a scroll area, since
+it skips what is scrolled out of view. A screen can therefore list the actions that
+must be pressable as it stands: the fifth item of a `catalogue()` screen is a list
+of selectors (`[key, label, seat, steps, [btn('これで勝負')]]`). In `--check`, each
+is reported as `unreachable` if it is missing, past the viewport, or covered or
+cut off (what is hit at its centre is not the element), in both orientations.
