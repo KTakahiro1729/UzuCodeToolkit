@@ -46,6 +46,11 @@ export interface LayoutScene {
   show: string[];
   /** The parts that take your colour in this scene. */
   mine: string[];
+  /**
+   * Boxes this scene draws differently from the part's own (the guide's nameplates change width with
+   * what they hold), per part and orientation. A part's box in a scene is this, else its own.
+   */
+  boxes?: Record<string, Partial<Record<Orientation, Rect>>>;
 }
 
 export interface Margin {
@@ -88,6 +93,11 @@ export function rectOf(layout: ScreenLayout, part: string, o: Orientation): Rect
   return r;
 }
 
+/** A part's box in one scene and orientation: the scene's own box for it, else the part's. Throws when there is neither. */
+export function boxIn(layout: ScreenLayout, scene: LayoutScene, part: string, o: Orientation): Rect {
+  return scene.boxes?.[part]?.[o] ?? rectOf(layout, part, o);
+}
+
 /** What is wrong with a layout, one message each; empty when it is sound. */
 export function layoutProblems(layout: ScreenLayout): string[] {
   const problems: string[] = [];
@@ -112,6 +122,13 @@ export function layoutProblems(layout: ScreenLayout): string[] {
     }
     for (const id of scene.mine) {
       if (!scene.show.includes(id)) problems.push(`scene "${scene.key}": part "${id}" takes your colour but is not shown`);
+    }
+    for (const [id, boxes] of Object.entries(scene.boxes ?? {})) {
+      if (!scene.show.includes(id)) problems.push(`scene "${scene.key}": box for part "${id}", which it does not show`);
+      for (const [o, r] of Object.entries(boxes)) {
+        if (!orientations.includes(o as Orientation)) problems.push(`scene "${scene.key}": ${o} box for part "${id}", but the layout has no ${o} screen`);
+        else if (!isRect(r) || r[2] <= 0 || r[3] <= 0) problems.push(`scene "${scene.key}": ${o} box for part "${id}" is not a box`);
+      }
     }
   }
   return problems;

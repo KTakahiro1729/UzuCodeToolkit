@@ -173,4 +173,17 @@ describe('reading edited slides back into a layout', () => {
     ] as const;
     expect(applyMoves(text, [], layout, [...aligned])).toBe(text.replace('"Next",', '"Next", "align": "center",').replace('"align": "left"', '"align": "right"'));
   });
+  it("moves a part a scene draws in its own box only in that scene, and writes it there", async () => {
+    const own: ImportLayout = structuredClone(layout);
+    own.scenes[1]!.boxes = { plate: { landscape: [20, 70, 50, 20] } };
+    const second = original().map((b) => (b[0].split(' ')[1] === 'plate' ? ([b[0], 20, 70, 50, 20] as Box) : b));
+    expect(reportOf(await importSlides(own, await deck([original(), second])))).toBe('no changes');
+    const r = await importSlides(own, await deck([original(), edit(second, 'plate', [20, 60, 60, 20])]));
+    expect(r.moved).toEqual([{ id: 'plate', orientation: 'landscape', scene: 'two', from: [20, 70, 50, 20], to: [20, 60, 60, 20] }]);
+    expect(r.layout.scenes[1]!.boxes!.plate!.landscape).toEqual([20, 60, 60, 20]);
+    expect(r.layout.parts.plate!.landscape).toEqual([20, 70, 100, 20]);
+    const text = '{\n  "scenes": [\n    { "id": 1, "key": "one", "boxes": { "plate": { "landscape": [20, 70, 50, 20] } } },\n    { "id": 2, "key": "two", "boxes": { "plate": { "landscape": [20, 70, 50, 20] } } }\n  ]\n}\n';
+    const [head, tail] = text.split('"key": "two"');
+    expect(applyMoves(text, r.moved, r.layout)).toBe(`${head}"key": "two"${tail!.replace('[20, 70, 50, 20]', '[20, 60, 60, 20]')}`);
+  });
 });

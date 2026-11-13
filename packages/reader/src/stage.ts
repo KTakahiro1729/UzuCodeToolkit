@@ -7,6 +7,7 @@ export { default as StageReadThrough } from './components/StageReadThrough.svelt
 export { LAYOUT, READ_THROUGH_LAYOUT, REFERENCE, stageLayoutOf, type StageLayout } from './stage-layout';
 export {
   alignOf,
+  boxIn,
   layoutProblems,
   orientationsOf,
   rectOf,

@@ -13,7 +13,7 @@
     "plate1": { "label": "名札① 話している人", "align": "left", "image": "plate", "stretch": true, "landscape": [84, 217, 190, 32], "portrait": [32, 592, 190, 32] },
     "plateNarration": { "label": "名札① ナレーション", "align": "left", "image": "plate", "stretch": true, "landscape": [84, 217, 116, 32], "portrait": [32, 592, 116, 32] },
     "plate2": { "label": "名札② 次", "align": "left", "image": "plate", "stretch": true, "landscape": [284, 217, 190, 32], "portrait": [232, 592, 138, 32] },
-    "log": { "label": "ログ確認", "align": "left", "landscape": [84, 321, 120, 44], "portrait": [32, 780, 120, 44] },
+    "log": { "label": "ログ確認", "align": "center", "landscape": [84, 321, 120, 44], "portrait": [32, 780, 120, 44] },
     "next": { "label": "次へ", "align": "center", "image": "button", "landscape": [670, 321, 120, 44], "portrait": [250, 780, 120, 44] },
     "panel": { "label": "これまでのセリフ", "image": "panel", "landscape": [68, 56, 738, 317], "portrait": [16, 150, 370, 682] }
   },
@@ -28,10 +28,13 @@
   },
   "scenes": [
     { "id": 1, "key": "self", "label": "自分が話している", "show": ["bg", "tag", "c2", "c1", "frame", "text", "plate1", "plate2", "log", "next"], "mine": ["frame", "plate1"] },
-    { "id": 2, "key": "other", "label": "相手が話し、自分が次", "show": ["bg", "tag", "c2", "c1", "frame", "text", "plate1", "plate2", "log"], "mine": ["plate2"] },
+    { "id": 2, "key": "other", "label": "相手が話し、自分が次", "show": ["bg", "tag", "c2", "c1", "frame", "text", "plate1", "plate2", "log"], "mine": ["plate2"],
+      "boxes": { "plate1": { "landscape": [84, 217, 93, 32], "portrait": [32, 592, 93, 32] }, "plate2": { "landscape": [187, 217, 603, 32], "portrait": [135, 592, 235, 32] } } },
     { "id": 3, "key": "first", "label": "キャラ初登場", "show": ["bg", "tag", "solo", "frame", "text", "plate1", "plate2", "log", "next"], "mine": ["frame", "plate1"] },
-    { "id": 4, "key": "narr-self", "label": "ナレーション（自分が読む）", "show": ["bg", "tag", "frame", "text", "plateNarration", "plate2", "log", "next"], "mine": ["frame", "plateNarration"] },
-    { "id": 5, "key": "narr-other", "label": "ナレーション（他の人が読む）", "show": ["bg", "tag", "frame", "text", "plateNarration", "plate2", "log"], "mine": ["plate2"] },
+    { "id": 4, "key": "narr-self", "label": "ナレーション（自分が読む）", "show": ["bg", "tag", "frame", "text", "plateNarration", "plate2", "log", "next"], "mine": ["frame", "plateNarration"],
+      "boxes": { "plateNarration": { "landscape": [84, 217, 190, 32], "portrait": [32, 592, 190, 32] } } },
+    { "id": 5, "key": "narr-other", "label": "ナレーション（他の人が読む）", "show": ["bg", "tag", "frame", "text", "plateNarration", "plate2", "log"], "mine": ["plate2"],
+      "boxes": { "plate2": { "landscape": [210, 217, 580, 32], "portrait": [158, 592, 212, 32] } } },
     { "id": 6, "key": "log", "label": "ログ", "show": ["bg", "panel"], "mine": [] }
   ]
 }

@@ -14,6 +14,8 @@
 // - A box's alignment is that of its first paragraph (left when none is given); it is read only
 //   for parts that have `align` (parts with text).
 // - A box is placed on the reference screen: the slide is scaled to the reference size.
+// - A part a scene draws in a box of its own (`boxes` in the scene) is compared with that box, and a
+//   move of it changes only that scene's box.
 //
 // CLI:  node import.mjs <slides.pptx>... [--layout layout.json]   (rewrites the layout file when parts moved)
 // A deck may hold one orientation (the export writes one file per orientation); an orientation
@@ -144,12 +146,20 @@ export async function importSlides(layout, buffer) {
       }
       for (const [id, rects] of seen) {
         if (!layout.parts[id]) continue;
-        const original = layout.parts[id][o];
+        const original = boxIn(layout, scene, id, o);
         // A copied box keeps the id: the one nearest the original is the part, the others are new.
         const sorted = [...rects].sort((a, b) => dist(a.rect, original) - dist(b.rect, original));
         sorted.slice(1).forEach(({ rect }) => result.added.push({ orientation: o, scene: scene.key, slide: number, text: id, copyOf: id, rect }));
-        if (!found.has(id)) found.set(id, []);
-        found.get(id).push({ scene: scene.key, slide: number, rect: sorted[0].rect });
+        if (scene.boxes?.[id]?.[o]) {
+          // The scene draws this part in a box of its own: a move there changes only that box.
+          if (!sameRect(sorted[0].rect, original)) {
+            result.layout.scenes[k].boxes[id][o] = sorted[0].rect;
+            result.moved.push({ id, orientation: o, scene: scene.key, from: [...original], to: sorted[0].rect });
+          }
+        } else {
+          if (!found.has(id)) found.set(id, []);
+          found.get(id).push({ scene: scene.key, slide: number, rect: sorted[0].rect });
+        }
         if (!aligns.has(id)) aligns.set(id, []);
         aligns.get(id).push({ scene: scene.key, slide: number, align: sorted[0].align });
       }
@@ -187,6 +197,9 @@ export async function importSlides(layout, buffer) {
   return result;
 }
 
+/** A part's box in a scene: the scene's own box for it, else the part's (layout.ts boxIn). */
+const boxIn = (layout, scene, id, o) => scene.boxes?.[id]?.[o] ?? layout.parts[id][o];
+
 const dist = (a, b) => Math.hypot(...a.map((n, i) => n - b[i]));
 
 /**
@@ -196,7 +209,17 @@ const dist = (a, b) => Math.hypot(...a.map((n, i) => n - b[i]));
 export function applyMoves(text, moved, updated, aligned = []) {
   let out = text;
   let patched = true;
-  for (const { id, orientation, to } of moved) {
+  for (const { id, orientation, to, scene } of moved) {
+    if (scene) {
+      // A scene's own box sits in that scene's entry, between its key and the next scene's.
+      const start = out.indexOf(`"key": "${scene}"`);
+      const end = out.indexOf('"key": "', start + 1);
+      const box = new RegExp(`("${id}": \\{[^}]*"${orientation}": )\\[[^\\]]*\\]`);
+      const block = start < 0 ? '' : out.slice(start, end < 0 ? undefined : end);
+      if (box.test(block)) out = out.slice(0, start) + block.replace(box, `$1[${to.join(', ')}]`) + (end < 0 ? '' : out.slice(end));
+      else patched = false;
+      continue;
+    }
     const line = new RegExp(`^(\\s*"${id}": \\{.*"${orientation}": )\\[[^\\]]*\\]`, 'm');
     if (line.test(out)) out = out.replace(line, `$1[${to.join(', ')}]`);
     else patched = false;
@@ -215,7 +238,7 @@ export function applyMoves(text, moved, updated, aligned = []) {
 export function reportOf(result) {
   const lines = [];
   const rect = (r) => `[${r.join(', ')}]`;
-  for (const m of result.moved) lines.push(`moved   ${m.id} (${m.orientation}) ${rect(m.from)} -> ${rect(m.to)}`);
+  for (const m of result.moved) lines.push(`moved   ${m.id} (${m.orientation}${m.scene ? `, scene ${m.scene} only` : ''}) ${rect(m.from)} -> ${rect(m.to)}`);
   for (const a of result.added) lines.push(`new     ${a.orientation} scene ${a.scene}, slide ${a.slide}: "${a.text}" at ${rect(a.rect)}${a.copyOf ? ` (copy of ${a.copyOf})` : ''}; needs code`);
   for (const r of result.removed) lines.push(`removed ${r.id} (${r.orientation}) is gone from scene ${r.scene}, slide ${r.slide}`);
   for (const a of result.aligned) lines.push(`aligned ${a.id} ${a.from} -> ${a.to}`);
