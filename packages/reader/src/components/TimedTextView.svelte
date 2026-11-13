@@ -2,7 +2,7 @@
   The screen of a timed phase (timedPhase()): text to read, an optional guide at its top, and the
   time left in the footer's leftmost item with pause and more time after it. The main button
   depends on the phase's rule: none for a phase that ends by its time alone; "done" (a toggle,
-  with how many are still needed) when everyone or a majority must say so; "next" when anyone may
+  with how many are still needed) when everyone must say so; "next" when anyone may
   end it, or only one part (the others see who). The text is the work's own: `text` and `guide`.
 -->
 <script lang="ts">
@@ -27,8 +27,7 @@
     send,
     text,
     guide,
-    clockAt = 'footer',
-  }: PhaseViewProps<TimedState> & { text?: string; guide?: string; clockAt?: 'footer' | 'band' } = $props();
+  }: PhaseViewProps<TimedState> & { text?: string; guide?: string } = $props();
 
   // Seconds left, from the game clock; while paused it stands at the moment of the pause.
   let left = $state(0);
@@ -46,7 +45,7 @@
   const only = $derived(rule !== null && typeof rule === 'object' ? rule.only : undefined);
   const blocked = $derived(only !== undefined && part !== only);
   /** A toggle ("done") when several must say so; a plain next button when one may end it. */
-  const toggle = $derived(rule === 'everyone' || rule === 'majority');
+  const toggle = $derived(rule === 'everyone');
   const more = $derived(rule === null ? 0 : stillNeeded(rule, phase.seats.length, phase.said.length));
   const note = $derived(
     blocked
@@ -69,7 +68,7 @@
     </div>
   </div>
 </div>
-<TransitionFooter {left} {clockAt} paused={!!phase.pausedAt} onpause={() => send('pause')} onresume={() => send('resume')}>
+<TransitionFooter {left} paused={!!phase.pausedAt} onpause={() => send('pause')} onresume={() => send('resume')}>
   {#snippet extras()}
     <Slot icon="plus" onclick={() => send('extend')}>{STRINGS['handout.extend']}</Slot>
   {/snippet}

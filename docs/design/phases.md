@@ -38,7 +38,7 @@ Read this when you touch the introduction, an empty phase, the phase list or a p
 
 ## Timed phase
 
-- Story or instruction text at the chat's reading width, an optional guide on top. The footer's leftmost item is the time left, with pause and more time (same as the handout phase). The main button depends on the work's rule: none when only time ends the phase; `button.done` as a toggle with `status.needMore` for everyone or a majority; `button.nextPhase` with `status.anyoneNext` when anyone may end it; for one named part, the others see `status.facilitator`. Time up moves everyone on whatever the rule. A work with no timed phase ships none of this.
+- Story or instruction text at the chat's reading width, an optional guide on top. The footer's leftmost item is the time left, with pause and more time (same as the handout phase). The main button depends on the work's rule: none when only time ends the phase; `button.done` as a toggle with `status.needMore` for everyone; `button.nextPhase` with `status.anyoneNext` when anyone may end it; for one named part, the others see `status.facilitator`. Time up moves everyone on whatever the rule. A work with no timed phase ships none of this.
 
 ## Phase list
 
