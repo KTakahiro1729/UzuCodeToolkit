@@ -14,11 +14,26 @@ const ORIENTATIONS = ['landscape', 'portrait'];
 /** Slide px are CSS px: 96 per inch, so 1 px = 9525 EMU exactly. */
 export const PX_PER_INCH = 96;
 
+// Every part is opaque and drawn back to front, so what is in front visibly covers what is behind.
+// One fill per kind of part; a part that takes your colour in the scene is orange.
 const COLORS = {
+  background: { fill: 'EEF2E8', line: '8A9A7B', text: '4B5A3E' },
+  character: { fill: 'E4DAF0', line: '7B5EA7', text: '3E2A63' },
+  frame: { fill: 'FFF6D6', line: 'B8963A', text: '6B5210' },
+  text: { fill: 'FFFFFF', line: '4A7BB5', text: '1F3A5C' },
   part: { fill: 'DCE9F7', line: '4A7BB5', text: '1F3A5C' },
   mine: { fill: 'FBE3C4', line: 'D9822B', text: '6B3A08' },
-  reserved: { fill: 'D9D9D9', line: '8C8C8C', text: '4D4D4D' },
 };
+const RESERVED = { line: '8C8C8C', text: '6B6B6B' };
+
+/** Which fill and caption place a part gets, from what it is (its id or image), not from the work. */
+function kindOf(id, part) {
+  if (id === 'bg') return 'background';
+  if (/^stand-/.test(part.image ?? '')) return 'character';
+  if (part.image === 'frame' || part.image === 'panel') return 'frame';
+  if (part.align && !part.image) return 'text';
+  return 'part';
+}
 
 /** The alt text that carries a box's part id: Google Slides keeps it through an export, unlike shape names. */
 export const ID_PREFIX = 'uzu:';
@@ -37,19 +52,22 @@ export function buildDeck(layout, orientation) {
   pptx.layout = `${layout.screen}-${orientation}`;
   pptx.title = `${layout.screen} ${orientation}`;
 
-  // Text is the label only. A part with `align` carries text: aligned so and anchored in the middle.
-  // Any other box (a picture's) keeps its caption at the top left, where boxes drawn over it leave it readable.
-  const addBox = (slide, id, label, rect, c, opts = {}) => {
+  // Text is the label only. Where it sits keeps it readable under the boxes drawn over it:
+  // a part with `align` carries text, so it is aligned so and anchored in the middle; a character's
+  // caption is centred in its upper area (under the face); the frame's is centred at its bottom,
+  // between the log and next buttons; the background's is bottom right.
+  const addBox = (slide, id, label, rect, c, caption = {}, extra = {}) => {
     const [x, y, w, h] = rect;
     const small = w < 80 || h < 30;
+    const [align, valign] = caption.at;
     slide.addText(label, {
       x: inch(x), y: inch(y), w: inch(w), h: inch(h),
       shape: pptx.ShapeType.rect,
-      fill: { color: c.fill, transparency: opts.transparency ?? 0 },
-      line: { color: c.line, width: 1 },
+      ...(c.fill ? { fill: { color: c.fill } } : {}),
+      line: { color: c.line, width: 1, ...(extra.dash ? { dashType: 'dash' } : {}) },
       color: c.text,
       fontSize: small ? 7 : h < 40 ? 8 : 11,
-      align: opts.align ?? 'left', valign: opts.valign ?? (opts.align ? 'middle' : 'top'), margin: 2, fit: 'none', wrap: !small,
+      align, valign, margin: [2, 2, 2, (caption.topInset ?? 0) * h * 0.75 + 2], fit: 'none', wrap: !small,
       objectName: id,
     });
   };
@@ -57,16 +75,28 @@ export function buildDeck(layout, orientation) {
   for (const scene of layout.scenes) {
     const slide = pptx.addSlide();
     slide.addNotes(`${scene.id} ${scene.key} ${scene.label}`);
-    for (const id of scene.show) {
+    const addPart = (id) => {
       const part = layout.parts[id];
-      const rect = part?.[orientation];
+      const rect = scene.boxes?.[id]?.[orientation] ?? part?.[orientation];
       if (!rect) throw new Error(`layout ${layout.screen}: scene "${scene.key}" shows "${id}" with no ${orientation} box`);
-      // The background sits bottom right so its text clears the boxes drawn over its top left.
-      addBox(slide, id, part.label, rect, scene.mine.includes(id) ? COLORS.mine : COLORS.part, id === 'bg' ? { align: 'right', valign: 'bottom' } : { align: part.align });
-    }
+      const kind = kindOf(id, part);
+      const c = scene.mine.includes(id) ? COLORS.mine : COLORS[kind];
+      const caption = {
+        background: { at: ['right', 'bottom'] },
+        character: { at: [part.align ?? 'center', 'top'], topInset: 0.3 },
+        frame: { at: [part.align ?? 'center', 'bottom'] },
+        text: { at: [part.align, 'middle'] },
+        part: { at: [part.align ?? 'left', part.align ? 'middle' : 'top'] },
+      }[kind];
+      addBox(slide, id, part.label, rect, c, caption);
+    };
+    const bgIds = scene.show.filter((id) => kindOf(id, layout.parts[id]) === 'background');
+    bgIds.forEach(addPart);
+    // UZU's own areas sit over the background and behind every part: dashed outline, no fill.
     for (const [id, area] of Object.entries(layout.reserved ?? {})) {
-      if (area[orientation]) addBox(slide, id, area.label, area[orientation], COLORS.reserved, { transparency: 60, align: area.align });
+      if (area[orientation]) addBox(slide, id, area.label, area[orientation], RESERVED, { at: [area.align ?? 'left', 'top'] }, { dash: true });
     }
+    scene.show.filter((id) => !bgIds.includes(id)).forEach(addPart);
   }
   return pptx;
 }
