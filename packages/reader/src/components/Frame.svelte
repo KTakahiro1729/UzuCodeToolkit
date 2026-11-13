@@ -50,13 +50,13 @@
 </script>
 
 <div class="screen">
-<main class:aside={!!aside} style:--footer-height={`${footerHeight}px`}>
+<main data-uzu-part="main" class:aside={!!aside} style:--footer-height={`${footerHeight}px`}>
   <TopBand {parts} {myPart} {done} {phase} {onphase} {phaseOpen} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
-  <footer bind:offsetHeight={footerHeight}>
+  <footer data-uzu-part="footer" bind:offsetHeight={footerHeight}>
     <!-- One row: the items (read-back buttons, more time, the time left) at the left, the main button at the right, the one to press now. -->
-    <div class="act">
-      {#if nav}<nav>{@render nav()}</nav>{/if}
+    <div class="act" data-uzu-part="footer-row">
+      {#if nav}<nav data-uzu-part="footer-tabs">{@render nav()}</nav>{/if}
       <div class="cell aside" bind:this={footerSlots.aside}></div>
       <div class="cell main" bind:this={footerSlots.main}></div>
     </div>

@@ -49,7 +49,7 @@
 
 <FooterActions place="aside">
   {#if clockAt === 'footer'}
-    <Slot icon="clock" class="time{paused ? ' paused' : ''}"><span>{STRINGS['time.left']}</span> <b class="clock" class:urgent>{formatClock(left)}</b></Slot>
+    <Slot icon="clock" class="time{paused ? ' paused' : ''}"><span>{STRINGS['time.left']}</span> <b class="clock" data-uzu-part="clock" class:urgent>{formatClock(left)}</b></Slot>
   {/if}
   {#if onpause && onresume}
     {#if paused}
