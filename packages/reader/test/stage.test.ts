@@ -26,8 +26,7 @@ describe('the guide layout', () => {
         expect(right(r)).toBeLessThanOrEqual(width - margin.right);
         expect(r[1]).toBeGreaterThanOrEqual(margin.top);
         expect(bottom(r)).toBeLessThanOrEqual(height - margin.bottom);
-        expect(overlap(r, reserved.logo)).toBe(false);
-        expect(overlap(r, reserved.system)).toBe(false);
+        expect(overlap(r, reserved.hud)).toBe(false);
       }
     });
 

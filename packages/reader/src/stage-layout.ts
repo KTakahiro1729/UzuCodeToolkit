@@ -37,8 +37,8 @@ export interface StageLayout {
   log: Rect;
   next: Rect;
   panel: Rect;
-  /** What UZU draws: the logo, the system indicator and the toast. Nothing of ours goes there. */
-  reserved: { logo: Rect; system: Rect; toast: Rect };
+  /** What UZU draws: its HUD (top left of the safe area) and the toast. Nothing of ours goes there. */
+  reserved: { hud: Rect; toast: Rect };
   /** Edges that stay empty. */
   margin: { top: number; right: number; bottom: number; left: number };
 }
@@ -63,7 +63,7 @@ export function stageLayoutOf(layout: ScreenLayout, o: Orientation): StageLayout
     log: r('log'),
     next: r('next'),
     panel: r('panel'),
-    reserved: { logo: area('logo'), system: area('system'), toast: area('toast') },
+    reserved: { hud: area('hud'), toast: area('toast') },
     margin: layout.margin?.[o] ?? NO_MARGIN,
   };
 }

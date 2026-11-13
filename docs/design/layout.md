@@ -17,7 +17,7 @@ The toolkit's one layout so far is the read-through's: `packages/reader/src/layo
     "frame": { "label": "セリフ枠", "image": "frame", "landscape": [68, 233, 738, 140] },
     "plate1": { "label": "名札① 話している人", "image": "plate", "stretch": true, "landscape": [84, 217, 190, 32] }
   },
-  "reserved": { "logo": { "label": "UZUのロゴ", "landscape": [68, 8, 44, 44] } },
+  "reserved": { "hud": { "label": "UZUのHUD", "landscape": [62, 0, 138, 52] } },
   "margin": { "landscape": { "top": 0, "right": 62, "bottom": 21, "left": 62 } },
   "scenes": [
     { "id": 1, "key": "self", "label": "自分が話している", "show": ["frame", "plate1"], "mine": ["frame", "plate1"] }
@@ -32,7 +32,7 @@ The toolkit's one layout so far is the read-through's: `packages/reader/src/layo
 | `image` | The picture drawn in the box, `assets/<image>.webp` in the work. Parts naming the same image share it, so a work keeps one frame, one nameplate. `{role}` stands for the role shown (`stand-{role}`). A part that takes your colour in some scene (`mine`) also has `<image>-mine`, used on your turn, since the colour is what shows the turn. No `image`: the screen draws the part from colour tokens, as it also does while the image (or its `-mine` picture) is missing |
 | `stretch` | The image keeps its ends and stretches in width to the box (a nameplate fitting its name). Without it the image is drawn at the box's size |
 | `align` | For a part with text: how the text lines up across its box, `left` (when left out), `center` or `right`. The slides draw the box's text this way, and a change made there is read back (only for parts that have `align`) |
-| `reserved` | What UZU draws over the screen (logo, indicator, toast). Shown on the slides, never used by a part |
+| `reserved` | What UZU draws over the screen. Shown on the slides, never used by a part. The HUD is the SDK's: a rectangle at the safe area's top left, 138×52 with two or more players (`--uzu-hud-inset-x`/`-y`; 56 wide with one), not the guide's logo and indicator. The toast is the guide's |
 | `margin` | Edges that stay empty |
 | `scenes` | One per screen of the guide: `show` lists the parts it shows, back to front; `mine` the parts that take your colour; `boxes` the boxes this scene draws differently from the parts' own, per part and orientation (the guide's nameplates: on another's turn plate ① holds only the name and plate ② runs to the line's right edge with the next line). The slides draw a part in its scene's box; the screen sizes nameplates to what they hold, so these boxes are the guide's picture of it |
 

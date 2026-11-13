@@ -4,7 +4,7 @@
   "reference": { "landscape": [874, 402], "portrait": [402, 874] },
   "parts": {
     "bg": { "label": "背景", "image": "bg", "landscape": [0, 0, 874, 402], "portrait": [0, 0, 402, 874] },
-    "tag": { "label": "状況（日付・時間・章）", "align": "left", "landscape": [120, 18, 150, 24], "portrait": [68, 72, 150, 24] },
+    "tag": { "label": "状況（日付・時間・章）", "align": "left", "landscape": [206, 18, 150, 24], "portrait": [144, 72, 150, 24] },
     "c1": { "label": "キャラ① 話している人", "image": "stand-{role}", "landscape": [97, 56, 163, 346], "portrait": [16, 156, 256, 718] },
     "c2": { "label": "キャラ② 次に話す人", "image": "stand-{role}", "landscape": [297, 69, 163, 333], "portrait": [250, 184, 136, 690] },
     "solo": { "label": "キャラ 初登場", "image": "stand-{role}", "landscape": [262, 16, 350, 386], "portrait": [16, 120, 370, 754] },
@@ -18,8 +18,7 @@
     "panel": { "label": "これまでのセリフ", "image": "panel", "landscape": [68, 56, 738, 317], "portrait": [16, 150, 370, 682] }
   },
   "reserved": {
-    "logo": { "label": "UZUのロゴ", "landscape": [68, 8, 44, 44], "portrait": [16, 62, 44, 44] },
-    "system": { "label": "UZUの表示", "landscape": [762, 8, 44, 44], "portrait": [342, 62, 44, 44] },
+    "hud": { "label": "UZUのHUD", "landscape": [62, 0, 138, 52], "portrait": [0, 62, 138, 52] },
     "toast": { "label": "UZUのお知らせ", "landscape": [68, 56, 260, 36], "portrait": [16, 110, 260, 36] }
   },
   "margin": {

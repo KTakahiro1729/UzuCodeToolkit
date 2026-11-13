@@ -65,7 +65,7 @@ describe('image order sheet', () => {
 
   it('every scene names its reserved areas and keeps text out of the pictures', () => {
     const sheet = buildBrief(layout);
-    expect(sheet.match(/UZUのロゴ/g)).toHaveLength(layout.scenes.length);
+    expect(sheet.match(/UZUのHUD/g)).toHaveLength(layout.scenes.length);
     expect(sheet.match(/すべての文字、数字、目印線を絵に残さない/g)).toHaveLength(layout.scenes.length);
   });
 });
