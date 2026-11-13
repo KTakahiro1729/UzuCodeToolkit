@@ -292,8 +292,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   its label, inside the button (`Button` `note`, `status.*` strings): "他の人待ち"
   after you tap ready or done, "相手の番です" while another player reads, "設定が未記入"
   while the handout's done button is greyed, "選ぶと押せます" on the play button,
-  "押すと全員進む" on a next-phase button any one player can tap for everyone. The note is one line: the main button has a fixed width, so a note is at most 7 full-width
-  characters (`packages/reader/test/notes.test.ts` fails on a longer `status.*` string). A button that
+  "押すと全員進む" on a next-phase button any one player can tap for everyone. The label and the note are one line each: the main button has a fixed width, so each is at most 7 full-width
+  characters (`packages/reader/test/notes.test.ts` fails on a longer `status.*` or `button.*` string; a work's own test calls `fitsButton(label, note)` from `@uzu-toolkit/reader` on its labels). A button that
   can be pressed and says what it does by its label alone has no note: text is read only
   where its absence would leave the player guessing. It states a fact of the screen; it
   never repeats the label or invents a rule. 16px, quiet colour.
