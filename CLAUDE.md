@@ -47,7 +47,7 @@ A work changes its look without a toolkit change. Find the smallest piece below 
 
 The dev harness and the screen preview find the main action, the phase name and the scrolling list by three marks: `data-uzu-actions="main"` (set by `FooterActions`), `data-uzu-phase` and `data-uzu-scroll`. A custom shell or screen keeps them (docs/screen-preview.md). The logic tests, the work's flow test and the build-size test do not depend on the screens.
 
-Add to the toolkit only what the work cannot do with the pieces above, and only if it reads something a plan contains (phases, cast, script, handouts, games, hidden parts, empty chapters) or prevents a mistake no eye can see on the screen. Game rules, world and colours stay in the work (docs/decisions: the-toolkit-takes-what-prevents-an-error-no-eye-can-see). Gaps in a plan get defaults that are listed back to the author (gaps-in-a-plan-are-filled-with-defaults-and-listed).
+Add to the toolkit only what the work cannot do with the pieces above, and only if it is a part for a concept murder-mystery plans commonly contain (phases, cast, script, handouts, games, hidden parts, empty chapters; docs/plan-to-parts.md says which part answers which) or prevents a mistake no eye can see on the screen. Game rules, world and colours stay in the work (docs/decisions: the-toolkit-takes-what-prevents-an-error-no-eye-can-see). Gaps in a plan get defaults that are listed back to the author (gaps-in-a-plan-are-filled-with-defaults-and-listed).
 
 ## Commands (from the repo root)
 

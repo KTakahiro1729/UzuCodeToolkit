@@ -4,7 +4,7 @@ Replaces `archive/2026-11-13-the-conditions-for-adding-to-the-toolkit-are-not.md
 
 The toolkit's goal: an author hands over a plan and gets a work of enough quality, without checking every screen. A new addition goes into the toolkit only if it meets one of these:
 
-1. **It reads something a plan contains.** The numbered phases with their minutes, the cast list, the script as "name line" with readings in （）, a handout's common text, per-part text, impressions of others and settings, the list of games, "shown only to X", the part that may move the game on, and chapters left empty or as a placeholder.
+1. **It is a part for a concept that murder-mystery plans commonly contain.** Phases, the cast, the script, handouts, information only one part sees, the part that may move the game on, a list of games, and chapters left empty. The toolkit sets no format for the plan: the author writes it freely, and the agent reads it and picks the parts (docs/plan-to-parts.md).
 2. **It prevents a mistake that cannot be seen on the screen.** A wrong deterministic state, a label that does not fit, a contrast or a string that fails silently: a part or a check has to catch these, because the author cannot by looking.
 
 Stays in the work: the rules of a game, the world, the colours and art.
