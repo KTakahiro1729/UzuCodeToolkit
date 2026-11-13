@@ -1,5 +1,7 @@
 # Phase progress follows the official murder-mystery guide where it fits
 
+Superseded in part by 2026-11-13-the-last-30-seconds-have-no-edge.md (the edge).
+
 Read against https://docs.code.uzu-app.com/guides/murder-mystery (phase progress: §0, §1, §2, §4, §11). The guide's three ways out of a phase (everyone presses, the time runs out, a facilitator advances) match the toolkit's time and people triggers (a designated seat is the facilitator). The guide says nothing on pause, extension or skip, so those stay as decided in "A phase moves on by time or by people, and the footer shows which". This adds to that decision; it replaces only the "no count" line noted below.
 
 ## Decided

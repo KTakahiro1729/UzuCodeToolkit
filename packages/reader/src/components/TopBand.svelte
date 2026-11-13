@@ -150,12 +150,10 @@
     font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
-  /* The last 30 seconds: heavier, darker, with an edge. No red (that is for danger), no motion. */
+  /* The last 30 seconds: heavier and darker, no edge. No red (that is for danger), no motion. */
   .urgent {
-    padding: 0 0.3em;
-    border: 2px solid var(--color-text);
-    border-radius: 0.4em;
     font-weight: 800;
+    -webkit-text-stroke: 0.04em currentColor;
   }
   /* A long phase name ends in an ellipsis rather than running into the players. */
   .label > span {

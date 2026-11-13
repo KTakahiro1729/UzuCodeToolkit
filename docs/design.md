@@ -268,7 +268,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
     `status.waitOthers`.
   - The time left (`TransitionFooter`) is the footer's leftmost item by default, or sits beside the
     phase label in the band with `clockAt="band"`; pause and more time stay in the footer.
-  - The last 30 seconds of the clock are heavier and darker, with a 2px edge: no red (red is for
+  - The last 30 seconds of the clock are heavier and darker, with no edge: no red (red is for
     danger), no motion.
   - A phase that one part moves on (`emptyPhase({ facilitator })`, view prop `facilitator`) shows
     the other seats a greyed button with `status.facilitator` (`{name}が進めます`). The

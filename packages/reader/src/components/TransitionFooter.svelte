@@ -12,7 +12,7 @@
   import { formatClock } from '@uzu-toolkit/kit';
   import { band } from '../store.svelte';
 
-  /** From this many seconds left, the clock is shown heavier and darker, with an edge. */
+  /** From this many seconds left, the clock is shown heavier and darker. */
   const URGENT_SECONDS = 30;
 
   let {
@@ -81,10 +81,8 @@
     display: none;
   }
   :global(.slot.time .clock.urgent) {
-    padding: 0 0.1em;
-    border: 2px solid var(--color-text);
-    border-radius: 0.4em;
     font-weight: 800;
+    -webkit-text-stroke: 0.04em currentColor;
   }
   :global(.slot.time.paused .clock) {
     color: var(--color-text-quiet);
