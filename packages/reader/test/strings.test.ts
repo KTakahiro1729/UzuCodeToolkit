@@ -14,3 +14,21 @@ describe('overrideStrings', () => {
     expect(() => overrideStrings({ 'button.nope': 'x' } as never)).toThrow('unknown UI string');
   });
 });
+
+describe('reading strings', () => {
+  it('no screen reads strings.json directly, so startFlow({ strings }) reaches every label', async () => {
+    const { readdirSync, readFileSync, statSync } = await import('node:fs');
+    const { join } = await import('node:path');
+    const root = join(__dirname, '../src');
+    const bad: string[] = [];
+    const walk = (dir: string): void => {
+      for (const name of readdirSync(dir)) {
+        const path = join(dir, name);
+        if (statSync(path).isDirectory()) walk(path);
+        else if (/\.(svelte|ts)$/.test(name) && name !== 'strings.ts' && /strings\.json/.test(readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''))) bad.push(path);
+      }
+    };
+    walk(root);
+    expect(bad).toEqual([]);
+  });
+});

@@ -7,7 +7,7 @@
   import { useFlow } from '../flowContext';
   import PhaseList from './PhaseList.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   const flow = useFlow();
   const info = $derived(flow?.());
