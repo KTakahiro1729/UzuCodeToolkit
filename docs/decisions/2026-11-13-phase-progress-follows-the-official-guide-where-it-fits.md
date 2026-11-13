@@ -13,12 +13,9 @@ Read against https://docs.code.uzu-app.com/guides/murder-mystery (phase progress
 - The last 30 seconds of a timer are shown heavier and darker, with an edge. No red (red is for danger) and no motion.
 - A seat that cannot press and is not simply waiting for a turn sees `{name}が進めます` in a facilitator phase; the read-through keeps `相手の番です`.
 
-## Not decided yet
-
-- A "curtain" at each phase change (a short, non-blocking banner naming the new phase, about two seconds): waiting for the owner's answer. Do not build it before then.
-
 ## Not taken
 
+- A "curtain" at each phase change (a short banner naming the new phase). The guide asks for both the plate and the curtain; the owner decided the phase label in the band is enough.
 - Moving the time permanently into the band (the guide puts the phase plate and the timer side by side): the owner wants it movable, not fixed.
 - A rescue seat that can force a phase on: a work adds one when it needs it; a phase that waits for everyone states its condition in the note instead.
 
