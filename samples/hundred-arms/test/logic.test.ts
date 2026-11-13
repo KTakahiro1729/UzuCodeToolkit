@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import script from '../script/script.json';
 import logic from '../src/logic';
 
-const ctx = {} as never;
+const ctx = { time: 0 } as never;
 
 describe('hundred-arms sample', () => {
   it('script.json matches original.txt character for character', () => {
@@ -28,8 +28,8 @@ describe('hundred-arms sample', () => {
     const state = logic.setup({ players, ctx });
     const seatOf = (part: string) => Object.keys(state.parts).find((s) => state.parts[s] === part)!;
     script.lines.forEach((line, i) => {
-      logic.actions.advance({ state, playerId: seatOf(line.speaker), payload: { index: i }, ctx });
+      logic.actions['reading:advance']({ state, playerId: seatOf(line.speaker), payload: { index: i }, ctx });
     });
-    expect(state.dialogue.finished).toBe(true);
+    expect(state.ended).toBe(true);
   });
 });

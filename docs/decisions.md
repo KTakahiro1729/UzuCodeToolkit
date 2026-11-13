@@ -22,3 +22,8 @@ Owner decisions for this repository, newest last.
 ## 2026-11-13
 
 - **Overflow is checked on the drawn screens.** A CSS lint cannot tell whether something spills over, since that depends on the text and the screen size. `capture.mjs --check` walks the screen-preview screens in both orientations in Playwright and lists boxes past the screen or their parent, text and images under the safe area or the HUD, and cut-off content. Chosen over Galen (a layout spec per screen; unmaintained) and BackstopJS (pixel diffs show change, not overflow).
+- **InterstellarBG takes the toolkit as a git submodule.** The new work (`KTakahiro1729/InterstellarBoardGame`) is where the toolkit grows the least it needs; it pins a toolkit commit and moves it on when the toolkit changes.
+- **General features go into the toolkit.** Whatever the work needs that another work could use (phases, the handout screen, game selection, playing-card parts) is built here; only the work's own content (script, handout text, its games' rules) stays in the work.
+- **A work runs as phases.** A work is a fixed list of phases in order; a read-through is one phase and a work can have several. Details in `CLAUDE.md`, Phases.
+- **Unwritten parts are empty phases.** A phase whose content is not decided yet (in InterstellarBG, 「その時……」 and the ending until their scripts exist) is an empty phase: the band names it and a next button that any player can tap moves on. How 「その時……」 mixes reading and a game is open until its script exists.
+- **Secrets are hidden on screen only.** Secrets such as a word-wolf topic or a hand of cards are hidden on screen only. Shared state reaches every player, and no secrecy mechanism is built.

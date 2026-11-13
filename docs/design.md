@@ -189,6 +189,16 @@ Decoration is out of scope, but it must not break the rules above:
   then the post-game screen fades in, so the two never show through each
   other. The band's phase changes as the post-game screen comes in.
 
+### Phase changes
+
+- When the phase changes, the old screen fades out, then the new one fades in (200 ms each, one at a time, instant with reduced motion). The band's phase label changes with the screen.
+- The first screen, shown as the game loads, does not fade in.
+
+### Empty phase
+
+- A phase whose content is not made yet shows the next button alone, centred, labelled `button.next`. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
+- On the last line of a read-through that another phase follows, the advance button says `button.next` instead of `button.end`.
+
 ### Other screens
 
 - Screens other than the read-through, such as the afterword, do not use the
