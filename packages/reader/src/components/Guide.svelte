@@ -22,7 +22,9 @@
     margin: 0;
     width: 100%;
     max-width: 30em;
+    /* Centred as a column in a flex or a grid parent; the text in it stays left-aligned. */
     align-self: center;
+    justify-self: center;
     font-family: var(--font-ui);
     line-height: 1.7;
     white-space: pre-line;

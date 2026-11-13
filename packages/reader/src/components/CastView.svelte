@@ -140,6 +140,13 @@
     gap: 0.8em;
   }
   @media (orientation: landscape) {
+    /* Low screens: tighter blocks, so the three parts fit beside the text. */
+    li {
+      padding: 0.3em 0.9em;
+    }
+    ul {
+      gap: 0.4em;
+    }
     .body {
       max-width: 52em;
       display: grid;
