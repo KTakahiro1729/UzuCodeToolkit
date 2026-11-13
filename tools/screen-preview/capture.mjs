@@ -442,9 +442,11 @@ async function run(steps, screenSeat, key) {
         await resize(at, size);
         if (check) {
           const found = await timed('check', onSeat)(at, (f) => f.evaluate(overflow));
-          spills += found.length;
+          // Only what hinders play fails the check; a small cut-off of a label is listed as a warning.
+          const errors = found.filter((f) => f.severity !== 'warn');
+          spills += errors.length;
           lines.push(`${s.key} ${tag}: ${found.length ? '' : 'ok'}`);
-          for (const f of found) lines.push(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
+          for (const f of found) lines.push(`  ${f.severity === 'warn' ? 'warn ' : ''}${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
           // The screen's `reach` selectors (the action to press now) must be on screen without scrolling.
           for (const sel of s.reach ?? []) {
             const why = await onSeat(at, async (f) => {

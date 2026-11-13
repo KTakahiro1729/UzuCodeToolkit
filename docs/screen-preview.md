@@ -190,14 +190,14 @@ node tools/screen-preview/capture.mjs --check samples/yubiwa
 
 walks the same screens in both orientations, writes no page, and lists what
 spills over ([`overflow.js`](../tools/screen-preview/overflow.js)), exiting 1
-if anything does:
+if anything hinders play (a warning, below, does not):
 
 | Kind | Means |
 |---|---|
 | `screen` | A box runs past the viewport |
 | `inset` | Text or an image sits under the safe area or the UZU HUD (backgrounds may reach under them) |
 | `parent` | A box runs past its parent, or text past its own box, where they show overflow |
-| `clipped` | An element that hides overflow cuts its content off, or a scroll list runs sideways |
+| `clipped` | An element that hides overflow cuts its content off, or a scroll list runs sideways. A small cut (under a third of the element) of text that is not in a button or field is a `warn` line: listed, not failing |
 
 The check looks at the orientation the work's `manifest.json` fixes (`orientation`): the app holds a
 phone to it, so the other one is never played, and certification's size table is read in that
