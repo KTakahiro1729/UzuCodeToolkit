@@ -2,27 +2,20 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 02:31 UTC
+Last checked: 2026-11-13 03:07 UTC
 
 ## Waiting on the owner
 
 Nothing right now. No open decisions. No CI checks are configured.
 
-### Later waves
-
-Owner reviews are batched into two waves.
-
-- Wave A: [#19](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/19) Phases, handouts, game select and playing cards (Toolkit side; replaces #17 and #18), and the InterstellarBoardGame base (no PR reported yet).
-- Wave B: the InterstellarBoardGame mini-games. Not opened yet.
-
-| What | Kind | Wave | Notes |
-|---|---|---|---|
-| Word Wolf: check and fix the 20 topic pairs | Check | B | InterstellarBoardGame `claude/project-thread-0yv3io` @ 3193176, `src/games/word-wolf/words.json`. Reviewed together with the mini-game PR. |
-
 ## Done
+
+Word Wolf topic pairs (InterstellarBoardGame): checked by the owner and kept as they are, 2026-11-13.
+
 
 | PR | Result | Date |
 |---|---|---|
+| [#19](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/19) Phases, handouts, game select and playing cards for InterstellarBG | Merged | 2026-11-13 |
 | [#18](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/18) Run a work as a list of phases | Closed; folded into #19 | 2026-11-13 |
 | [#17](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/17) HO phase with reading timer | Closed; folded into #19 | 2026-11-13 |
 | [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Merged | 2026-11-13 |
