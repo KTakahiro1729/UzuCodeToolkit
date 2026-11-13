@@ -9,7 +9,7 @@
     "harness": "node ../../packages/reader/harness.mjs",
     "build": "tsc --noEmit && vite build",
     "publish": "uzu publish",
-    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run"
   },
   "dependencies": {
