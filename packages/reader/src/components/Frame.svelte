@@ -54,8 +54,6 @@
   <TopBand {parts} {myPart} {done} {phase} {onphase} {phaseOpen} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
   <footer bind:offsetHeight={footerHeight}>
-    <!-- Above the row, only while something is in it: the older line of state (FooterActions place="status"). -->
-    <div class="opts"><div class="cell status" bind:this={footerSlots.status}></div></div>
     <!-- One row: the items (read-back buttons, more time, the time left) at the left, the main button at the right, the one to press now. -->
     <div class="act">
       {#if nav}<nav>{@render nav()}</nav>{/if}
@@ -155,11 +153,9 @@
       calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.2em;
     background: var(--color-bubble);
   }
   .act {
-    grid-row: 2;
     display: flex;
     align-items: stretch;
     gap: 0.4em;
@@ -176,19 +172,6 @@
   .act > .main {
     flex: 1;
     min-width: 0;
-  }
-  .opts {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.6em;
-    font-family: var(--font-ui);
-    color: var(--color-text-quiet);
-  }
-  .opts:has(> .cell:empty) {
-    display: none;
   }
   nav {
     display: flex;
