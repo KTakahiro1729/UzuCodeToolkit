@@ -62,6 +62,6 @@ scripts/subset-fonts.sh samples/<name>
 - Code: MIT (`LICENSE`)
 - Script text (`samples/hundred-arms/script/`): CC BY 4.0, author あろすてりっく (`script/LICENSE.md`). Never change any script's wording; each sample has a test that checks `script.json` against `original.txt`.
 - 指環 and 三つの宝 (`samples/yubiwa/script/`, `samples/mittsu-no-takara/script/`): public domain in Japan, from Aozora Bunko (`script/LICENSE.md`).
-- Playing cards (`packages/reader/src/cards/`): CC0, Adrian Kennard's SVG deck with plain court cards (`cards/LICENSE.md`).
+- Playing cards (`packages/reader/src/cards/`): CC0, Adrian Kennard's SVG deck (`cards/LICENSE.md`).
 - Fonts (`samples/*/src/fonts/`): SIL Open Font License 1.1 (`OFL-ShipporiMincho.txt`, `OFL-BIZUDPGothic.txt`)
 - The official sample densetsu-no-tantei has no license notice, so do not copy its code.
