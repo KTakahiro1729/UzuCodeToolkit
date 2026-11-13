@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 02:02 UTC
+Last checked: 2026-11-13 03:28 UTC
 
 ## Waiting on the owner
 
@@ -10,23 +10,22 @@ No open decisions. No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Review, merge | Ready. Screenshots in the project files under `screenshots/overflow-check/`. |
-
-### Later waves
-
-Owner reviews are batched into two waves.
-
-- Wave A: the two Toolkit PRs (scene switching, HO) and the InterstellarBoardGame base. Not opened yet.
-- Wave B: Toolkit game selection and playing cards, and the InterstellarBoardGame mini-games. Not opened yet.
-
-| What | Kind | Wave | Notes |
-|---|---|---|---|
-| Word Wolf: check and fix the 20 topic pairs | Check | B | InterstellarBoardGame `claude/project-thread-0yv3io` @ 3193176, `src/games/word-wolf/words.json`. Reviewed together with the mini-game PR. |
+| [#23](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/23) Read-through: show a long line from its top, align the notice with stage directions | Review, merge | Ready. |
 
 ## Done
 
+Word Wolf topic pairs (InterstellarBoardGame): checked by the owner and kept as they are, 2026-11-13.
+
 | PR | Result | Date |
 |---|---|---|
+| [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Merged | 2026-11-13 |
+| [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Merged | 2026-11-13 |
+| InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) Follow #20 | Merged (reported) | 2026-11-13 |
+| [#20](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/20) Move work-specific parts into the Toolkit (with the size-check test) | Merged | 2026-11-13 |
+| [#19](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/19) Phases, handouts, game select and playing cards for InterstellarBG | Merged | 2026-11-13 |
+| [#18](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/18) Run a work as a list of phases | Closed; folded into #19 | 2026-11-13 |
+| [#17](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/17) HO phase with reading timer | Closed; folded into #19 | 2026-11-13 |
+| [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Merged | 2026-11-13 |
 | [#15](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/15) Screen preview tool; right margin for items 4–6 set to 1.5em | Merged | 2026-11-13 |
 | [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Merged | 2026-11-13 |
 | [#12](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/12) Any number of players, one player reading several roles, and 指環・三つの宝 as samples | Merged | 2026-11-12 |
