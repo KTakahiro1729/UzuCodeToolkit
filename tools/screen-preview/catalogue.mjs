@@ -84,7 +84,6 @@ export function flowSteps({ ids, parts, past, fresh }) {
       phases[id] = own ?? fresh[id];
       return { parts, at: i, phases, ended: false, reopenable };
     },
-    wait: 1500,
   });
   return {
     at,
@@ -93,7 +92,6 @@ export function flowSteps({ ids, parts, past, fresh }) {
     /** Changes one phase's state: `fn` gets it and returns the new one. */
     patch: (id, fn) => ({
       state: (s) => ({ ...s, phases: { ...s.phases, [id]: fn(s.phases[id]) } }),
-      wait: 1200,
     }),
   };
 }
