@@ -62,6 +62,7 @@ so `button:has-text("読み終えた")` works too.
 | `{ waitFor: sel }` | Waits for `sel` to show |
 | `{ tap: n }` | Taps `next` n times, as `taps` does |
 | `{ state: s => newState }` | Sets the game state through the harness (`setRawState`); the function gets the current state. A plain object replaces it |
+| `{ reload: true }` | Reloads the seat's screen from the current state, as a player joining now sees it |
 | `{ wait: ms }` | Waits |
 
 Every step waits 300 ms after it (`wait` on any step changes that). A step

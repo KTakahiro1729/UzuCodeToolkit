@@ -187,7 +187,12 @@ async function run(steps, screenSeat) {
         await el.evaluate((e) => e.click());
       });
     } else if ('fill' in step) await onSeat(at, (f) => target(f, step.fill).fill(step.text, { timeout: TIMEOUT }));
-    else if ('waitFor' in step) await onSeat(at, (f) => target(f, step.waitFor).waitFor({ state: 'visible', timeout: TIMEOUT }));
+    else if ('reload' in step) {
+      // A fresh screen from the current state: drops what earlier screens left in the page.
+      await onSeat(at, (f) => f.evaluate(() => location.reload()).catch(() => {}));
+      await page.waitForTimeout(1500);
+      await seat(at);
+    } else if ('waitFor' in step) await onSeat(at, (f) => target(f, step.waitFor).waitFor({ state: 'visible', timeout: TIMEOUT }));
     else if (!('wait' in step)) throw new Error(`unknown step ${JSON.stringify(step)}`);
     await page.waitForTimeout(step.wait ?? 300);
   }
@@ -242,8 +247,17 @@ const data = {
   sizes: SIZES, strings: JSON.parse(readFileSync(here('strings.json'), 'utf8')),
   screens: config.screens.map(({ key, label }) => ({ key, label })), variants: config.variants ?? [], docs,
 };
+// Each screen carries its fonts and images inline; keep every large one once and put a token
+// where it was, which page.html swaps back in (a work's fonts would otherwise repeat per screen).
+const shared = [];
+const json = JSON.stringify(data).replace(/data:[a-z0-9+/.-]+;base64,[A-Za-z0-9+/=]{20000,}/g, (uri) => {
+  let i = shared.indexOf(uri);
+  if (i < 0) i = shared.push(uri) - 1;
+  return `{{uri:${i}}}`;
+});
 const page_ = readFileSync(here('page.html'), 'utf8')
   .replace('__TITLE__', () => data.strings.title.replace('{title}', title))
-  .replace('__DATA__', () => JSON.stringify(data).replace(/<\//g, '<\\/'));
+  .replace('__SHARED__', () => JSON.stringify(shared))
+  .replace('__DATA__', () => json.replace(/<\//g, '<\\/'));
 writeFileSync(out, page_);
 console.log(`wrote ${out} (${Math.round(page_.length / 1024)} KB)`);
