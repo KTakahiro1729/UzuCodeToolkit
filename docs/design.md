@@ -39,7 +39,8 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it, in the footer. The advance button reads
-  `▼ 次へ` (`button.next`) with the mark before it.
+  `▼ 次のせりふ` (`button.nextLine`) with the mark before it. On the last line of a
+  read-through that another phase follows it reads `button.nextPhase`.
 - A newest line taller than the chat shows from its top, its speaker's name
   included, so its reader starts at its first words and scrolls on; earlier
   lines can always be scrolled back to.
@@ -190,7 +191,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   the part's name bold) and every part as a white block: icon, name and one
   line on who they are (the manifest's description). Yours comes first and
   takes your role's tint.
-- In the footer one next button (`button.next`), with no count of who is
+- In the footer one ready button (`button.ready`), with no count of who is
   ready (owner's decision). Once tapped it keeps its name, turns outlined in a
   dark 2px edge with a tick (never red), and the band checks your icon (`readyDone`); tapping it again
   takes it back (owner's decision, a toggle: `Button` `on`). The
@@ -235,12 +236,9 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   keeps the height. Nothing else shares a row with the HUD.
 - Under the HUD (an upright phone), the phase label goes up into the HUD's row,
   centred in the room beside the HUD, and the players keep the band's own row
-  under it. Only under 380px, where there is not room beside the HUD, does the
-  phase take a row of its own above the players (below).
-- Narrow and short screens: under 380px wide the phase takes a row of its own
-  above the players (the band is taller then), so three players and a phase
-  name fit down to 320px; a name too long for its room ends in an ellipsis.
-  Under 480px tall (a phone held sideways) each player's icon and name sit side
+  under it, at every width down to 320px; a name too long for its room ends in
+  an ellipsis.
+- Under 480px tall (a phone held sideways) each player's icon and name sit side
   by side and the band is shorter, so the text under it keeps the height.
 - Shows every player as icon and part name, ordered like the chat: the other
   players left (in the script's order), you right. A part that reads several
@@ -263,43 +261,51 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 ### Footer
 
 - The main action area: a full-width white block along the bottom edge, the
-  band's counterpart, on every screen, in two rows.
-- Lower row, the main one, with bigger buttons than elsewhere (owner's decision): the screen's actions: the advance button, the next button, the
-  handout's extension and done buttons, back to the list after a game, and the
-  way back to the handouts. Quieter actions sit at the left; **the rightmost
-  button is always the one to press now** (the send button of a chat), in
-  every phase. Screens put them there with `FooterActions`.
-- Upper row, slim, options and state: the read-back buttons at the left, quieter
-  than the actions (plain text in the quiet colour): once the game has left a
-  phase whose content stays readable (`PhaseView.keep`, the handouts), that
-  content; the state at the right, such as the handout's time left
-  (`FooterActions place="status"`). The row is there on every screen so the
-  footer does not change height between phases. The phase list is not here: it
-  opens from the band's phase button.
-- **The state line.** When the main row holds a button whose state is not
-  obvious, the upper row says in one sentence what the screen waits for or why
-  a button cannot be pressed (`status.*` strings): "他の人を待っています" after
-  you tap next, "相手の番です" while another player reads, "設定を埋めると押せます"
-  while the handout's next button is greyed, "全員が押すと次へ進みます" before you
-  tap the cast's next button, "誰かが押すと進みます" on a button any
-  one player can tap for everyone. It states a fact of the screen; it never
-  repeats a button's label or invents a rule. One sentence, 16px, quiet colour.
+  band's counterpart, on every screen, as one row.
+- **The main button** is at the right edge and takes the room the items leave; **it is
+  always the one to press now** (the send button of a chat), in every phase. It is the
+  filled one, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
+  screen) with room for a label and a note, so the footer keeps its height in every
+  state. Screens put it there with `FooterActions`. Buttons beside it that could
+  each be the main one are fused with it into one capsule (round at the outer ends, a thin
+  seam between), the one to press now last. A work chooses which; the toolkit does not.
+- **Items** are at the left: plain text in the quiet colour over a mark, no capsule,
+  so the one filled capsule stays the one to press now (`Slot`). They are the read-back
+  items (the handouts, once the game has left a phase whose content stays readable,
+  `PhaseView.keep`), more time, leaving the game select for the next phase, and the time
+  left (large and dark, the one number to watch). At most three, plus the main button.
+  The mark never stands alone (▤ ◷ ＋ »): the name is always written. Items go into
+  `FooterActions place="aside"`; the open read-back item is bold and underlined.
+- **The note.** A button whose state is not obvious says why in one short sentence under
+  its label, inside the button (`Button` `note`, `status.*` strings): "他の人を待っています"
+  after you tap ready or done, "相手の番です" while another player reads, "設定が未記入"
+  while the handout's done button is greyed, "ゲームを選ぶと押せます" on the play button,
+  "全員で進みます" on a next-phase button any one player can tap for everyone. A button that
+  can be pressed and says what it does by its label alone has no note: text is read only
+  where its absence would leave the player guessing. It states a fact of the screen; it
+  never repeats the label or invents a rule. 16px, quiet colour. The older line above the
+  row (`FooterActions place="status"`) shows only while something is in it.
+- **Labels say what moves.** The read-through's advance button is `▼ 次のせりふ`; a button
+  that moves the game to the next phase reads `次のフェーズへ` (`button.nextPhase`) without
+  the phase's name (a narrow button may say `次へ` with the longer sentence as its note);
+  the cast's is `準備OK`, the handout's `読み終えた`. `次へ` alone is not used for both.
 - **Red is for danger only.** A dangerous action (one that loses what a player
   made) is a secondary button whose label and edge take `--color-danger`
   (`Button variant="danger"`). Red means nothing else, and a danger button is
   never the rightmost one of the main row, which is the button to press now: it
-  goes before it, or in the upper row. A pressed toggle is not red.
-- A read-back button opens a sheet over the screen, for this player alone;
+  goes before it. A pressed toggle is not red.
+- A read-back item opens a sheet over the screen, for this player alone;
   the screen keeps running under it and the footer's actions stay usable.
-  The sheet floats: a panel with rounded corners, anchored to the bottom, a
-  strip of the screen left above it, and the screen behind dimmed
-  (`--color-scrim`) rather than hidden, so the reader keeps their place. The
+  The sheet rises from the footer: a panel whose bottom edge is flush against it, its
+  sides at the screen's edge where the screen is narrow, only its top corners round,
+  a strip of the screen left above it, and the screen behind dimmed
+  (`--color-scrim`) rather than hidden, so the reader keeps their place. It slides up
+  and fades in (200 ms, transform and opacity). The
   handouts' sheet is the one players open any time after the handout phase;
   tapping the dimmed part closes it like the close button. The band and footer
-  are not dimmed. The
-  open one is bold and underlined, as a chosen tab. The sheet's title and a
-  close button share its top row; tapping the open button again also closes
-  it. A phase change closes the sheet.
+  are not dimmed. The sheet's title and a
+  close button share its top row; tapping the open item again also closes
+  it. A phase change closes the sheet. The phase list opens from the band's phase button.
 - Every button says what it does, and whether to press it shows at a glance:
   filled for the step to take, greyed when it cannot be pressed now, outlined
   for a side action (secondary).
@@ -363,8 +369,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Empty phase
 
-- A phase with no game of its own (an empty phase) shows the next button, centred, labelled `button.next`, under optional story text (such as an introduction): left-aligned paragraphs in the story font, at the chat's reading width. Without text it holds the place of a phase not made yet. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
-- On the last line of a read-through that another phase follows, the advance button says `button.next` instead of `button.end`.
+- A phase with no game of its own (an empty phase) shows the next button, centred, labelled `button.nextPhase` with the note `status.anyoneNext`, under optional story text (such as an introduction): left-aligned paragraphs in the story font, at the chat's reading width. Without text it holds the place of a phase not made yet. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
+- On the last line of a read-through that another phase follows, the advance button says `button.nextPhase` instead of `button.end`.
 
 ### Handout
 
@@ -396,20 +402,20 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
-- In the footer, always in view: the time left (upper row), the extension
-  button (`handout.extend`), and the next button (`button.next`) in the main
-  row. The next button is the next step, so it is the filled one; it stays greyed until
-  every setting is filled in (a setting marked optional may stay blank). The
-  extension button is secondary (outlined, not filled), since it is not the
+- In the footer, always in view: the time left and the extension (`handout.extend`,
+  one more minute for everyone) as items at the left (`Slot`), and the done button
+  (`button.done`) as the main button. The done button is the next step, so it is the filled
+  one; it stays greyed until every setting is filled in (a setting marked optional may stay
+  blank), and says so in its note. The extension is an item, not a capsule, since it is not the
   next step.
 - Once you tap next, your settings lock but stay fields (on the page's grey,
   `handout.blank` when left empty), and tapping one takes done back and lets
-  you type. The next button keeps its name, red-outlined with a tick; tapping
-  it again takes done back too (a toggle). The extension button greys while
+  you type. The done button keeps its name, outlined in a dark 2px edge with a tick; tapping
+  it again takes done back too (a toggle). The extension greys while
   you are done. Who is done is not shown while reading (the band has no
   checks in this phase).
 - When time runs out, the game moves on. Until anyone acts on the next screen,
-  that screen shows the extension button in the footer beside its main
+  that screen shows the extension item in the footer beside its main
   action, secondary (outlined, not filled); it brings everyone back to the handout with
   more time. It fades in and out with the screen it sits on, so it never shows
   next to the handout's own extension button.
@@ -427,7 +433,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   that part's handout in the same tabs as the handout sheet, read-only. The
   part's own tab is labelled `handout.body`, since the part is already chosen
   above. The tab stays when the part changes, so one setting can be read across
-  players. The footer holds the next button (the end button in the last phase).
+  players. The footer holds the next-phase button (the end button in the last phase).
 
 ### Game select
 
@@ -435,8 +441,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   an edge, no fill, filled when selected): the game's
   name, and under it in the quieter colour how many play, who watches when the
   spectator sits out, and the game's own line (`description`), joined by
-  `list.sep`. The next button may carry the work's own label (such as
-  暇つぶしを終える), since leaving the list ends the phase. A game that
+  `list.sep`. The item that leaves the list reads `button.nextPhase`, or the work's
+  own label (such as 暇つぶしを終える), since leaving the list ends the phase. A game that
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
@@ -444,8 +450,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   play button (`game.play`) in the footer starts it for everyone, and stays
   greyed until a game is selected (owner's decision). One tap by any player
   never starts a game nobody can leave.
-- Beside the play button, the next button (`button.next`) is secondary: leaving
-  the phase is not the next step on this screen, and it cannot be undone.
+- Beside the play button, leaving the phase is an item at the left, not a capsule:
+  it is not the next step on this screen, and it cannot be undone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result

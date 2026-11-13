@@ -11,9 +11,10 @@
     disabled = false,
     on = undefined,
     label = undefined,
+    note = undefined,
     onclick,
     children,
-  }: { disabled?: boolean; on?: boolean; label?: string; onclick: () => void; children: Snippet } = $props();
+  }: { disabled?: boolean; on?: boolean; label?: string; note?: string; onclick: () => void; children: Snippet } = $props();
 </script>
 
-<Button {disabled} {on} {label} {onclick}>{@render children()}</Button>
+<Button {disabled} {on} {label} {note} {onclick}>{@render children()}</Button>

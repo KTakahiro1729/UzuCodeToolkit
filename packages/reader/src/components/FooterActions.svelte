@@ -2,8 +2,11 @@
   Puts a screen's actions into the footer, the one place for main actions on every screen: the
   content stays in the screen's own markup and styles and is moved into the footer's cell.
   It fades out and in with the screen (./motion.ts); the old and new actions share the cell.
-  `place="status"` puts a line of state in the upper row, in one sentence that says what the
-  screen is waiting for or why a button cannot be pressed ("他の人を待っています").
+  `main` is the main button, the last one the button to press now; two or more buttons there are fused into one capsule;
+  `aside` holds the items to its left (`Slot`: more time, the next phase, the time left). Why a
+  button cannot be pressed, or what it waits for, is its `note`, not a line of its own.
+  `place="status"` is the older way, a line above the row; the row shows only while something is
+  in it, so a screen that does not use it takes no height.
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -38,8 +41,8 @@
    * the room the others leave. Wraps on a narrow screen, the main button keeping its own row.
    */
   .actions {
-    --button-pad-y: 0.7em;
-    --button-pad-x: 1.4em;
+    --button-pad-y: 0.62em;
+    --button-pad-x: 0.9em;
     display: flex;
     justify-content: flex-end;
     align-items: stretch;
@@ -48,8 +51,37 @@
     font-family: var(--font-ui);
     font-size: 1.15em;
   }
+  .actions > :global(button) {
+    /* Room for a label and a note, so the footer never changes height; also 9mm or more to tap at the screen's edge. */
+    min-height: 3.5em;
+  }
   .actions > :global(button:last-child) {
-    flex: 1 1 8em;
+    flex: 1 1 6em;
+    min-width: 6em;
+  }
+  /*
+   * Two or more buttons that could each be the main one are fused into a single capsule: the
+   * outer ends round, the joints square with a thin seam of the background between them.
+   */
+  .actions[data-uzu-actions='main'] > :global(button:not(:only-child)) {
+    border-radius: 0;
+  }
+  .actions[data-uzu-actions='main'] > :global(button:not(:only-child):first-child) {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+  }
+  .actions[data-uzu-actions='main'] > :global(button:not(:only-child):last-child) {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+  }
+  .actions[data-uzu-actions='main']:has(> :global(button + button)) {
+    gap: 2px;
+  }
+  /* The items beside the main button keep to one row. */
+  .actions[data-uzu-actions='aside'] {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 0.4em;
   }
   /* The state line of the upper row: quiet, 16px, the clock (if any) and the sentence side by side. */
   .actions.status {

@@ -149,10 +149,9 @@
   </ol>
 </div>
 <!-- In the footer, right under the newest line, for every player: active for the reader, greyed for the others. -->
-{#if !mine}<FooterActions place="status"><span>{STRINGS['status.theirTurn']}</span></FooterActions>{/if}
 <FooterActions>
-  <NextButton disabled={!mine} onclick={advance}>
-    {#if last}{STRINGS[final ? 'button.end' : 'button.next']}{:else}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{STRINGS['button.next']}{/if}
+  <NextButton disabled={!mine} note={mine ? undefined : STRINGS['status.theirTurn']} onclick={advance}>
+    {#if last}{STRINGS[final ? 'button.end' : 'button.nextPhase']}{:else}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{STRINGS['button.nextLine']}{/if}
   </NextButton>
 </FooterActions>
 

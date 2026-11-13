@@ -15,6 +15,7 @@
   import { band } from '../store.svelte';
   import Button from './Button.svelte';
   import FooterActions from './FooterActions.svelte';
+  import Slot from './Slot.svelte';
   import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
@@ -37,7 +38,7 @@
     spectator?: string;
     /** What to do now, at the top of the list. */
     guide?: string;
-    /** The label of the button that leaves the list for the next phase; `button.next` without one. */
+    /** The label of the button that leaves the list for the next phase; `button.nextPhase` without one. */
     finish?: string;
   } = $props();
 
@@ -114,10 +115,11 @@
       </ul>
     </div>
   </div>
-  {#if selected === null}<FooterActions place="status"><span>{STRINGS['status.pickGame']}</span></FooterActions>{/if}
+  <FooterActions place="aside">
+    <Slot icon="next" onclick={() => send('next')}>{finish ?? STRINGS['button.nextPhase']}</Slot>
+  </FooterActions>
   <FooterActions>
-    <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.nextAll']}</Button>
-    <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
+    <Button disabled={selected === null} note={selected === null ? STRINGS['status.pickGame'] : undefined} onclick={() => selected && send('pick', { id: selected })}>
       {STRINGS['game.play']}
     </Button>
   </FooterActions>

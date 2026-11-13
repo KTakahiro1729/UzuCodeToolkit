@@ -4,8 +4,8 @@
   reopened, a secondary button beside the screen's main action sends everyone back to it
   (PhaseView.reopen).
   The footer holds the screen's main actions; in a work of more than one phase it also has
-  read-back buttons: the phase list, and the content of phases already left that stays readable
-  (PhaseView.keep, such as the handouts). Each opens as a sheet over the screen, for you alone,
+  read-back items: the content of phases already left that stays readable (PhaseView.keep, such
+  as the handouts; the phase list opens from the band). Each opens as a sheet over the screen, for you alone,
   with the main actions still under it; a phase change closes it. On a screen wide enough for
   columns, the last kept phase stays in view beside the screen instead (Frame's aside), and its
   footer button is hidden there.
@@ -14,12 +14,12 @@
   import { phaseAction } from '@uzu-toolkit/kit';
   import type { FlowOptions } from '../flow';
   import { band, game, sendAction } from '../store.svelte';
-  import Button from './Button.svelte';
   import Frame from './Frame.svelte';
   import FooterActions from './FooterActions.svelte';
   import PhaseList from './PhaseList.svelte';
   import { provideFlow } from '../flowContext';
   import Sheet from './Sheet.svelte';
+  import Slot from './Slot.svelte';
   // UI strings by key.
   import STRINGS from '../strings';
 
@@ -82,9 +82,7 @@
     {/key}
     {#if reopen}
       <FooterActions place="aside">
-        <Button variant="secondary" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>
-          {reopen.reopen?.label}
-        </Button>
+        <Slot icon="plus" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>{reopen.reopen?.label}</Slot>
       </FooterActions>
     {/if}
     {#if open === FLOW}
@@ -105,30 +103,6 @@
 
 {#snippet nav()}
   {#each kept as p (p.id)}
-    <button type="button" class="tab" data-aside={p === side ? '' : undefined} aria-pressed={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</button>
+    <Slot icon="sheet" class="tab" aside={p === side} active={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</Slot>
   {/each}
 {/snippet}
-
-<style>
-  /*
-   * Read-back buttons: plain text on the footer, quieter than its actions; the open one in bold
-   * and underlined, as a chosen tab.
-   */
-  .tab {
-    margin: 0;
-    padding: 0.45em 0.6em;
-    border: none;
-    background: none;
-    color: var(--color-text-quiet);
-    font: inherit;
-    font-family: var(--font-ui);
-    font-size: max(16px, 0.85em);
-    cursor: pointer;
-  }
-  .tab[aria-pressed='true'] {
-    color: var(--color-text);
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 0.3em;
-  }
-</style>

@@ -15,8 +15,8 @@
   import type { PhaseViewProps } from '../flow';
   import { sceneIn, sceneOut } from './motion';
   import HandoutTabs from './HandoutTabs.svelte';
-  import Button from './Button.svelte';
   import FooterActions from './FooterActions.svelte';
+  import Slot from './Slot.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings';
@@ -92,15 +92,14 @@
     {/snippet}
   </HandoutTabs>
 </div>
-<!-- The time left is state, so it sits in the footer's lower row; the buttons in the upper one. -->
-<FooterActions place="status">
-  <span class="clock">{STRINGS['status.timeLeft'].replace('{time}', clock)}</span>
-  {#if done}<span>{STRINGS['status.waitOthers']}</span>{:else if !filled}<span>{STRINGS['status.fillSettings']}</span>{/if}
+<!-- Beside the main button: more time and the time left; the main button says why it cannot be pressed. -->
+<FooterActions place="aside">
+  <Slot icon="plus" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Slot>
+  <Slot icon="clock" class="time"><span>{STRINGS['time.left']}</span> <b class="clock">{clock}</b></Slot>
 </FooterActions>
 <FooterActions>
-  <Button variant="secondary" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Button>
-  <NextButton on={done} disabled={!done && !filled} onclick={() => (done ? send('unready') : finish())}>
-    {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.next']}
+  <NextButton on={done} disabled={!done && !filled} note={done ? STRINGS['status.waitOthers'] : !filled ? STRINGS['status.fillSettings'] : undefined} onclick={() => (done ? send('unready') : finish())}>
+    {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.done']}
   </NextButton>
 </FooterActions>
 
@@ -155,8 +154,11 @@
     padding-inline-start: 0.6em;
     color: var(--color-text-quiet);
   }
+  /* The time left: large and dark, the one number to watch. */
   .clock {
-    color: var(--color-text-quiet);
+    font-size: 1.5em;
+    line-height: 1.1;
+    color: var(--color-text);
     font-variant-numeric: tabular-nums;
   }
   /* Done: the button keeps its name, outlined in a dark 2px edge with a tick, so it reads as pressed. */

@@ -57,10 +57,9 @@
     <div class="flow"><FlowStrip /></div>
   </div>
 </div>
-<FooterActions place="status"><span>{STRINGS[ready ? 'status.waitOthers' : 'status.allNext']}</span></FooterActions>
 <FooterActions>
-  <NextButton on={ready} onclick={() => send(ready ? 'unready' : 'ready')}>
-    {#if ready}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.next']}
+  <NextButton on={ready} note={ready ? STRINGS['status.waitOthers'] : undefined} onclick={() => send(ready ? 'unready' : 'ready')}>
+    {#if ready}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.ready']}
   </NextButton>
 </FooterActions>
 
