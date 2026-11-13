@@ -64,7 +64,7 @@
   .scrim {
     position: absolute;
     inset: -0.5em -0.8em;
-    background: var(--color-scrim);
+    background: var(--color-scrim, rgb(36 41 47 / 0.45));
   }
   .panel {
     position: relative;

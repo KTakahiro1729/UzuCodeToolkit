@@ -76,7 +76,7 @@
   /* The one scrollbar style: thin, a quiet thumb, no track. Every scrolling area takes the class. */
   :global(.scroll) {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-scroll) transparent;
+    scrollbar-color: var(--color-scroll, #aab2bb) transparent;
   }
   /*
    * Full width on its own background, under the HUD or beside it (--band-top, set in src/index.ts).
