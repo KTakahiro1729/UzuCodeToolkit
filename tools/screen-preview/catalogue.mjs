@@ -77,6 +77,8 @@ export const PARTS = [
 export function flowSteps({ ids, parts, past, fresh }) {
   /** The game in phase `id`, earlier phases over; `own` replaces its state. */
   const at = (id, own, { reopenable = false } = {}) => ({
+    // `fresh`: replaces the whole state, so the screens before it do not matter (capture.mjs --jobs).
+    fresh: true,
     state: () => {
       const i = ids.indexOf(id);
       if (i < 0) throw new Error(`no phase ${id}`);

@@ -1,6 +1,6 @@
 // Capture a sample's screens from a running UZU dev harness, both orientations. Usage (harness running):
 //   node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--times] [--config <file>]
-//     [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]
+//     [--jobs <n>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]
 // One pass over the screens does everything asked for. By default it writes one static HTML page with
 // numbered parts. --check lists what spills over on each screen (overflow.js), exiting 1 if anything
 // does. --png writes <key>-landscape.png and <key>-portrait.png for each screen into <dir>. The page is
@@ -9,6 +9,8 @@
 // steps included. A screen can run steps first (click, fill, set the state; in any seat's screen).
 // A step that takes longer than --step-timeout (default 15 s), or a run longer than --timeout
 // (default 600 s), stops and says which screen and step it was on.
+// --jobs n plays independent runs of screens at the same time, each against a harness of its own
+// (HARNESS lists their URLs, comma separated; missing ones are the last port + 1, + 2, ...).
 // See docs/screen-preview.md.
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -18,7 +20,6 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const here = (f) => new URL(f, import.meta.url);
-const HARNESS = process.env.HARNESS ?? 'http://localhost:10001';
 const SIZES = { landscape: { width: 844, height: 390 }, portrait: { width: 390, height: 844 } };
 const HUD = { x: 138, y: 52 }; // What the dev harness reports as the UZU HUD.
 
@@ -30,13 +31,14 @@ const flag = (name) => {
 const check = args.includes('--check');
 const showTimes = args.includes('--times');
 const pngDir = flag('--png');
+const JOBS = Math.max(1, Math.floor(Number(flag('--jobs') ?? 1)) || 1);
 const configFile = flag('--config');
 const only = flag('--only')?.split(',').map((k) => k.trim()).filter(Boolean);
 const STEP_MS = Number(flag('--step-timeout') ?? 15) * 1000; // longest a step may take, and how long it waits for its element.
 const TOTAL_MS = Number(flag('--timeout') ?? 600) * 1000; // longest the whole run may take.
 const TIMEOUT = STEP_MS; // ms an element is waited for; a step as a whole may take half as long again.
 const [sample, outArg] = args.filter((a) => a !== '--check' && a !== '--times');
-if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]');
+if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>] [--jobs <n>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]');
 const out = outArg ?? join(tmpdir(), 'screen-preview.html');
 const wantPage = !!outArg || !(check || pngDir);
 // The given config, the sample's own, or the shared read-through one.
@@ -112,21 +114,21 @@ async function snapshot(frame, parts) {
   return { html, base: snap.base, found: snap.found };
 }
 
-// Time spent per kind of work, for --times (a step's time includes its settle and sync).
+// Time spent per kind of work, for --times (a step's time includes its settle and sync). With
+// --jobs it adds up the workers' time, so it can exceed the total.
 const spent = {};
 const timed = (label, fn) => async (...a) => {
   const t = performance.now();
   try { return await fn(...a); } finally { spent[label] = (spent[label] ?? 0) + performance.now() - t; }
 };
-// Where the run is, for the message when something stops it.
 const t0 = performance.now();
-let where = 'start';
 let browser;
 let failed = false;
-const fail = async (message, code) => {
+const workers = [];
+const fail = async (message, code, where = workers.map((w) => w.where).join(' | ')) => {
   if (failed) return;
   failed = true;
-  console.error(`${message} (stopped at ${where})`);
+  console.error(`${message} (stopped at ${where || 'start'})`);
   await browser?.close().catch(() => {});
   process.exit(code);
 };
@@ -140,9 +142,66 @@ const within = (ms, what, fn) => {
   ]).finally(() => clearTimeout(timer));
 };
 
+// The screens to play, in runs. A screen with a `fresh` step (a state step that does not depend on
+// the current state, such as a catalogue's `at` and `jump`) starts a new run: nothing before it
+// matters, so a run can be played from a harness that has just been reset.
+const picked = (s, i) => !only || only.some((k) => k === s.key || k === String(i + 1).padStart(2, '0') || s.key.startsWith(`${k}-`));
+const isFresh = (st) => st.fresh === true || ('state' in st && typeof st.state !== 'function');
+const freshAt = (s) => (s.steps ?? []).findLastIndex(isFresh);
+const runs = [];
+for (const [n, s] of config.screens.entries()) {
+  if (!picked(s, n)) continue;
+  if (!runs.length || freshAt(s) >= 0) runs.push([]);
+  runs.at(-1).push(s);
+}
+// Runs go to the workers, the longest first to whoever has the least so far; each worker plays
+// its runs in the order of the screens.
+const weight = (run) => run.reduce((sum, s) => sum + 2 + (s.steps?.length ?? 0), 0);
+const jobs = Math.min(JOBS, runs.length) || 1;
+const plan = Array.from({ length: jobs }, () => ({ runs: [], load: 0 }));
+for (const run of [...runs].sort((a, b) => weight(b) - weight(a))) {
+  const w = plan.reduce((least, p) => (p.load < least.load ? p : least));
+  w.runs.push(run);
+  w.load += weight(run);
+}
+plan.forEach((p) => p.runs.sort((a, b) => config.screens.indexOf(a[0]) - config.screens.indexOf(b[0])));
+
+// One harness for each worker: HARNESS lists their URLs; missing ones follow the last one's port.
+const harnessUrls = (process.env.HARNESS ?? 'http://localhost:10001').split(',').map((u) => u.trim()).filter(Boolean);
+while (harnessUrls.length < jobs) {
+  const u = new URL(harnessUrls.at(-1));
+  u.port = String(Number(u.port) + 1);
+  harnessUrls.push(u.origin);
+}
+for (const u of harnessUrls.slice(0, jobs)) {
+  await fetch(u).catch(() => {
+    console.error(`no harness at ${u}${jobs > 1 ? ` (--jobs ${jobs} needs ${jobs}: ${harnessUrls.slice(0, jobs).join(', ')}; see docs/screen-preview.md)` : ''}`);
+    process.exit(1);
+  });
+}
+
 browser = await timed('browser launch', () => chromium.launch())();
-// PNGs are for people to look at: twice the pixels.
-const page = await browser.newPage({ viewport: { width: 1400, height: 900 }, reducedMotion: 'reduce', deviceScaleFactor: pngDir ? 2 : 1 });
+
+const overflow = `(${readFileSync(here('overflow.js'), 'utf8')})()`;
+// Why an element cannot be pressed as the screen stands (null if it can): it is
+// missing, past the viewport, or covered or cut off (what is hit at its centre is not the element).
+const reachable = (el) => {
+  const r = el.getBoundingClientRect();
+  if (r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1) return 'past the viewport';
+  const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  return hit && el.contains(hit) ? null : 'covered or cut off';
+};
+const player = config.player ?? 0;
+const SEED = 20261113; // for the harness's random numbers (any number: what matters is that it is the same).
+if (pngDir) mkdirSync(pngDir, { recursive: true });
+
+/** A worker: a page on a harness of its own, playing its runs of screens. */
+async function startWorker(HARNESS) {
+  const w = { where: 'start' };
+  workers.push(w);
+  // PNGs are for people to look at: twice the pixels.
+  const context = await browser.newContext({ viewport: { width: 1400, height: 900 }, reducedMotion: 'reduce', deviceScaleFactor: pngDir ? 2 : 1 });
+  const page = await context.newPage();
 
 /**
  * A seat's screen, looked up afresh each time: the harness may reload a player's frame (after a
@@ -246,7 +305,7 @@ async function tap(n) {
 async function run(steps, screenSeat, key) {
   for (const [n, step] of steps.entries()) {
     const at = step.seat ?? screenSeat;
-    where = `${key} step ${JSON.stringify(step, (_, v) => (typeof v === 'function' ? '[function]' : v === Infinity ? 'Infinity' : v))}`;
+    w.where = `${key} step ${JSON.stringify(step, (_, v) => (typeof v === 'function' ? '[function]' : v === Infinity ? 'Infinity' : v))}`;
     await within(STEP_MS * 1.5, 'step', async () => {
       const target = (f, sel) => f.locator(sel).first();
       if ('tap' in step) await tap(step.tap);
@@ -281,88 +340,120 @@ async function run(steps, screenSeat, key) {
   }
 }
 
-where = 'harness start';
-await within(STEP_MS * 2, 'the harness start', async () => {
-  await page.goto(HARNESS);
-  await page.waitForFunction(() => window.__uzu_dev, null, { timeout: STEP_MS });
-  await page.waitForFunction(() => document.querySelectorAll('iframe').length > 0, null, { timeout: STEP_MS });
-  await page.evaluate(() => window.__uzu_dev?.reset?.({ seed: 'preview' }));
-  // The reset reloads the screens: wait for every seat to have one again.
-  for (let i = 0; i < (await seatCount()); i++) await seat(i);
-});
+  /**
+   * The game from its start with the random numbers from the same place, so a run of screens deals
+   * the same cards wherever it is played (the harness ignores a seed that is not a number), and the
+   * seats' frames back at their grid size, as a freshly loaded page has them.
+   */
+  const restart = async () => {
+    await page.evaluate((seed) => window.__uzu_dev?.reset?.({ seed }), SEED);
+    await synced();
+    await page.evaluate(() => document.querySelectorAll('iframe').forEach((f) => {
+      for (const e of [f, f.parentElement]) if (e.dataset.pvStyle !== undefined) e.style.cssText = e.dataset.pvStyle;
+    }));
+    // The reset reloads the screens: wait for every seat to have one again.
+    for (let i = 0; i < (await seatCount()); i++) await seat(i);
+  };
+  w.where = 'harness start';
+  await within(STEP_MS * 2, 'the harness start', async () => {
+    await page.goto(HARNESS);
+    await page.waitForFunction(() => window.__uzu_dev, null, { timeout: STEP_MS });
+    await page.waitForFunction(() => document.querySelectorAll('iframe').length > 0, null, { timeout: STEP_MS });
+    await restart();
+  });
 
-const seatName = async (i) => JSON.parse(new URL((await seat(i)).url()).searchParams.get('players') ?? '[]')[i]?.name ?? '';
-const player = config.player ?? 0;
-if (pngDir) mkdirSync(pngDir, { recursive: true });
+  w.seatName = async (i) => JSON.parse(new URL((await seat(i)).url()).searchParams.get('players') ?? '[]')[i]?.name ?? '';
 
-const overflow = `(${readFileSync(here('overflow.js'), 'utf8')})()`;
-let spills = 0;
-// Why an element cannot be pressed as the screen stands (null if it can): it is
-// missing, past the viewport, or covered or cut off (what is hit at its centre is not the element).
-const reachable = (el) => {
-  const r = el.getBoundingClientRect();
-  if (r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1) return 'past the viewport';
-  const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-  return hit && el.contains(hit) ? null : 'covered or cut off';
-};
-
-const picked = (s, i) => !only || only.some((k) => k === s.key || k === String(i + 1).padStart(2, '0') || s.key.startsWith(`${k}-`));
-const docs = {};
-const perScreen = [];
-try {
-  for (const [n, s] of config.screens.entries()) {
-    if (!picked(s, n)) continue;
+  /** Plays one screen (from a run's start when `head`, which drops what a fresh step makes moot); returns its outputs. */
+  w.play = async (s, head, first) => {
     const at = s.seat ?? player;
     const t1 = performance.now();
-    where = `${s.key} taps`;
-    await within(STEP_MS * 3, 'the taps', () => tap(s.taps ?? 0));
-    await timed('steps', run)(s.steps ?? [], at, s.key);
+    const lines = [];
+    let spills = 0;
+    let steps = s.steps ?? [];
+    let taps = s.taps ?? 0;
+    // A run that starts fresh starts from the game's start, whichever screens were played before it.
+    if (head && !first && freshAt(s) >= 0) {
+      w.where = `${s.key} restart`;
+      await within(STEP_MS * 2, 'the restart', restart);
+    }
+    if (head && freshAt(s) >= 0) {
+      steps = steps.slice(freshAt(s));
+      taps = 0;
+    }
+    w.where = `${s.key} taps`;
+    await within(STEP_MS * 3, 'the taps', () => tap(taps));
+    await timed('steps', run)(steps, at, s.key);
     // `wait` on a screen is a real delay (a timer in the game); otherwise wait for the screen to be still.
     if (s.wait !== undefined) await page.waitForTimeout(s.wait);
     else await settle(at, 80);
-    docs[s.key] = {};
+    const doc = {};
     // One pass: each orientation gives the overflow check, the PNG and the snapshot.
     for (const [o, size] of Object.entries(SIZES)) {
-      where = `${s.key} ${o}`;
+      w.where = `${s.key} ${o}`;
       await within(STEP_MS * 3, `${s.key} ${o}`, async () => {
         await resize(at, size);
         if (check) {
           const found = await timed('check', onSeat)(at, (f) => f.evaluate(overflow));
           spills += found.length;
-          console.log(`${s.key} ${o}: ${found.length ? '' : 'ok'}`);
-          for (const f of found) console.log(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
+          lines.push(`${s.key} ${o}: ${found.length ? '' : 'ok'}`);
+          for (const f of found) lines.push(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
           // The screen's `reach` selectors (the action to press now) must be on screen without scrolling.
           for (const sel of s.reach ?? []) {
             const why = await onSeat(at, async (f) => {
               const el = f.locator(sel).first();
               return (await el.count()) ? el.evaluate(reachable) : 'not on the screen';
             });
-            if (why) { spills++; console.log(`  unreachable ${sel}: ${why}`); }
+            if (why) { spills++; lines.push(`  unreachable ${sel}: ${why}`); }
           }
         }
         if (pngDir) {
           const file = join(pngDir, `${s.key}-${o}.png`);
           await timed('png', page.screenshot.bind(page))({ path: file, clip: { x: 0, y: 0, ...size } });
-          console.log(`wrote ${file}`);
+          lines.push(`wrote ${file}`);
         }
-        if (wantPage) docs[s.key][o] = await timed('snapshot', onSeat)(at, (f) => snapshot(f, s.parts ?? []));
+        if (wantPage) doc[o] = await timed('snapshot', onSeat)(at, (f) => snapshot(f, s.parts ?? []));
       });
     }
-    perScreen.push(`${s.key.slice(0, 2)} ${Math.round(performance.now() - t1)}`);
-    if (!wantPage) continue;
-    // Numbers follow the config, so they stay put between captures; list only the parts on screen.
-    const found = new Set(Object.keys(SIZES).flatMap((o) => docs[s.key][o].found));
-    docs[s.key].parts = (s.parts ?? []).map(([sel, label], i) => ({ n: i + 1, sel, label })).filter((p) => found.has(p.n));
-  }
+    if (wantPage) {
+      // Numbers follow the config, so they stay put between captures; list only the parts on screen.
+      const found = new Set(Object.keys(SIZES).flatMap((o) => doc[o].found));
+      doc.parts = (s.parts ?? []).map(([sel, label], i) => ({ n: i + 1, sel, label })).filter((p) => found.has(p.n));
+    }
+    return { key: s.key, doc, lines, spills, ms: Math.round(performance.now() - t1) };
+  };
+  return w;
+}
+
+const results = new Map();
+let spills = 0;
+try {
+  await Promise.all(plan.map(async (p, i) => {
+    const w = await startWorker(harnessUrls[i]);
+    for (const [ri, run] of p.runs.entries()) {
+      for (const [k, s] of run.entries()) {
+        const r = await w.play(s, k === 0, i === 0 && ri === 0);
+        results.set(s.key, r);
+        // A single worker reports as it goes.
+        if (jobs === 1) r.lines.forEach((l) => console.log(l));
+      }
+    }
+  }));
 } catch (e) {
   await fail(e.message, 1);
 }
 clearTimeout(watchdog);
-const name = wantPage ? await seatName(player) : '';
+// In the order of the screens, whichever worker played them.
+const played = config.screens.filter(({ key }) => results.has(key)).map(({ key }) => results.get(key));
+if (jobs > 1) played.forEach((r) => r.lines.forEach((l) => console.log(l)));
+spills = played.reduce((sum, r) => sum + r.spills, 0);
+const docs = Object.fromEntries(played.map((r) => [r.key, r.doc]));
+const perScreen = played.map((r) => `${r.key.slice(0, 2)} ${r.ms}`);
+const name = wantPage ? await workers[0].seatName(player) : '';
 const total = performance.now() - t0;
 if (showTimes) {
   console.log(`per screen (ms): ${perScreen.join(', ')}`);
-  console.log(`times (ms; a step includes its settle and sync): ${Object.entries(spent).map(([k, v]) => `${k} ${Math.round(v)}`).join(', ')}, total ${Math.round(total)}`);
+  console.log(`times (ms; a step includes its settle and sync): ${Object.entries(spent).map(([k, v]) => `${k} ${Math.round(v)}`).join(', ')}, total ${Math.round(total)}, jobs ${jobs}`);
 }
 await browser.close();
 if (!wantPage) process.exit(check && spills ? 1 : 0);
