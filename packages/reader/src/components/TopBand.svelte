@@ -5,16 +5,12 @@
   that doubles roles shows its first role's icon. It does not signal the turn; the advance button does.
 -->
 <script lang="ts">
+  import type { Part } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
-  import { getScenario } from '../store.svelte';
-  // UI strings by key.
-  import STRINGS from '../strings.json';
 
-  let { myPart, finished }: { myPart: string | undefined; finished: boolean } = $props();
+  let { parts, myPart, phase }: { parts: readonly Part[]; myPart: string | undefined; phase: string } = $props();
 
-  const { parts } = getScenario();
   const shown = $derived(myPart ? [...parts.filter((p) => p.id !== myPart), ...parts.filter((p) => p.id === myPart)] : parts);
-  const phase = $derived(STRINGS[finished ? 'phase.review' : 'phase.reading']);
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
 
@@ -35,7 +31,7 @@
 
 <style>
   /*
-   * Full width on its own background, under the HUD or beside it (--band-top, set in main.ts).
+   * Full width on its own background, under the HUD or beside it (--band-top, set in src/index.ts).
    * Three columns: empty (the HUD's side), the phase centred on the screen, the roles at the right.
    */
   header {

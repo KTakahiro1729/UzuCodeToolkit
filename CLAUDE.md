@@ -14,17 +14,23 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 
 | Path | Role |
 |---|---|
-| `packages/kit` | UI-independent helpers: read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`) and ruby (`parseRuby`). Called from both server actions and the view |
-| `packages/reader` | The read-through screens (Svelte 5), server logic (`readThroughLogic`), script format (`src/script.ts`), theme, UI strings and dev harness, shared by the samples |
+| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`) and playing cards (`deck`, `deal`). Called from both server actions and the view |
+| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `HandoutView`, `GameSelectView`, `PlayingCard`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
 | `samples/hundred-arms` | Sample work 百本腕と勇者. Two players |
 | `samples/yubiwa` | Sample work 指環 (江戸川乱歩, Aozora Bunko). Two players |
 | `samples/mittsu-no-takara` | Sample work 三つの宝 (芥川龍之介, Aozora Bunko). Three players, two of them doubling roles |
 
-A sample is its manifest, script, icons and font subsets; `src/main.ts` and `src/logic.ts` only hand its script to `packages/reader`.
+A sample is its manifest, script, icons and font subsets; `src/main.ts` and `src/logic.ts` only hand its script to `packages/reader`. A work with more than a read-through strings phases together (Phases below).
 
 ## Players and parts
 
 UZU documents no upper limit on players (`playerCount` is an integer of 1 or more; `characters` overrides it). The code takes any count. Each seat plays a part (a manifest character); a part reads one or more roles (script speakers), listed in `script.json` `parts`. Without `parts`, each cast entry is its own part. A line spoken together lists several speakers; the first reads it. Stage directions are lines of a cast entry with `direction: true`.
+
+## Phases
+
+A work is a fixed list of phases in order (opening read-through, handouts, a game, the post-game screen). Each phase is a `PhaseLogic` (`packages/kit/src/flow.ts`): `setup` when the game enters it, `actions` (and `serverActions`), `done`, and an optional `deadline`. The work's logic (`src/logic.ts`, the manifest's `serverActionLogicPath`) is `flowLogic(phases, partIds)`; shared state is `FlowState`: seat parts, the current phase `at`, each entered phase's state, and `ended`. A phase's actions are sent as `${phaseId}:${name}`; an action of any phase but the current one is rejected. After each action or deadline, the game moves past phases that are done; when the last one is done, `ended` turns true and the client calls `gameEnded()`.
+
+The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orientation })`, giving each phase, in the logic's order, a band label (the text itself), a screen and optional extra `props`. A phase screen gets `PhaseViewProps` (`packages/reader/src/flow.ts`). `readThroughPhase(script)` with `ReadThroughView` (`props: { script }`) is a read-through; `emptyPhase()` with `EmptyView` holds the place of a phase not made yet. A sample is one read-through phase: `readThroughLogic(script)` and `startReader(script, logic, orientation)`.
 
 ## Commands (from the repo root)
 
@@ -64,5 +70,6 @@ scripts/subset-fonts.sh samples/<name>
 - Code: MIT (`LICENSE`)
 - Script text (`samples/hundred-arms/script/`): CC BY 4.0, author あろすてりっく (`script/LICENSE.md`). Never change any script's wording; each sample has a test that checks `script.json` against `original.txt`.
 - 指環 and 三つの宝 (`samples/yubiwa/script/`, `samples/mittsu-no-takara/script/`): public domain in Japan, from Aozora Bunko (`script/LICENSE.md`).
+- Playing cards (`packages/reader/src/cards/`): CC0, Adrian Kennard's SVG deck (`cards/LICENSE.md`).
 - Fonts (`samples/*/src/fonts/`): SIL Open Font License 1.1 (`OFL-ShipporiMincho.txt`, `OFL-BIZUDPGothic.txt`)
 - The official sample densetsu-no-tantei has no license notice, so do not copy its code.

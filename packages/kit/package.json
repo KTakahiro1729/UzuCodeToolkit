@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "Read-through and role assignment helpers for UZU Code (UI independent).",
+  "description": "Read-through, casting and phase-flow helpers for UZU Code (UI independent).",
   "exports": {
     ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@uzuhq/code-sdk": "^0.9.12"
   }
 }
