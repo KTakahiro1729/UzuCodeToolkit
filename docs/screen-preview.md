@@ -82,6 +82,42 @@ sample and be passed with `--config`, leaving the shared config alone. See
 Name parts the way the owner talks about them. Keep numbers stable between
 captures, so add new parts at the end.
 
+## Catalogue of a work
+
+A work with many screens keeps one numbered list of all of them, so the owner can say "画面 11 の 12番".
+[`catalogue.mjs`](../tools/screen-preview/catalogue.mjs) holds what every work shares; the work
+keeps a `shots.mjs` with its own screens and the parts of its own games.
+
+```js
+import { btn, catalogue, flowSteps, NEXT } from './toolkit/tools/screen-preview/catalogue.mjs';
+const { at, jump, patch } = flowSteps({ ids, parts, past, fresh });
+export default catalogue({
+  title: '…',
+  player: 1,
+  parts: [['.board', 'chess: board']], // the work's own parts, numbered after the toolkit's
+  screens: [
+    ['01-intro', 'はじめに', 1, [{ reload: true }, { waitFor: btn('次へ') }]],
+    ['02-opening', 'オープニング', 1, [jump('opening', { index: 79, finished: false })]],
+  ],
+});
+```
+
+```bash
+cd toolkit && node tools/screen-preview/capture.mjs --config ../shots.mjs .. ../screen-preview.html
+```
+
+- A screen is `[key, label, seat, steps]`. Its key starts with its number (`07-…`). The numbers run
+  01, 02, … with no gap or repeat (`catalogue` throws otherwise). They are fixed: a new screen goes
+  at the end and nothing is renumbered, so the owner's earlier references stay true.
+- The same goes for parts: `PARTS` (the toolkit's screens) only ever grows at the end, and a work's own
+  parts come after them. Every screen lists the same parts, so a number means the same part on every
+  screen; a part not on a screen is left out of its list.
+- Screens are reached by clicking (`click`, `fill`, `tap`) or, for a state that takes long to play to, by
+  setting the game state: `at(id, state)` puts the game in a phase with the earlier ones over, `jump`
+  adds a `reload`, `patch(id, fn)` changes one phase's state.
+- Find parts by the marks the default screens carry (`PHASE`, `MAIN`, `SCROLL`: `data-uzu-*`), not by
+  class names.
+
 ## PNG screenshots
 
 ```bash
