@@ -18,3 +18,7 @@ Owner decisions for this repository, newest last.
 - **Stage directions have no background.** They read as narration, as plain text across the chat column; the advance button alone shows whose turn it is.
 - **Ruby above the word, at half size.** Readings from the script show as ruby above their word, the one exception to the 16px minimum, rather than inline in brackets at full size. Ruby may run past its word instead of spreading the word's letters.
 - **A stage direction you read gets side lines.** While you read a stage direction, a line in the advance button's colour stands at each side of it, instead of colouring the whole block.
+
+## 2026-11-13
+
+- **Overflow is checked on the drawn screens.** A CSS lint cannot tell whether something spills over, since that depends on the text and the screen size. `capture.mjs --check` walks the screen-preview screens in both orientations in Playwright and lists boxes past the screen or their parent, text and images under the safe area or the HUD, and cut-off content. Chosen over Galen (a layout spec per screen; unmaintained) and BackstopJS (pixel diffs show change, not overflow).

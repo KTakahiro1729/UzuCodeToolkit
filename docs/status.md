@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 01:58 UTC
+Last checked: 2026-11-13 02:02 UTC
 
 ## Waiting on the owner
 
@@ -10,7 +10,7 @@ No open decisions. No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#15](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/15) Screen preview: numbered, both-orientation pages built from the harness (`tools/screen-preview`) | Review, merge | Ready. Also sets the right margin for items 4–6 to 1.5em (owner's choice). |
+| [#16](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/16) Check the drawn screens for overflow | Review, merge | Ready. Screenshots in the project files under `screenshots/overflow-check/`. |
 
 ### Later waves
 
@@ -27,6 +27,7 @@ Owner reviews are batched into two waves.
 
 | PR | Result | Date |
 |---|---|---|
+| [#15](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/15) Screen preview tool; right margin for items 4–6 set to 1.5em | Merged | 2026-11-13 |
 | [#14](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/14) Speaker's icon and name on one row, bubble with a square corner | Merged | 2026-11-13 |
 | [#12](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/12) Any number of players, one player reading several roles, and 指環・三つの宝 as samples | Merged | 2026-11-12 |
 | [#13](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/13) Enforce parent-owned spacing with Stylelint | Merged | 2026-11-12 |

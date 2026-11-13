@@ -1,6 +1,8 @@
 // Capture a sample's screens from a running UZU dev harness into one static HTML page with
 // numbered parts, both orientations. Usage (harness running):
 //   node tools/screen-preview/capture.mjs samples/<name> [out.html]
+// With --check it writes no page and instead lists what spills over on each screen (overflow.js),
+// exiting 1 if anything does.
 // See docs/screen-preview.md.
 import { execSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -14,8 +16,10 @@ const HARNESS = process.env.HARNESS ?? 'http://localhost:10001';
 const SIZES = { landscape: { width: 844, height: 390 }, portrait: { width: 390, height: 844 } };
 const HUD = { x: 138, y: 52 }; // What the dev harness reports as the UZU HUD.
 
-const [sample, out = join(tmpdir(), 'screen-preview.html')] = process.argv.slice(2);
-if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs samples/<name> [out.html]');
+const args = process.argv.slice(2);
+const check = args.includes('--check');
+const [sample, out = join(tmpdir(), 'screen-preview.html')] = args.filter((a) => a !== '--check');
+if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] samples/<name> [out.html]');
 // The sample's own config, or the shared read-through one.
 const configPath = [resolve(sample, 'preview.config.mjs'), resolve('packages/reader/preview.config.mjs')].find(existsSync);
 const config = (await import(pathToFileURL(configPath).href)).default;
@@ -111,6 +115,9 @@ async function tap(n) {
   }
 }
 
+const overflow = `(${readFileSync(here('overflow.js'), 'utf8')})()`;
+let spills = 0;
+
 const docs = {};
 for (const s of config.screens) {
   await tap(s.taps ?? 0);
@@ -119,13 +126,22 @@ for (const s of config.screens) {
   for (const [o, size] of Object.entries(SIZES)) {
     await resize(size);
     await page.waitForTimeout(800);
+    if (check) {
+      const found = await target.evaluate(overflow);
+      spills += found.length;
+      console.log(`${s.key} ${o}: ${found.length ? '' : 'ok'}`);
+      for (const f of found) console.log(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
+      continue;
+    }
     docs[s.key][o] = await snapshot(target, s.parts);
   }
+  if (check) continue;
   // Numbers follow the config, so they stay put between captures; list only the parts on screen.
   const found = new Set(Object.keys(SIZES).flatMap((o) => docs[s.key][o].found));
   docs[s.key].parts = s.parts.map(([sel, label], i) => ({ n: i + 1, sel, label })).filter((p) => found.has(p.n));
 }
 await browser.close();
+if (check) process.exit(spills ? 1 : 0);
 
 const dirty = execSync('git status --porcelain').toString().trim() ? ' + local changes' : '';
 const data = {
