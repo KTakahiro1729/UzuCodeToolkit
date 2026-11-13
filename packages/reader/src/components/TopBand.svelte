@@ -2,13 +2,19 @@
   The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design.md, Top band).
   Centre: the game's phase, in the quieter text colour. Right: every player's part, name under
   icon, the others left and yours right as in the chat, yours marked with a double circle. A part
-  that doubles roles shows its first role's icon. It does not signal the turn; the advance button does.
+  that doubles roles shows its first role's icon; a check marks a player done with a phase
+  everyone finishes on their own. It does not signal the turn; the advance button does.
 -->
 <script lang="ts">
   import type { Part } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
 
-  let { parts, myPart, phase }: { parts: readonly Part[]; myPart: string | undefined; phase: string } = $props();
+  let {
+    parts,
+    myPart,
+    done = [],
+    phase,
+  }: { parts: readonly Part[]; myPart: string | undefined; done?: readonly string[]; phase: string } = $props();
 
   const shown = $derived(myPart ? [...parts.filter((p) => p.id !== myPart), ...parts.filter((p) => p.id === myPart)] : parts);
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
@@ -23,7 +29,15 @@
   <div class="roles">
     {#each shown as part (part.id)}
       <span class="who">
-        <img src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />{part.name}
+        <span class="icon">
+          <img src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />
+          {#if done.includes(part.id)}
+            <svg class="check" viewBox="0 0 16 16" aria-hidden="true" transition:fade={{ duration }}>
+              <circle cx="8" cy="8" r="8" />
+              <path d="M4.5 8.2l2.3 2.3 4.7-4.8" />
+            </svg>
+          {/if}
+        </span>{part.name}
       </span>
     {/each}
   </div>
@@ -87,6 +101,29 @@
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
+  }
+  .icon {
+    position: relative;
+    display: block;
+    line-height: 0;
+  }
+  /* Done with a phase everyone finishes on their own: a check at the icon's lower right. */
+  .check {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    width: 16px;
+    height: 16px;
+  }
+  .check circle {
+    fill: var(--color-text);
+  }
+  .check path {
+    fill: none;
+    stroke: var(--color-bubble);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   /* Your role: a double circle (the icon's edge and a ring around it). */
   img[data-you='true'] {

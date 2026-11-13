@@ -39,6 +39,17 @@ export interface PhaseView {
    * holds for this phase's state, the next screen shows a button with `label` that sends it.
    */
   reopen?: { label: string; when(state: any): boolean };
+  /**
+   * Content that stays readable once the game has left this phase, such as the handouts: the
+   * footer gets a button with `label` that opens `view` over the current screen, with this
+   * phase's props.
+   */
+  keep?: { label: string; view: Component<any> };
+  /**
+   * For a phase every player finishes on their own (such as the handouts): the seats done so
+   * far. The band marks their icons with a check while the phase is current.
+   */
+  done?(state: any): string[];
 }
 
 export interface FlowOptions {

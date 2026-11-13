@@ -1,11 +1,10 @@
 <!--
   The game-select phase's screen (gameSelectPhase()). Choosing: the games this many players can
-  play, each with how many play, who watches and the game's own line; a tap selects one (on this screen only), and the play button under the list starts it for
-  everyone. The next button beside it is white, since leaving the phase is not the next step.
-  Playing: the game's own screen, scrolling if it runs long; the band names the game. Under it a
-  row is kept from the start, so nothing moves when the back button shows: it is there once the
-  game is done, and before that the row is empty, or says that you watch for a seat that sits the
-  game out (gameSelectPhase's `spectator`, passed here too). The game's screen gets only the seats
+  play, each with how many play, who watches and the game's own line; a tap selects one (on this screen only), and the play button in the footer starts it for
+  everyone. The next button beside it is not filled, since leaving the phase is not the next step.
+  Playing: the game's own screen, scrolling if it runs long; the band names the game. The footer
+  holds the back button once the game is done, and before that says that you watch, for a seat
+  that sits the game out (gameSelectPhase's `spectator`, passed here too). The game's screen gets only the seats
   that play it as `parts`, and `watching` for a seat that is not among them.
 -->
 <script lang="ts">
@@ -15,6 +14,7 @@
   import { fill } from '../fill';
   import { band } from '../store.svelte';
   import Button from './Button.svelte';
+  import FooterActions from './FooterActions.svelte';
   import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
@@ -86,17 +86,13 @@
           {last}
         />
       </div>
-      <!-- Kept from the start, so the game does not shrink when the back button appears. -->
-      <div class="after">
-        {#if over}
-          <Button onclick={() => send('back')}>{STRINGS['button.back']}</Button>
-        {:else if watching}
-          <p>{STRINGS['game.watching']}</p>
-        {:else}
-          <span class="hold" aria-hidden="true"><Button disabled onclick={() => {}}>{STRINGS['button.back']}</Button></span>
-        {/if}
-      </div>
     </div>
+    <!-- In the footer: back once the game is done, before that whether you watch. -->
+    {#if over}
+      <FooterActions><Button onclick={() => send('back')}>{STRINGS['button.back']}</Button></FooterActions>
+    {:else if watching}
+      <FooterActions><p>{STRINGS['game.watching']}</p></FooterActions>
+    {/if}
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
@@ -113,17 +109,17 @@
         {/each}
       </ul>
     </div>
-    <div class="actions">
-      <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.next']}</Button>
-      <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
-        {STRINGS['game.play']}
-      </Button>
-    </div>
   </div>
+  <FooterActions>
+    <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.next']}</Button>
+    <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
+      {STRINGS['game.play']}
+    </Button>
+  </FooterActions>
 {/if}
 
 <style>
-  /* The list and the buttons, centred as one group. */
+  /* The guide and the list, centred. */
   .choosing {
     display: flex;
     flex-direction: column;
@@ -180,31 +176,16 @@
   .about.on {
     color: inherit;
   }
-  .actions {
-    display: flex;
-    justify-content: center;
-    gap: 1em;
-  }
   /* The game scrolls in its own space; the row under it is always there. */
   .playing {
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 0.6em;
+    grid-template-rows: minmax(0, 1fr);
     min-height: 0;
   }
   .game {
     display: grid;
     min-height: 0;
     overflow-y: auto;
-  }
-  .after {
-    display: grid;
-    justify-items: center;
-  }
-  /* Holds the back button's height while the game runs. */
-  .hold {
-    display: grid;
-    visibility: hidden;
   }
   p {
     margin: 0;
