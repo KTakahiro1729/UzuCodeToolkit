@@ -18,7 +18,7 @@
     <h2>{title}</h2>
     <button type="button" onclick={onclose}>{STRINGS['sheet.close']}</button>
   </div>
-  {@render children()}
+  <div class="body">{@render children()}</div>
 </section>
 
 <style>
@@ -30,6 +30,14 @@
     grid-template-rows: auto minmax(0, 1fr);
     gap: 0.6em;
     background: var(--color-bg);
+  }
+  /* The content fills the rest; content that does not scroll by itself scrolls here. */
+  .body {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
   }
   /* The title and close share the content's reading width. */
   .head {
