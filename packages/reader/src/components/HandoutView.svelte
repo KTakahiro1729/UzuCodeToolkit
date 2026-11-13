@@ -155,8 +155,8 @@
   }
   /* Done: the button keeps its name, outlined in a dark 2px edge with a tick, so it reads as pressed. */
   .tick {
-    width: 0.8em;
-    height: 0.7em;
+    width: 0.65em;
+    height: 0.6em;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;

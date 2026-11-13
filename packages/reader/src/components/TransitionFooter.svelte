@@ -47,11 +47,20 @@
 <style>
   /* The time left: large and dark, the one number to watch; quiet while paused. */
   :global(.slot.time .clock) {
-    font-size: 1.9em;
+    font-size: 1.45em;
     font-weight: 700;
     line-height: 1.1;
     color: var(--color-text);
     font-variant-numeric: tabular-nums;
+  }
+  /* The name "残り" says what the number is, so the clock mark is left out: the room goes to the digits. */
+  :global(.slot.time .name) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  :global(.slot.time svg) {
+    display: none;
   }
   :global(.slot.time.paused .clock) {
     color: var(--color-text-quiet);

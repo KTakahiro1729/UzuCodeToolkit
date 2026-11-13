@@ -35,7 +35,7 @@
   "status.anyoneNext": "押すと全員が進みます",
   "status.pickGame": "ゲームを選ぶと押せます",
   "time.left": "残り",
-  "footer.pause": "一時停止",
+  "footer.pause": "停止",
   "footer.resume": "再開",
   "status.needMore": "あと{n}人で進みます",
   "vote.waiting": "あと{n}人の投票を待っています"

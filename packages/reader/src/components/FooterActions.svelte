@@ -40,7 +40,7 @@
    */
   .actions {
     --button-pad-y: 0.62em;
-    --button-pad-x: 0.9em;
+    --button-pad-x: 0.55em;
     display: flex;
     justify-content: flex-end;
     align-items: stretch;
@@ -54,8 +54,8 @@
     min-height: 3.5em;
   }
   .actions > :global(button:last-child) {
-    flex: 1 1 6em;
-    min-width: 6em;
+    flex: 1 1 5em;
+    min-width: 5em;
   }
   /*
    * Two or more buttons that could each be the main one are fused into a single capsule: the
@@ -79,7 +79,7 @@
   .actions[data-uzu-actions='aside'] {
     flex-wrap: nowrap;
     justify-content: flex-start;
-    gap: 0.4em;
+    gap: 0.2em;
   }
   /* A line of text alone in the row (such as the watching mark) stays centred. */
   .actions > :global(p) {
