@@ -27,7 +27,8 @@
         "review.afterword",
         "button.end",
         "name.and",
-        "button.next"
+        "button.next",
+        "status.theirTurn"
       ]
     }
   ]
