@@ -17,10 +17,17 @@ import { bindSend, game } from './store.svelte';
 import STRINGS from './strings.json';
 
 export type { FlowOptions, PhaseView, PhaseViewProps } from './flow';
+export type { GameView } from './games';
 export type { Script } from './script';
 export { default as EmptyView } from './components/EmptyView.svelte';
+export { default as HandoutView } from './components/HandoutView.svelte';
+export { default as GameSelectView } from './components/GameSelectView.svelte';
+export { default as PlayingCard } from './components/PlayingCard.svelte';
 export { default as ReadThroughView } from './components/ReadThroughView.svelte';
 export { STRINGS };
+
+/** PhaseView.reopen for a handout phase: after time ran out, the next screen offers more time. */
+export const handoutReopen = { label: STRINGS['handout.extend'], when: (s: { timeUp: boolean }) => s.timeUp };
 
 /**
  * The top band shares the HUD's row when the HUD takes at most this share of the width. Upright

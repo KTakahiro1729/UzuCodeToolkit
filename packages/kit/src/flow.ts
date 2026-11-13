@@ -45,6 +45,12 @@ export interface PhaseLogic<P = any> {
     at(state: P): GameTime | null | undefined;
     handler(a: { state: P; parts: Record<string, string>; time: GameTime; random: SeededRandom }): void;
   };
+  /**
+   * Lets players come back to this phase from the next one, until anyone acts there (the
+   * `${phaseId}:reopen` action). Changes this phase's state so it is not done; throw to refuse.
+   * The next phase's state is dropped and set up again when the game re-enters it.
+   */
+  reopen?(a: { state: P; time: GameTime }): void;
 }
 
 export interface FlowState {
@@ -56,6 +62,8 @@ export interface FlowState {
   phases: Record<string, unknown>;
   /** True once the last phase is done: the game has ended. */
   ended: boolean;
+  /** True from entering a phase until its first action: the phase before may be reopened. */
+  reopenable: boolean;
 }
 
 /** The action name a phase's action is sent under. */
@@ -83,6 +91,7 @@ export function flowLogic(
     while (state.at < phases.length - 1 && isDone(state)) {
       state.at += 1;
       enter(state, time);
+      state.reopenable = true;
     }
     state.ended = isDone(state);
   };
@@ -98,6 +107,7 @@ export function flowLogic(
     for (const [name, run] of Object.entries(logic.actions ?? {})) {
       actions[phaseAction(id, name)] = (a) => {
         run(argsFor(id, a));
+        a.state.reopenable = false;
         moveOn(a.state, a.ctx.time);
       };
     }
@@ -106,14 +116,34 @@ export function flowLogic(
         // The same name in actions runs first and may already have moved the game on.
         if (logic.actions?.[name] && phases[a.state.at].id !== id) return;
         run({ ...argsFor(id, a), random: a.ctx.random, after: a.ctx.after });
+        a.state.reopenable = false;
         moveOn(a.state, a.ctx.time);
       };
     }
   }
+  phases.forEach(({ id, logic }, i) => {
+    const { reopen } = logic;
+    if (!reopen) return;
+    actions[phaseAction(id, 'reopen')] = ({ state, ctx }) => {
+      if (state.at !== i + 1 || !state.reopenable) throw new Error(`cannot reopen ${id}`);
+      reopen({ state: state.phases[id], time: ctx.time });
+      if (logic.done(state.phases[id])) throw new Error(`${id} is still done`);
+      delete state.phases[phases[i + 1].id];
+      state.at = i;
+      state.ended = false;
+      state.reopenable = false;
+    };
+  });
 
   return {
     setup({ players, ctx }) {
-      const state: FlowState = { parts: assignParts(players, partIds), at: 0, phases: {}, ended: false };
+      const state: FlowState = {
+        parts: assignParts(players, partIds),
+        at: 0,
+        phases: {},
+        ended: false,
+        reopenable: false,
+      };
       enter(state, ctx.time);
       moveOn(state, ctx.time);
       return state;

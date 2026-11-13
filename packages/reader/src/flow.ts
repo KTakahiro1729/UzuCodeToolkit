@@ -29,6 +29,11 @@ export interface PhaseView {
   view: Component<any>;
   /** Content the screen needs besides the state, such as the script: passed through as props. */
   props?: Record<string, unknown>;
+  /**
+   * For a phase whose logic has `reopen`: while the next phase has had no action yet and `when`
+   * holds for this phase's state, the next screen shows a button with `label` that sends it.
+   */
+  reopen?: { label: string; when(state: any): boolean };
 }
 
 export interface FlowOptions {
