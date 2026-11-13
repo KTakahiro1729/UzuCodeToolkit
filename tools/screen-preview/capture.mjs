@@ -1,10 +1,11 @@
 // Capture a sample's screens from a running UZU dev harness, both orientations. Usage (harness running):
-//   node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--times] [--config <file>]
+//   node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--times] [--config <file>] [--size lower|device|wide|reference]
 //     [--jobs <n>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]
 // One pass over the screens does everything asked for. By default it writes one static HTML page with
 // numbered parts. --check lists what spills over on each screen (overflow.js), exiting 1 if anything
 // does. --png writes <key>-landscape.png and <key>-portrait.png for each screen into <dir>. The page is
 // written when no mode is given or when out.html is; --check and --png alone write no page.
+// --size picks the screen size: lower (780×360), device (844×390, the default), wide (1194×834) or reference (874×402, the design guide's).
 // --only takes screen numbers or keys, comma separated (01,05): the other screens are skipped,
 // steps included. A screen can run steps first (click, fill, set the state; in any seat's screen).
 // A step that takes longer than --step-timeout (default 15 s), or a run longer than --timeout
@@ -20,7 +21,15 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const here = (f) => new URL(f, import.meta.url);
-const SIZES = { landscape: { width: 844, height: 390 }, portrait: { width: 390, height: 844 } };
+// The screen sizes to capture, by name. `lower`, `device` (the default) and `wide` are certification's three
+// (https://docs.code.uzu-app.com/certification); `reference` is the size UZU's design guide draws its layouts at
+// (docs/screen-preview.md).
+const SIZE_SETS = {
+  lower: { landscape: { width: 780, height: 360 }, portrait: { width: 360, height: 780 } },
+  device: { landscape: { width: 844, height: 390 }, portrait: { width: 390, height: 844 } },
+  wide: { landscape: { width: 1194, height: 834 }, portrait: { width: 834, height: 1194 } },
+  reference: { landscape: { width: 874, height: 402 }, portrait: { width: 402, height: 874 } },
+};
 const HUD = { x: 138, y: 52 }; // What the dev harness reports as the UZU HUD.
 
 const args = process.argv.slice(2);
@@ -33,12 +42,15 @@ const showTimes = args.includes('--times');
 const pngDir = flag('--png');
 const JOBS = Math.max(1, Math.floor(Number(flag('--jobs') ?? 1)) || 1);
 const configFile = flag('--config');
+const sizeName = flag('--size') ?? 'device';
+const SIZES = SIZE_SETS[sizeName];
+if (!SIZES) throw new Error(`unknown --size ${sizeName}: ${Object.keys(SIZE_SETS).join(', ')}`);
 const only = flag('--only')?.split(',').map((k) => k.trim()).filter(Boolean);
 const STEP_MS = Number(flag('--step-timeout') ?? 15) * 1000; // longest a step may take, and how long it waits for its element.
 const TOTAL_MS = Number(flag('--timeout') ?? 600) * 1000; // longest the whole run may take.
 const TIMEOUT = STEP_MS; // ms an element is waited for; a step as a whole may take half as long again.
 const [sample, outArg] = args.filter((a) => a !== '--check' && a !== '--times');
-if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>] [--jobs <n>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]');
+if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>] [--size lower|device|wide|reference] [--jobs <n>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]');
 const out = outArg ?? join(tmpdir(), 'screen-preview.html');
 const wantPage = !!outArg || !(check || pngDir);
 // The given config, the sample's own, or the shared read-through one.
