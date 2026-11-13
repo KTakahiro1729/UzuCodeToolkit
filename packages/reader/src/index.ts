@@ -58,9 +58,8 @@ export const handoutReopen = {
 /** PhaseView.done for a ready phase (CastView): the seats that are ready. */
 export const readyDone = (s: { ready: string[] }): string[] => s.ready;
 
-/** PhaseView.done for a handout phase: the seats that tapped done. */
-export const handoutDone = (s: { ready: Record<string, boolean> }): string[] =>
-  Object.keys(s.ready).filter((seat) => s.ready[seat]);
+/** PhaseView.done for a handout phase. Who is done is not shown while reading (owner's decision), so none. */
+export const handoutDone = (): string[] => [];
 
 /** PhaseView.keep for a handout phase: from the footer, the handouts can be read again. */
 export const handoutKeep = {

@@ -23,7 +23,6 @@
       "keys": [
         "phase.reading",
         "phase.review",
-        "hint.readThenTap",
         "review.heading",
         "review.afterword",
         "button.end",

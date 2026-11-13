@@ -2,7 +2,7 @@
 // Run on Kennard's SVGs as optimised by SVGO (one decimal place), from a folder of the same
 // file names, with the joker's `2J.svg` as `joker.svg`:
 //   node enlarge-index.mjs <source folder> <output folder>
-// Each face gets its rank (a third of the card's width tall) and suit side by side in the top-left
+// Each face gets its rank (a quarter of the card's width tall) and suit side by side in the top-left
 // corner, and again turned round in the bottom-right, both within the card's left half so they show
 // on a fanned hand. What the face held between the corners shrinks to fit between the two rows.
 // Red becomes #c62828 (5.6:1 on white, WCAG AA). The back and the joker keep their art.
@@ -18,10 +18,10 @@ const RANK = /<use xlink:href="#(\w+)" height="32" x="-114.4" y="-156"\/>/;
 const SUIT = /<use xlink:href="#(\w+)" height="26.8" x="-111.8" y="-119"\/>/;
 // The rank's symbol is 1000 units square and its strokes fill the height; the suit's is 1200
 // square with the pip about 1000 of it. The card is 240 by 336, centred on 0.
-const rank = (id) => `<use xlink:href="#${id}" height="80" x="-124" y="-160"/>`;
-const suit = (id) => `<use xlink:href="#${id}" height="56" x="-55" y="-148"/>`;
-// The corner rows end 80 units below the top edge; the rest of the face must stay inside this.
-const FREE = 76;
+const rank = (id) => `<use xlink:href="#${id}" height="60" x="-124" y="-160"/>`;
+const suit = (id) => `<use xlink:href="#${id}" height="42" x="-72" y="-151"/>`;
+// The corner rows end 100 units below the top edge; the rest of the face must stay inside this.
+const FREE = 96;
 
 /** How far the face's other parts reach up or down from the centre, from their y and height. */
 function reach(uses) {
@@ -64,5 +64,7 @@ for (const name of readdirSync(from).filter((n) => n.endsWith('.svg'))) {
     const scale = Math.min(1, Math.round((FREE / reach(others)) * 1000) / 1000);
     svg = `${head}${corner(top, scale)}${bottom.length ? `<g transform="rotate(180)">${corner(bottom, scale)}</g>` : ''}</svg>`;
   }
+  // Kennard outlines the court figure's panel in blue; at this size it reads as a stray frame.
+  svg = svg.replace(/<defs><path id="i"[^>]*\/><\/defs>/, '').replace(/<use xlink:href="#i"[^>]*\/>/, '');
   writeFileSync(join(to, name), svg.replaceAll('"red"', `"${RED}"`));
 }

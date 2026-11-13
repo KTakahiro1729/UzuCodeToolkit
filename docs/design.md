@@ -38,7 +38,8 @@ on cards.
 ### Focus and hierarchy
 
 - During the read-through the focus is the newest line, at the bottom, and the
-  advance button right under it, in the footer.
+  advance button right under it, in the footer. The advance button reads
+  `▼ 次へ` (`button.next`) with the mark before it.
 - A newest line taller than the chat shows from its top, its speaker's name
   included, so its reader starts at its first words and scrolls on; earlier
   lines can always be scrolled back to.
@@ -189,11 +190,10 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   the part's name bold) and every part as a white block: icon, name and one
   line on who they are (the manifest's description). Yours comes first and
   takes your role's tint.
-- In the footer one ready button (`button.ready`), with no count of who is
-  ready (owner's decision). Once tapped it keeps its name, greyed with a tick,
-  the band checks your icon (`readyDone`), and a separate button
-  (`button.unready`, naming what it undoes) takes it back: a button says what
-  it does, so taking back is never the same button (owner's decision). The
+- In the footer one next button (`button.next`), with no count of who is
+  ready (owner's decision). Once tapped it keeps its name, turns red-outlined
+  with a tick, and the band checks your icon (`readyDone`); tapping it again
+  takes it back (owner's decision, a toggle: `Button` `on`). The
   phase moves on when everyone is ready.
 - On a landscape screen the story text and the cast stand side by side.
 
@@ -263,13 +263,13 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 ### Footer
 
 - The main action area: a full-width white block along the bottom edge, the
-  band's counterpart, on every screen, in two rows like a chat input.
-- Upper row, the screen's actions: the advance button, the next button, the
+  band's counterpart, on every screen, in two rows.
+- Lower row, the main one, with bigger buttons than elsewhere (owner's decision): the screen's actions: the advance button, the next button, the
   handout's extension and done buttons, back to the list after a game, and the
   way back to the handouts. Quieter actions sit at the left; **the rightmost
   button is always the one to press now** (the send button of a chat), in
   every phase. Screens put them there with `FooterActions`.
-- Lower row, options and state: the read-back buttons at the left, quieter
+- Upper row, slim, options and state: the read-back buttons at the left, quieter
   than the actions (plain text in the quiet colour): once the game has left a
   phase whose content stays readable (`PhaseView.keep`, the handouts), that
   content; the state at the right, such as the handout's time left
@@ -383,20 +383,18 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
-- In the footer, always in view, one row: the time left, the extension
-  button (`handout.extend`), and the done button (`handout.done`). The done
-  button is the next step, so it is the filled one; it stays greyed until
+- In the footer, always in view: the time left (upper row), the extension
+  button (`handout.extend`), and the next button (`button.next`) in the main
+  row. The next button is the next step, so it is the filled one; it stays greyed until
   every setting is filled in (a setting marked optional may stay blank). The
   extension button is secondary (outlined, not filled), since it is not the
   next step.
-- Once you tap done, your settings lock: each value shows as plain text
-  without the input's edge or fill (`handout.blank` when left empty), so
-  nothing looks writable. The done button keeps its
-  name, greyed with a tick, so it reads as pressed rather than changed into
-  something else; the band checks your icon, so everyone sees who is done
-  (no count). The extension button gives way to a separate undo button that
-  names what it undoes (`handout.unready`), styled like it. Undo brings back the settings and the
-  extension button, until the phase ends.
+- Once you tap next, your settings lock but stay fields (on the page's grey,
+  `handout.blank` when left empty), and tapping one takes done back and lets
+  you type. The next button keeps its name, red-outlined with a tick; tapping
+  it again takes done back too (a toggle). The extension button greys while
+  you are done. Who is done is not shown while reading (the band has no
+  checks in this phase).
 - When time runs out, the game moves on. Until anyone acts on the next screen,
   that screen shows the extension button in the footer beside its main
   action, secondary (outlined, not filled); it brings everyone back to the handout with
