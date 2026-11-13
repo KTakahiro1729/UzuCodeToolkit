@@ -28,15 +28,31 @@ describe('image order sheet', () => {
       'assets/bg.webp': [1748, 804],
       'assets/stand-{role}.webp': [700, 772],
       'assets/frame.webp': [1476, 280],
+      'assets/frame-mine.webp': [1476, 280],
       'assets/plate.webp': [380, 64],
+      'assets/plate-mine.webp': [380, 64],
       'assets/button.webp': [240, 88],
       'assets/panel.webp': [1476, 634],
     });
   });
 
+  it('orders a your-colour variant of each image a part takes your colour from, and no other', () => {
+    const list = imageList(layout, 'landscape');
+    expect(list.filter((i) => i.mineOf).map((i) => [i.file, i.mineOf])).toEqual([
+      ['assets/frame-mine.webp', 'assets/frame.webp'],
+      ['assets/plate-mine.webp', 'assets/plate.webp'],
+    ]);
+  });
+
+  it('asks for a flat green background, not a transparent one', () => {
+    const sheet = buildBrief(layout);
+    expect(sheet).toContain('#00FF00');
+    expect(sheet).not.toMatch(/背景を透明/);
+  });
+
   it('only the nameplate stretches, and only the full-screen image is opaque', () => {
     const list = imageList(layout, 'landscape');
-    expect(list.filter((i) => i.stretch).map((i) => i.image)).toEqual(['plate']);
+    expect(list.filter((i) => i.stretch).map((i) => i.image)).toEqual(['plate', 'plate-mine']);
     expect(list.filter((i) => i.opaque).map((i) => i.image)).toEqual(['bg']);
   });
 

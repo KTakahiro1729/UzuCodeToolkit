@@ -38,7 +38,8 @@ export function imageList(layout, orientation) {
     if (!byImage.has(part.image)) byImage.set(part.image, []);
     byImage.get(part.image).push({ id, label: part.label, stretch: !!part.stretch, box: part[orientation] });
   }
-  return [...byImage].map(([image, boxes]) => {
+  const mineParts = new Set(layout.scenes.flatMap((s) => s.mine));
+  const list = [...byImage].map(([image, boxes]) => {
     const w = Math.max(...boxes.map((b) => b.box[2]));
     const h = Math.max(...boxes.map((b) => b.box[3]));
     const stretch = boxes.some((b) => b.stretch);
@@ -51,7 +52,13 @@ export function imageList(layout, orientation) {
       stretch,
       opaque: boxes.some((b) => b.box[2] >= W && b.box[3] >= H),
       boxes,
+      mineOf: undefined,
     };
+  });
+  // A part that takes your colour in some scene also needs its picture in your colour.
+  return list.flatMap((img) => {
+    const mine = img.boxes.some((b) => mineParts.has(b.id));
+    return mine ? [img, { ...img, image: `${img.image}-mine`, file: `assets/${img.image}-mine.webp`, mineOf: img.file }] : [img];
   });
 }
 
@@ -61,6 +68,7 @@ function imageEntry(img) {
   lines.push(`- ${fill(t.sizeLine, { w: img.width, h: img.height })}`);
   lines.push(`- ${img.stretch ? fill(t.stretchUse, { end: img.height }) : t.fixedUse}`);
   lines.push(`- ${img.opaque ? t.opaqueUse : t.transparentUse}`);
+  if (img.mineOf) lines.push(`- ${fill(t.mineUse, { file: img.mineOf })}`);
   if (img.role) lines.push(`- ${t.roleNote}`);
   const ratios = img.boxes.map((b) => b.box[2] / b.box[3]);
   if (!img.stretch && Math.max(...ratios) / Math.min(...ratios) > 1.05) lines.push(`- ${t.variedNote}`);
