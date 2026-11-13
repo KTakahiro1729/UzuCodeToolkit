@@ -43,7 +43,7 @@
   <!-- Escape and the close button are the keyboard's ways out; the dimmed screen is a tap target only. -->
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="scrim" data-overflow-ok transition:fade|global={{ duration }} onclick={onclose}></div>
-  <div class="panel" transition:rise|global>
+  <div class="panel" data-overflow-parent-ok transition:rise|global>
     <div class="head" data-uzu-part="sheet-head">
       <h2>{title}</h2>
       <Button variant="secondary" onclick={onclose}>{STRINGS['sheet.close']}</Button>
@@ -56,8 +56,9 @@
   /*
    * The scrim dims the screen's whole area (the cell and the page margin around it, not the band
    * or the footer, which stay as they are); the panel floats above it, anchored to the bottom,
-   * and leaves a strip of the screen showing at the top. It reaches past the section on purpose
-   * (data-overflow-ok for the screen preview's overflow check): nothing clips it.
+   * and leaves a strip of the screen showing at the top. Both reach past the section on purpose
+   * (data-overflow-ok on the scrim, data-overflow-parent-ok on the panel, for the screen preview's
+   * overflow check, which still checks the panel against the screen): nothing clips them.
    */
   section {
     z-index: 1;

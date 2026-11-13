@@ -2,6 +2,10 @@
 
 Toolkit for making murder-mystery games with UZU Code (`run()` from `@uzuhq/code-sdk`). Docs: https://docs.code.uzu-app.com/
 
+## Making a work from a plan
+
+Read [docs/new-work.md](docs/new-work.md) first: the steps from an author's plan to a work, what to ask the author, the checks, and the report to give back. [docs/plan-to-parts.md](docs/plan-to-parts.md) says which part answers what a plan says.
+
 ## Design policy
 
 Read [docs/design.md](docs/design.md) before any UI work: the short list of rules every screen follows. Then read only the component spec in `docs/design/` for the part you change (the index is at the end of design.md). Do not read the other specs.
@@ -47,7 +51,7 @@ A work changes its look without a toolkit change. Find the smallest piece below 
 
 The dev harness and the screen preview find the main action, the phase name and the scrolling list by three marks: `data-uzu-actions="main"` (set by `FooterActions`), `data-uzu-phase` and `data-uzu-scroll`. A custom shell or screen keeps them (docs/screen-preview.md). The logic tests, the work's flow test and the build-size test do not depend on the screens.
 
-Add to the toolkit only what the work cannot do with the pieces above, and only if it is a part for a concept murder-mystery plans commonly contain (phases, cast, script, handouts, games, hidden parts, empty chapters; docs/plan-to-parts.md says which part answers which) or prevents a mistake no eye can see on the screen. Game rules, world and colours stay in the work (docs/decisions: the-toolkit-takes-what-prevents-an-error-no-eye-can-see). Gaps in a plan get defaults that are listed back to the author (gaps-in-a-plan-are-filled-with-defaults-and-listed).
+Add to the toolkit only what the work cannot do with the pieces above, and only if it is a part for a concept murder-mystery plans commonly contain (phases, cast, script, handouts, games, hidden parts, empty chapters; docs/plan-to-parts.md says which part answers which) or prevents a mistake no eye can see on the screen. Game rules, world and colours stay in the work (docs/decisions: the-toolkit-takes-what-prevents-an-error-no-eye-can-see). Gaps in a plan: ask first only what changes how the game plays, fill the rest with defaults and list them (ask-what-changes-the-play-fill-the-rest-and-list-it).
 
 ## Commands (from the repo root)
 

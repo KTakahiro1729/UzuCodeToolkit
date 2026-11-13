@@ -4,7 +4,9 @@
 //   inset   - text or an image under the safe area or the UZU HUD (boxes may reach under them)
 //   parent  - a box past its parent's edge, where the parent shows overflow
 //   clipped - content cut off by an element that hides overflow, or a list scrolling sideways
-// An element or subtree marked data-overflow-ok is skipped.
+// An element or subtree marked data-overflow-ok is skipped. An element marked data-overflow-parent-ok
+// is only exempt from the "parent" check (it reaches past its parent on purpose, as a sheet's panel
+// does); its own size against the screen and the safe area, and its content, are still checked.
 () => {
   const TOL = 1;
   const root = getComputedStyle(document.documentElement);
@@ -81,7 +83,7 @@
     // Past the parent's edge, where the parent lets it show.
     const p = el.parentElement;
     // An inline parent is only its text's line, so it bounds nothing (ruby stands above its word).
-    if (p && p !== document.body && st.position !== 'fixed') {
+    if (p && p !== document.body && st.position !== 'fixed' && !el.hasAttribute('data-overflow-parent-ok')) {
       const ps = getComputedStyle(p);
       if (ps.display !== 'inline' && ps.overflowX === 'visible' && ps.overflowY === 'visible')
         for (const [side, by] of sides(r, p.getBoundingClientRect())) add('parent', el, by, side);

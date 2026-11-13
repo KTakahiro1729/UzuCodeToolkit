@@ -2,7 +2,7 @@ import { type Handout, handoutLogic, type PhaseLogic, readyPhase, emptyPhase, ga
 import { describe, expect, it } from 'vitest';
 import { readThroughPhase } from '../src/logic';
 // @ts-expect-error plain JavaScript, shared with the screen preview
-import { states } from '../../../tools/screen-preview/catalogue.mjs';
+import { catalogue, phaseScreens, states } from '../../../tools/screen-preview/catalogue.mjs';
 
 /**
  * The catalogue's `states` write a toolkit phase's state for a screenshot. They must keep the
@@ -25,6 +25,8 @@ describe('the catalogue states match the phases', () => {
   it('dialogue', () => {
     const logic = readThroughPhase({ title: 't', cast: [{ id: 'x', label: 'X' }], lines: [{ speaker: 'x', text: '1' }, { speaker: 'x', text: '2' }] } as never);
     shape(logic, states.dialogue.over(2));
+    shape(logic, states.dialogue.fresh());
+    expect(logic.done(states.dialogue.fresh())).toBe(false);
     expect(logic.done(states.dialogue.lastLine(2))).toBe(false);
     expect(logic.done(states.dialogue.over(2))).toBe(true);
   });
@@ -51,5 +53,35 @@ describe('the catalogue states match the phases', () => {
     shape(logic, states.gameSelect.fresh());
     expect(logic.done(states.gameSelect.fresh())).toBe(false);
     expect(logic.done(states.gameSelect.over())).toBe(true);
+  });
+});
+
+describe('phaseScreens', () => {
+  const phases = [
+    { id: 'intro', kind: 'ready', label: 'Intro' },
+    { id: 'opening', kind: 'dialogue', lines: 3 },
+    { id: 'handout', kind: 'handout' },
+    { id: 'own', kind: 'mine' },
+    { id: 'pastime', kind: 'gameSelect' },
+  ];
+  const args = { phases, seats: ['a', 'b'], parts: { a: 'x', b: 'y' }, values: { x: { s: 'v' } } };
+
+  it('makes numbered screens, one per chosen state of each toolkit phase, and skips the work\'s own', () => {
+    const screens = phaseScreens(args);
+    expect(screens.map((s: unknown[]) => s[0])).toEqual(['01-intro-start', '02-opening-start', '03-opening-last', '04-handout-done', '05-pastime-start']);
+    // They make a valid catalogue (its numbers run without a gap).
+    expect(() => catalogue({ title: 't', screens })).not.toThrow();
+  });
+  it('puts the game in the phase with the earlier ones over', () => {
+    const [, , , done, game] = phaseScreens(args);
+    const at = (screen: unknown[]) => (screen[3] as { state: () => { at: number; phases: Record<string, unknown> } }[])[0].state();
+    expect(at(done).at).toBe(2);
+    expect(Object.keys(at(done).phases)).toEqual(['intro', 'opening', 'handout']);
+    expect(at(game).at).toBe(4);
+    expect(at(game).phases.pastime).toEqual(states.gameSelect.fresh());
+  });
+  it('shoots only what the work chooses', () => {
+    expect(phaseScreens({ ...args, only: ['opening'], shots: { opening: ['last'] }, from: 7 }).map((s: unknown[]) => s[0])).toEqual(['07-opening-last']);
+    expect(() => phaseScreens({ ...args, shots: { handout: ['start'] } })).toThrow(/no start state/);
   });
 });

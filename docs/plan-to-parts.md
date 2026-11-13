@@ -19,4 +19,4 @@ For the agent that turns an author's plan into a work. The toolkit sets no forma
 | "Looks like this" (colours, art, mood) | The work's `theme.css` tokens and assets, not the toolkit |
 | A game's rules | The work's own game under its `src/games/` (a game is not a toolkit part) |
 
-What the plan leaves open is filled with a default and listed back to the author (docs/decisions: gaps-in-a-plan-are-filled-with-defaults-and-listed).
+What the plan leaves open: ask the author about what changes how the game plays, and fill the rest with a default and list it (docs/new-work.md; docs/decisions: ask-what-changes-the-play-fill-the-rest-and-list-it).

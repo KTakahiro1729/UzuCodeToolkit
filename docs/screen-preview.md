@@ -199,10 +199,16 @@ if anything does:
 | `parent` | A box runs past its parent, or text past its own box, where they show overflow |
 | `clipped` | An element that hides overflow cuts its content off, or a scroll list runs sideways |
 
+`--size all` checks certification's three sizes (lower, device, wide) in one run, in both
+orientations each; `--size device,reference` names the sizes. Lines then read `<screen> <size>
+<orientation>`. Certification asks for all three, and a check at one size does not prove the others.
+
 Each line gives the side, how many px it is out by, the element and the start
 of its text. Inside a scroll list only the list itself has to fit. Mark an
 element `data-overflow-ok` where spilling over is meant; the check skips it and
-everything in it. It sees only the screens and the text the config reaches, so
+everything in it. An element that only reaches past its parent on purpose (a sheet's
+panel) takes `data-overflow-parent-ok` instead: only the parent check skips it, and its
+size against the screen, the safe area and its content are still checked. It sees only the screens and the text the config reaches, so
 run it on every sample after a layout change.
 
 The overflow check cannot see a button that is cut off inside a scroll area, since

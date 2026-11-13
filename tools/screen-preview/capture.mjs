@@ -6,6 +6,8 @@
 // does. --png writes <key>-landscape.png and <key>-portrait.png for each screen into <dir>. The page is
 // written when no mode is given or when out.html is; --check and --png alone write no page.
 // --size picks the screen size: lower (780×360), device (844×390, the default), wide (1194×834) or reference (874×402, the design guide's).
+// With --check, --size takes several, comma separated, or `all` (lower, device and wide: certification's three), and checks each
+// in turn; the PNGs and the page are made at the first.
 // --only takes screen numbers or keys, comma separated (01,05): the other screens are skipped,
 // steps included. A screen can run steps first (click, fill, set the state; in any seat's screen).
 // A step that takes longer than --step-timeout (default 15 s), or a run longer than --timeout
@@ -42,9 +44,12 @@ const showTimes = args.includes('--times');
 const pngDir = flag('--png');
 const JOBS = Math.max(1, Math.floor(Number(flag('--jobs') ?? 1)) || 1);
 const configFile = flag('--config');
-const sizeName = flag('--size') ?? 'device';
-const SIZES = SIZE_SETS[sizeName];
-if (!SIZES) throw new Error(`unknown --size ${sizeName}: ${Object.keys(SIZE_SETS).join(', ')}`);
+const sizeArg = flag('--size') ?? 'device';
+const sizeNames = sizeArg === 'all' ? ['lower', 'device', 'wide'] : sizeArg.split(',').map((n) => n.trim()).filter(Boolean);
+for (const n of sizeNames) if (!SIZE_SETS[n]) throw new Error(`unknown --size ${n}: ${Object.keys(SIZE_SETS).join(', ')}, all`);
+if (sizeNames.length > 1 && !check) throw new Error('--size with several sizes needs --check (a page or PNGs are made at one size)');
+// The first size is the one the PNGs and the page are made at.
+const SIZES = SIZE_SETS[sizeNames[0]];
 const only = flag('--only')?.split(',').map((k) => k.trim()).filter(Boolean);
 const STEP_MS = Number(flag('--step-timeout') ?? 15) * 1000; // longest a step may take, and how long it waits for its element.
 const TOTAL_MS = Number(flag('--timeout') ?? 600) * 1000; // longest the whole run may take.
@@ -400,15 +405,19 @@ async function run(steps, screenSeat, key) {
     if (s.wait !== undefined) await page.waitForTimeout(s.wait);
     else await settle(at, 80);
     const doc = {};
-    // One pass: each orientation gives the overflow check, the PNG and the snapshot.
-    for (const [o, size] of Object.entries(SIZES)) {
-      w.where = `${s.key} ${o}`;
-      await within(STEP_MS * 3, `${s.key} ${o}`, async () => {
+    // One pass: each orientation gives the overflow check, the PNG and the snapshot. With several
+    // sizes (--check), the later sizes only check.
+    for (const [si, sizeName] of sizeNames.entries())
+    for (const [o, size] of Object.entries(SIZE_SETS[sizeName])) {
+      const first = si === 0;
+      const tag = sizeNames.length > 1 ? `${sizeName} ${o}` : o;
+      w.where = `${s.key} ${tag}`;
+      await within(STEP_MS * 3, `${s.key} ${tag}`, async () => {
         await resize(at, size);
         if (check) {
           const found = await timed('check', onSeat)(at, (f) => f.evaluate(overflow));
           spills += found.length;
-          lines.push(`${s.key} ${o}: ${found.length ? '' : 'ok'}`);
+          lines.push(`${s.key} ${tag}: ${found.length ? '' : 'ok'}`);
           for (const f of found) lines.push(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
           // The screen's `reach` selectors (the action to press now) must be on screen without scrolling.
           for (const sel of s.reach ?? []) {
@@ -419,12 +428,12 @@ async function run(steps, screenSeat, key) {
             if (why) { spills++; lines.push(`  unreachable ${sel}: ${why}`); }
           }
         }
-        if (pngDir) {
+        if (pngDir && first) {
           const file = join(pngDir, `${s.key}-${o}.png`);
           await timed('png', page.screenshot.bind(page))({ path: file, clip: { x: 0, y: 0, ...size } });
           lines.push(`wrote ${file}`);
         }
-        if (wantPage) doc[o] = await timed('snapshot', onSeat)(at, (f) => snapshot(f, s.parts ?? []));
+        if (wantPage && first) doc[o] = await timed('snapshot', onSeat)(at, (f) => snapshot(f, s.parts ?? []));
       });
     }
     if (wantPage) {
