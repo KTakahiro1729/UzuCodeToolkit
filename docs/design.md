@@ -298,8 +298,8 @@ Decoration is out of scope, but it must not break the rules above:
   there; it never runs under the row.
 - A seat that sits the game out sees `game.watching` in that row, in the
   quieter text colour, until the back button takes its place.
-- On a landscape screen the list has two columns, so it fits above the buttons
-  without scrolling.
+- On a landscape screen the list has three columns, so it fits above the
+  buttons without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Other screens

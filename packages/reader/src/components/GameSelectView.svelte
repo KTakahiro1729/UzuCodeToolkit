@@ -141,12 +141,12 @@
     overflow-y: auto;
     list-style: none;
   }
-  /* Two columns on a wide, short screen, so the list fits above the buttons. */
+  /* Three columns on a wide, short screen, so the list (two lines a game) fits above the buttons. */
   @media (orientation: landscape) {
     ul {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: min(100%, 40em);
+      grid-template-columns: 1fr 1fr 1fr;
+      width: min(100%, 48em);
     }
   }
   /* A game on the list: a white block as wide as the list, not a round button. */
