@@ -38,6 +38,18 @@
   );
   color-scheme: light;
 }
+/* Under 380px wide the phase has a row above the players (TopBand). */
+@media (max-width: 379px) {
+  :root {
+    --band-h: 104px;
+  }
+}
+/* A phone held sideways: the band keeps less of the short screen (icon and name side by side). */
+@media (max-height: 479px) {
+  :root {
+    --band-h: 48px;
+  }
+}
 
 /*
  * The two faces are bundled per sample (src/fonts.css), subset to the characters that work shows.
