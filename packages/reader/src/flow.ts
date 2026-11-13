@@ -19,6 +19,11 @@ export interface PhaseViewProps<P = any> {
   send(name: string, payload?: Record<string, unknown>): void;
   /** True in the work's last phase. */
   last: boolean;
+  /**
+   * In a game of the game-select phase: true for a seat that sits the game out (the work's
+   * spectator part) and only watches. Such a seat is not among `parts`.
+   */
+  watching?: boolean;
 }
 
 export interface PhaseView {
