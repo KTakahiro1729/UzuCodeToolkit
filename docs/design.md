@@ -200,6 +200,8 @@ Decoration is out of scope, but it must not break the rules above:
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result
   stays and the back button appears under it.
+- On a landscape screen the list has two columns, so it fits above the next
+  button without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Other screens

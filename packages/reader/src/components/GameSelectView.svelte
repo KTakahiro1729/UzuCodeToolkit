@@ -88,6 +88,14 @@
     overflow-y: auto;
     list-style: none;
   }
+  /* Two columns on a wide, short screen, so the list fits above the next button. */
+  @media (orientation: landscape) {
+    ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: min(100%, 24em);
+    }
+  }
   button {
     margin: 0;
     border: none;
