@@ -266,8 +266,9 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   always the one to press now** (the send button of a chat), in every phase. It is the
   filled one, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
   screen) with room for a label and a note, so the footer keeps its height in every
-  state. Screens put it there with `FooterActions`. A button beside it that is a
-  capsule goes before it.
+  state. Screens put it there with `FooterActions`. Buttons beside it that could
+  each be the main one are fused with it into one capsule (round at the outer ends, a thin
+  seam between), the one to press now last. A work chooses which; the toolkit does not.
 - **Items** are at the left: plain text in the quiet colour over a mark, no capsule,
   so the one filled capsule stays the one to press now (`Slot`). They are the read-back
   items (the handouts, once the game has left a phase whose content stays readable,
