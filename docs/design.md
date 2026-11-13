@@ -127,9 +127,9 @@ Decoration is out of scope, but it must not break the rules above:
 ### Guide
 
 - A phase's screen may open with what to do now, in a line or two of UI text
-  at the top (`guide`, the work's own words). It is not shown all the time
-  (owner's decision): it fades out after 8 seconds, keeping its room so
-  nothing moves, and needs no tap: no window to close. Only where players
+  at the top (`guide`, the work's own words). It is part of the screen's
+  content and scrolls away with it; it never floats over the screen or stays
+  pinned (owner's decision). It needs no tap: no window to close. Only where players
   would otherwise guess (why the game waits, what is secret), not to repeat
   the band.
 

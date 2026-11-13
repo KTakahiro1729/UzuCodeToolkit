@@ -2,7 +2,7 @@
   The screen of a phase with no game of its own (emptyPhase()): optional story text, such as an
   introduction, and under it the next button, which every player can tap. Without text it is a
   placeholder for a phase not made yet. The band's label names the phase. An optional guide
-  (what to do now) sits at the top.
+  (what to do now) opens the text and scrolls with it.
 -->
 <script lang="ts">
   import type { PhaseViewProps } from '../flow';
@@ -17,11 +17,11 @@
   const paragraphs = $derived(text ? text.split(/\n{2,}/) : []);
 </script>
 
-<div class="screen" class:guided={guide} in:sceneIn|global out:sceneOut|global>
-  {#if guide}<Guide text={guide} />{/if}
+<div class="screen" in:sceneIn|global out:sceneOut|global>
   <div class="empty">
-    {#if paragraphs.length}
+    {#if guide || paragraphs.length}
       <div class="text">
+        {#if guide}<Guide text={guide} />{/if}
         {#each paragraphs as p}<p>{p}</p>{/each}
       </div>
     {/if}
@@ -30,17 +30,12 @@
 </div>
 
 <style>
-  /* The guide at the top; the rest centred in the room under it. */
   .screen {
     min-height: 0;
     display: grid;
     grid-template-rows: minmax(0, 1fr);
-    gap: 1em;
   }
-  .screen.guided {
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-  /* The text and the button under it, centred as one; the button alone without text. */
+  /* The guide and the text, and the button under them, centred as one; the button alone without them. */
   .empty {
     align-self: center;
     justify-self: center;
@@ -52,7 +47,7 @@
     flex-direction: column;
     gap: 1em;
   }
-  /* Story text: left-aligned so every line starts at one edge; scrolls if it is long. */
+  /* The guide and the story text: left-aligned so every line starts at one edge; they scroll together if long. */
   .text {
     min-height: 0;
     overflow-y: auto;

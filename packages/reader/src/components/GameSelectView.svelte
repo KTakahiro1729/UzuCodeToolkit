@@ -100,17 +100,19 @@
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
-    {#if guide}<Guide text={guide} />{/if}
-    <ul>
-      {#each choices as { game: g, players } (g.id)}
-        <li>
-          <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
-            <span class="name">{g.label}</span>
-            <span class="about" class:on={selected === g.id}>{about(players, g.description)}</span>
-          </Button>
-        </li>
-      {/each}
-    </ul>
+    <div class="list">
+      {#if guide}<Guide text={guide} />{/if}
+      <ul>
+        {#each choices as { game: g, players } (g.id)}
+          <li>
+            <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
+              <span class="name">{g.label}</span>
+              <span class="about" class:on={selected === g.id}>{about(players, g.description)}</span>
+            </Button>
+          </li>
+        {/each}
+      </ul>
+    </div>
     <div class="actions">
       <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.next']}</Button>
       <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
@@ -129,16 +131,23 @@
     gap: 1.6em;
     min-height: 0;
   }
+  /* The guide and the list scroll together, so the guide leaves the view with them. */
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
   ul {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
     width: min(100%, 22em);
-    max-height: 100%;
     align-self: center;
     margin: 0;
     padding: 0;
-    overflow-y: auto;
     list-style: none;
   }
   /* Three columns on a wide, short screen, so the list (two lines a game) fits above the buttons. */
@@ -170,9 +179,6 @@
   /* On the selected game's fill, the line takes the fill's text colour, for contrast. */
   .about.on {
     color: inherit;
-  }
-  .choosing > :global(p) {
-    max-width: 22em;
   }
   .actions {
     display: flex;
