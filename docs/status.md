@@ -10,7 +10,7 @@ No open decisions. No CI checks are configured. The two PRs are independent.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Review, merge | Ready. |
+| [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Review, merge | Ready, but its base is still the merged #20 branch; to be retargeted to main. |
 | [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Review, merge | Ready. [Screens](https://claude.ai/artifact/NuxrEgY4wxoZsAXyW8oKAZ) |
 
 ## Done
