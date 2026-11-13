@@ -116,6 +116,6 @@ export function catalogue({ title, player = 0, parts = [], screens }) {
     player,
     next: NEXT,
     scroll: [SCROLL],
-    screens: screens.map(([key, label, seat, steps]) => ({ key, label, seat, steps: steps.flat(), parts: all })),
+    screens: screens.map(([key, label, seat, steps, reach]) => ({ key, label, seat, steps: steps.flat(), reach, parts: all })),
   };
 }

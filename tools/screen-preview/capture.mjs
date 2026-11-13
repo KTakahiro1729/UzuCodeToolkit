@@ -204,6 +204,14 @@ if (pngDir) mkdirSync(pngDir, { recursive: true });
 
 const overflow = `(${readFileSync(here('overflow.js'), 'utf8')})()`;
 let spills = 0;
+// Why an element cannot be pressed as the screen stands (null if it can): it is
+// missing, past the viewport, or covered or cut off (what is hit at its centre is not the element).
+const reachable = (el) => {
+  const r = el.getBoundingClientRect();
+  if (r.left < -1 || r.top < -1 || r.right > innerWidth + 1 || r.bottom > innerHeight + 1) return 'past the viewport';
+  const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  return hit && el.contains(hit) ? null : 'covered or cut off';
+};
 
 const docs = {};
 for (const s of config.screens) {
@@ -220,6 +228,14 @@ for (const s of config.screens) {
       spills += found.length;
       console.log(`${s.key} ${o}: ${found.length ? '' : 'ok'}`);
       for (const f of found) console.log(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
+      // The screen's `reach` selectors (the action to press now) must be on screen without scrolling.
+      for (const sel of s.reach ?? []) {
+        const why = await onSeat(at, async (f) => {
+          const el = f.locator(sel).first();
+          return (await el.count()) ? el.evaluate(reachable) : 'not on the screen';
+        });
+        if (why) { spills++; console.log(`  unreachable ${sel}: ${why}`); }
+      }
       continue;
     }
     if (pngDir) {
