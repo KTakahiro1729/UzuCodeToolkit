@@ -2,8 +2,8 @@
 // A sample can keep its own preview.config.mjs instead. Labels are what the owner calls each part.
 export default {
   player: 0,
-  next: 'footer .act button:not([disabled])',
-  scroll: ['.chat'],
+  next: '[data-uzu-actions="main"] button:not([disabled])',
+  scroll: ['[data-uzu-scroll]'],
   screens: [
     {
       key: 'reading',
@@ -12,7 +12,7 @@ export default {
       parts: [
         ['main', '画面の外枠'],
         ['header', '上の帯'],
-        ['header .phase', '場面名'],
+        ['[data-uzu-phase]', '場面名'],
         ['header .roles', '役の並び'],
         ['header .who:last-child', '役（アイコン＋名前）'],
         ['header .who:last-child img', '役アイコン'],
@@ -23,7 +23,7 @@ export default {
         ['.chat li img', '話者アイコン'],
         ['.chat li .name', '話者名'],
         ['.chat li p', '吹き出し'],
-        ['footer .act button', '進むボタン'],
+        ['[data-uzu-actions="main"] button', '進むボタン'],
         ['.notice', '作品の注記'],
         ['.chat h3', '場面の見出し'],
         ['.chat li[data-direction=true] p', 'ト書き'],
@@ -38,7 +38,7 @@ export default {
       parts: [
         ['main', '画面の外枠'],
         ['header', '上の帯'],
-        ['header .phase', '場面名'],
+        ['[data-uzu-phase]', '場面名'],
         ['header .roles', '役の並び'],
         ['.end', '終了画面の列'],
         ['.closing', '題名と終わりの印'],

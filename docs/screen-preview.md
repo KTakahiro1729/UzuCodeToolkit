@@ -34,7 +34,11 @@ code changes until it is captured again.
 The samples share the read-through screens, so they share one config,
 [`packages/reader/preview.config.mjs`](../packages/reader/preview.config.mjs).
 A sample with screens of its own puts a `preview.config.mjs` in its folder
-instead. The title comes from the sample's `script.json` unless the config
+instead. `next` and `scroll` find the screens by three marks every screen and
+shell keeps, so they work after the screens are replaced: `data-uzu-actions="main"`
+on the main actions (`FooterActions` sets it), `data-uzu-phase` on the phase name
+and `data-uzu-scroll` on a list that scrolls. The numbered `parts` may use any
+selector of the work's own markup. The title comes from the sample's `script.json` unless the config
 sets one.
 
 | Key | Meaning |

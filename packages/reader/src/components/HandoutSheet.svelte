@@ -8,7 +8,7 @@
   import type { PhaseViewProps } from '../flow';
   import HandoutTabs from './HandoutTabs.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let {
     state: phase,

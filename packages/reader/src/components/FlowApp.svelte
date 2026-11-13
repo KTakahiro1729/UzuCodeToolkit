@@ -20,7 +20,7 @@
   import PhaseList from './PhaseList.svelte';
   import Sheet from './Sheet.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let { parts, phases }: Pick<FlowOptions, 'parts' | 'phases'> = $props();
 

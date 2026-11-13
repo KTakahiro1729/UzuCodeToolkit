@@ -14,7 +14,7 @@
   import { sceneIn, sceneOut } from './motion';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let {
     part,

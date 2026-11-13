@@ -12,7 +12,8 @@
     "./dev-harness": "./dev-harness.js"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json"
+    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
   },
   "dependencies": {
     "@uzu-toolkit/kit": "^0.1.0"
