@@ -14,14 +14,19 @@
     "harness": "npm run harness -w sample-hundred-arms",
     "build": "npm run build -w sample-hundred-arms",
     "lint": "stylelint \"packages/*/src/**/*.{css,svelte}\" \"samples/*/src/**/*.{css,svelte}\"",
-    "fonts": "sh scripts/subset-fonts.sh"
+    "fonts": "sh scripts/subset-fonts.sh",
+    "layout:export": "node tools/layout/slides/export.mjs",
+    "layout:import": "node tools/layout/slides/import.mjs",
+    "layout:brief": "node tools/layout/brief/brief.mjs"
   },
   "engines": {
     "node": ">=22.12"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "jszip": "^3.10.2",
     "postcss-html": "^1.8.1",
+    "pptxgenjs": "^4.0.1",
     "stylelint": "^18.0.0",
     "typescript": "^5.7.0",
     "vitest": "^4.1.0"

@@ -4,4 +4,15 @@
  * Behind an entry of its own so a work that keeps the chat bubbles ships none of it.
  */
 export { default as StageReadThrough } from './components/StageReadThrough.svelte';
-export { LAYOUT, REFERENCE, type Orientation, type Rect, type StageLayout } from './stage-layout';
+export { LAYOUT, READ_THROUGH_LAYOUT, REFERENCE, stageLayoutOf, type StageLayout } from './stage-layout';
+export {
+  layoutProblems,
+  orientationsOf,
+  rectOf,
+  type LayoutArea,
+  type LayoutPart,
+  type LayoutScene,
+  type Orientation,
+  type Rect,
+  type ScreenLayout,
+} from './layout';

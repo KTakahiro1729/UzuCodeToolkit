@@ -158,6 +158,7 @@ shows a control is there).
 |---|---|
 | The read-through: chat, dialogue line, stage layout, stage direction, notice, end screen | [design/read-through.md](design/read-through.md) |
 | Top band, footer, `Button`, sheets | [design/chrome.md](design/chrome.md) |
+| A layout definition (parts, boxes, images, scenes), `tools/layout/` | [design/layout.md](design/layout.md) |
 | Handout screens, post-game handouts | [design/handout.md](design/handout.md) |
 | Guide, introduction, empty phase, phase list, phase changes | [design/phases.md](design/phases.md) |
 | Game select, turn marks in games, spectating, the clock | [design/games.md](design/games.md) |

@@ -3,22 +3,20 @@
  * (https://docs.code.uzu-app.com/guides/design/reading). Standing characters, one dialogue
  * frame that shows the line being read, two nameplates and, over everything, the log panel.
  *
- * Every number below is the guide's, in px of its reference screen (874×402 landscape, 402×874
- * portrait). The guide says its values may change; they live here and nowhere else. A scene
- * (which parts show, how wide the nameplates are, who gets the colour) is derived from the line
- * being read by stageScene().
+ * The numbers are in layouts/read-through.layout.json (docs/design/layout.md), the guide's, in px
+ * of its reference screen (874×402 landscape, 402×874 portrait), and nowhere else; this file
+ * shapes them for the screen. A scene (which parts show, how wide the nameplates are, who gets the
+ * colour) is derived from the line being read by stageScene().
  */
 
 import { type DialogueLine, readerOf, speakersOf } from '@uzu-toolkit/kit';
+import { type Orientation, type Rect, rectOf, type ScreenLayout } from './layout';
+import readThrough from './layouts/read-through.layout.json';
 
-export type Orientation = 'landscape' | 'portrait';
-/** x, y, width, height from the screen's top left. */
-export type Rect = readonly [x: number, y: number, width: number, height: number];
+export type { Orientation, Rect } from './layout';
 
-export const REFERENCE = {
-  landscape: { width: 874, height: 402 },
-  portrait: { width: 402, height: 874 },
-} as const;
+/** The read-through's layout definition as the toolkit ships it: the guide's. */
+export const READ_THROUGH_LAYOUT = readThrough as unknown as ScreenLayout;
 
 export interface StageLayout {
   /** The scene's place, time or chapter. */
@@ -32,7 +30,7 @@ export interface StageLayout {
   frame: Rect;
   /** The line: 2 lines landscape, 3 portrait, 18px on 28px. */
   text: Rect;
-  /** Both nameplates side by side, ① first. */
+  /** Both nameplates side by side, ① first: from nameplate ①'s left to the line's right edge. */
   names: Rect;
   /** Width of nameplate ② when it holds just the next mark and name. */
   nextTagWidth: number;
@@ -45,48 +43,59 @@ export interface StageLayout {
   margin: { top: number; right: number; bottom: number; left: number };
 }
 
-export const LAYOUT: Record<Orientation, StageLayout> = {
-  landscape: {
-    tag: [120, 18, 150, 24],
-    c1: [97, 56, 163, 346],
-    c2: [297, 69, 163, 333],
-    solo: [262, 16, 350, 386],
-    frame: [68, 233, 738, 140],
-    text: [84, 257, 706, 56],
-    names: [84, 217, 706, 32],
-    nextTagWidth: 190,
-    log: [84, 321, 120, 44],
-    next: [670, 321, 120, 44],
-    panel: [68, 56, 738, 317],
-    reserved: { logo: [68, 8, 44, 44], system: [762, 8, 44, 44], toast: [68, 56, 260, 36] },
-    margin: { top: 0, right: 62, bottom: 21, left: 62 },
-  },
-  portrait: {
-    tag: [68, 72, 150, 24],
-    c1: [16, 156, 256, 718],
-    c2: [250, 184, 136, 690],
-    solo: [16, 120, 370, 754],
-    frame: [16, 608, 370, 224],
-    text: [32, 632, 338, 84],
-    names: [32, 592, 338, 32],
-    nextTagWidth: 138,
-    log: [32, 780, 120, 44],
-    next: [250, 780, 120, 44],
-    panel: [16, 150, 370, 682],
-    reserved: { logo: [16, 62, 44, 44], system: [342, 62, 44, 44], toast: [16, 110, 260, 36] },
-    margin: { top: 62, right: 0, bottom: 34, left: 0 },
-  },
+const NO_MARGIN = { top: 0, right: 0, bottom: 0, left: 0 };
+
+/** The screen's view of a layout definition in one orientation. */
+export function stageLayoutOf(layout: ScreenLayout, o: Orientation): StageLayout {
+  const r = (part: string): Rect => rectOf(layout, part, o);
+  const area = (id: string): Rect => layout.reserved?.[id]?.[o] ?? [0, 0, 0, 0];
+  const [x, y, , h] = r('plate1');
+  const [tx, , tw] = r('text');
+  return {
+    tag: r('tag'),
+    c1: r('c1'),
+    c2: r('c2'),
+    solo: r('solo'),
+    frame: r('frame'),
+    text: r('text'),
+    names: [x, y, tx + tw - x, h],
+    nextTagWidth: r('plate2')[2],
+    log: r('log'),
+    next: r('next'),
+    panel: r('panel'),
+    reserved: { logo: area('logo'), system: area('system'), toast: area('toast') },
+    margin: layout.margin?.[o] ?? NO_MARGIN,
+  };
+}
+
+const sizeOf = (o: Orientation) => {
+  const [width, height] = READ_THROUGH_LAYOUT.reference[o]!;
+  return { width, height };
 };
+
+export const REFERENCE = { landscape: sizeOf('landscape'), portrait: sizeOf('portrait') } as const;
+
+export const LAYOUT: Record<Orientation, StageLayout> = {
+  landscape: stageLayoutOf(READ_THROUGH_LAYOUT, 'landscape'),
+  portrait: stageLayoutOf(READ_THROUGH_LAYOUT, 'portrait'),
+};
+
+const plate1 = rectOf(READ_THROUGH_LAYOUT, 'plate1', 'landscape');
+const plate2 = rectOf(READ_THROUGH_LAYOUT, 'plate2', 'landscape');
 
 /**
  * Nameplate ①'s least width by what it holds. A name alone has none: the plate fits its name (the
- * guide says its width follows the name's length, 78 in its template) and ② follows 10px after it
- * and takes the rest of the row. The guide's x187 (landscape) and x135 (portrait) for ② in that
- * case do not agree with 78 (84 + 78 + 10 = 172), so only the two fixed widths are kept as numbers.
+ * guide says its width follows the name's length, 78 in its template) and ② follows NAME_GAP after
+ * it and takes the rest of the row. The guide's x187 (landscape) and x135 (portrait) for ② in that
+ * case do not agree with 78 (84 + 78 + 10 = 172), so only the two fixed widths are kept as numbers:
+ * nameplate ① on your turn (`plate1`) and on the narration (`plateNarration`).
  */
-export const NAME_WIDTH = { full: 190, narration: 116 } as const;
+export const NAME_WIDTH = {
+  full: plate1[2],
+  narration: rectOf(READ_THROUGH_LAYOUT, 'plateNarration', 'landscape')[2],
+} as const;
 /** The space between the two nameplates. */
-export const NAME_GAP = 10;
+export const NAME_GAP = plate2[0] - plate1[0] - plate1[2];
 
 /** CSS for a part's place, in `--u` (a reference px in screen px, set on the stage). */
 export function place([x, y, w, h]: Rect): string {
