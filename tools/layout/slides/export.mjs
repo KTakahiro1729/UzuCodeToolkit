@@ -2,9 +2,10 @@
 // One slide per scene, at the reference size; each box holds "label id".
 // A pptx has one slide size, so each orientation gets its own file:
 // layout.pptx when the layout has one orientation, else layout-landscape.pptx and layout-portrait.pptx.
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import JSZip from 'jszip';
 import pptxgen from 'pptxgenjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -19,10 +20,8 @@ const COLORS = {
   reserved: { fill: 'D9D9D9', line: '8C8C8C', text: '4D4D4D' },
 };
 
-/** The text a box carries; the importer reads the id from here. */
-export function boxText(label, id) {
-  return `${label} ${id}`.trim();
-}
+/** The alt text that carries a box's part id: Google Slides keeps it through an export, unlike shape names. */
+export const ID_PREFIX = 'uzu:';
 
 /** The orientations a layout supports, in a fixed order. */
 export function orientationsOf(layout) {
@@ -38,19 +37,18 @@ export function buildDeck(layout, orientation) {
   pptx.layout = `${layout.screen}-${orientation}`;
   pptx.title = `${layout.screen} ${orientation}`;
 
-  // A box too small for its caption keeps only the id on one line at 7pt; the id is the key
-  // the importer reads, so it is never dropped.
+  // Text is the label only; its alignment is the part's `align` (default left), anchored middle.
   const addBox = (slide, id, label, rect, c, opts = {}) => {
     const [x, y, w, h] = rect;
     const small = w < 80 || h < 30;
-    slide.addText(boxText(small ? '' : label, id), {
+    slide.addText(label, {
       x: inch(x), y: inch(y), w: inch(w), h: inch(h),
       shape: pptx.ShapeType.rect,
       fill: { color: c.fill, transparency: opts.transparency ?? 0 },
       line: { color: c.line, width: 1 },
       color: c.text,
       fontSize: small ? 7 : h < 40 ? 8 : 11,
-      align: opts.align ?? 'left', valign: opts.valign ?? 'top', margin: 2, fit: 'none', wrap: !small,
+      align: opts.align ?? 'left', valign: opts.valign ?? 'middle', margin: 2, fit: 'none', wrap: !small,
       objectName: id,
     });
   };
@@ -63,13 +61,26 @@ export function buildDeck(layout, orientation) {
       const rect = part?.[orientation];
       if (!rect) throw new Error(`layout ${layout.screen}: scene "${scene.key}" shows "${id}" with no ${orientation} box`);
       // The background sits bottom right so its text clears the boxes drawn over its top left.
-      addBox(slide, id, part.label, rect, scene.mine.includes(id) ? COLORS.mine : COLORS.part, id === 'bg' ? { align: 'right', valign: 'bottom' } : {});
+      addBox(slide, id, part.label, rect, scene.mine.includes(id) ? COLORS.mine : COLORS.part, id === 'bg' ? { align: 'right', valign: 'bottom' } : { align: part.align });
     }
     for (const [id, area] of Object.entries(layout.reserved ?? {})) {
-      if (area[orientation]) addBox(slide, id, area.label, area[orientation], COLORS.reserved, { transparency: 60 });
+      if (area[orientation]) addBox(slide, id, area.label, area[orientation], COLORS.reserved, { transparency: 60, align: area.align });
     }
   }
   return pptx;
+}
+
+/**
+ * The deck as a pptx file's bytes. pptxgenjs ignores alt text on text shapes, so each shape's part
+ * id (its name) is copied into descr="uzu:ID" in the slide XML.
+ */
+export async function deckBytes(layout, orientation) {
+  const zip = await JSZip.loadAsync(await buildDeck(layout, orientation).write({ outputType: 'nodebuffer' }));
+  for (const name of Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n))) {
+    const xml = await zip.file(name).async('string');
+    zip.file(name, xml.replace(/<p:cNvPr id="(\d+)" name="([A-Za-z][A-Za-z0-9]*)">/g, `<p:cNvPr id="$1" name="$2" descr="${ID_PREFIX}$2">`));
+  }
+  return zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
 }
 
 /** Writes the decks into outDir; returns the file paths written. */
@@ -79,7 +90,7 @@ export async function exportLayout(layout, outDir) {
   const written = [];
   for (const o of orientations) {
     const file = join(outDir, orientations.length === 1 ? 'layout.pptx' : `layout-${o}.pptx`);
-    await buildDeck(layout, o).writeFile({ fileName: file });
+    writeFileSync(file, await deckBytes(layout, o));
     written.push(file);
   }
   return written;

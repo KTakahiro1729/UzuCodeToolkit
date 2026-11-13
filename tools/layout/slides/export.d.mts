@@ -3,7 +3,8 @@ import type { Orientation, ScreenLayout } from '../../../packages/reader/src/lay
 
 export const DEFAULT_LAYOUT: string;
 export const PX_PER_INCH: number;
-export function boxText(label: string, id: string): string;
+export const ID_PREFIX: string;
+export function deckBytes(layout: ScreenLayout, orientation: Orientation): Promise<Buffer>;
 export function orientationsOf(layout: ScreenLayout): Orientation[];
 export function buildDeck(layout: ScreenLayout, orientation: Orientation): pptxgen;
 export function exportLayout(layout: ScreenLayout, outDir: string): Promise<string[]>;

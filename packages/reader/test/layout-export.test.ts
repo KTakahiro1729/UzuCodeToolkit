@@ -11,7 +11,7 @@ const EMU_PER_PX = 914400 / PX_PER_INCH;
 const dir = mkdtempSync(join(tmpdir(), 'layout-export-'));
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
-interface Box { x: number; y: number; w: number; h: number; text: string }
+interface Box { x: number; y: number; w: number; h: number; text: string; id: string | undefined; algn: string | undefined }
 
 async function readDeck(file: string): Promise<{ size: [number, number]; slides: Box[][] }> {
   const zip = await JSZip.loadAsync(readFileSync(file));
@@ -27,7 +27,9 @@ async function readDeck(file: string): Promise<{ size: [number, number]; slides:
     for (const sp of xml.split('<p:sp>').slice(1)) {
       const off = /<a:off x="(\d+)" y="(\d+)"\/><a:ext cx="(\d+)" cy="(\d+)"/.exec(sp)!;
       const text = [...sp.matchAll(/<a:t>([^<]*)<\/a:t>/g)].map((m) => m[1]).join('');
-      boxes.push({ x: +off[1] / EMU_PER_PX, y: +off[2] / EMU_PER_PX, w: +off[3] / EMU_PER_PX, h: +off[4] / EMU_PER_PX, text });
+      const id = /<p:cNvPr [^>]*descr="uzu:([^"]*)"/.exec(sp)?.[1];
+      const algn = /<a:pPr algn="(\w+)"/.exec(sp)?.[1];
+      boxes.push({ id, algn, x: +off[1] / EMU_PER_PX, y: +off[2] / EMU_PER_PX, w: +off[3] / EMU_PER_PX, h: +off[4] / EMU_PER_PX, text });
     }
     slides.push(boxes);
   }
@@ -44,7 +46,8 @@ function expectBoxes(layout: ScreenLayout, o: Orientation, slides: Box[][]): voi
     wanted.forEach(({ id, rect }, j) => {
       const b = slides[i]![j]!;
       expect([b.x, b.y, b.w, b.h].map(Math.round)).toEqual([...rect]);
-      expect(b.text.split(' ')).toContain(id);
+      expect(b.id).toBe(id);
+      expect(b.text).not.toContain(id);
       expect(b.text).not.toMatch(/\d+×\d+/);
     });
   });
@@ -75,7 +78,7 @@ describe('layout export to slides', () => {
     expectBoxes(landscape, 'landscape', deck.slides);
   });
 
-  it('reserved boxes are see-through and small boxes keep their id on one line', async () => {
+  it('reserved boxes are see-through and small boxes stay on one line', async () => {
     const files = await exportLayout(READ_THROUGH_LAYOUT, dir);
     const zip = await JSZip.loadAsync(readFileSync(files[0]!));
     const xml = await zip.file('ppt/slides/slide1.xml')!.async('string');
@@ -84,6 +87,21 @@ describe('layout export to slides', () => {
     const tag = xml.split('<p:sp>').find((sp) => sp.includes('name="tag"'))!;
     expect(tag).toContain('wrap="none"');
     expect(tag).toContain('sz="700"');
-    expect(tag).toContain('<a:t>tag</a:t>');
+    expect(tag).toContain('<a:t>状況（日付・時間・章）</a:t>');
+  });
+
+  it("a part's align sets the box's text alignment, anchored in the middle", async () => {
+    const layout: ScreenLayout = JSON.parse(JSON.stringify(READ_THROUGH_LAYOUT));
+    (layout.parts.next as { align?: string }).align = 'center';
+    (layout.parts.frame as { align?: string }).align = 'right';
+    const sub = mkdtempSync(join(dir, 'align-'));
+    const [file] = await exportLayout(layout, sub);
+    const deck = await readDeck(file!);
+    const box = (id: string) => deck.slides[0]!.find((b) => b.id === id)!;
+    expect(box('next').algn).toBe('ctr');
+    expect(box('frame').algn).toBe('r');
+    expect(box('plate1').algn).toBe('l');
+    const xml = await (await JSZip.loadAsync(readFileSync(file!))).file('ppt/slides/slide1.xml')!.async('string');
+    expect(xml).toContain('anchor="ctr"');
   });
 });
