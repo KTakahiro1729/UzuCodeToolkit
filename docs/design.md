@@ -273,7 +273,7 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Phase changes
 
-- When the phase changes, the old screen fades out, then the new one fades in (200 ms each, one at a time, instant with reduced motion). The band's phase label changes with the screen.
+- When the phase changes, the old screen fades out, then the new one fades in (200 ms each, one at a time, instant with reduced motion). The band's phase label changes with the screen: the old label fades out with the old screen, then the new one fades in with the new screen, so two labels never show at once.
 - The first screen, shown as the game loads, does not fade in.
 
 ### Empty phase
