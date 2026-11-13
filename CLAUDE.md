@@ -70,7 +70,7 @@ Add to the toolkit only what the work cannot do with the pieces above.
 
 - What a work does not use must not reach its build. Keep a part that brings files with it (images, such as the playing cards) behind an entry of its own, so a work that never imports it ships none of them.
 - Actions run both in client prediction and on the server: keep them deterministic (no random or wall-clock values in state). Reject by throwing.
-- Sizes in em, based on the screen's short side. `packages/reader/src/index.ts` exposes the safe area and the UZU HUD as CSS variables (`--safe-*`, `--hud-x`, `--hud-y`).
+- Sizes in em, based on the screen's short side. `packages/reader/src/index.ts` uses the SDK's safe-area and HUD variables (`--uzu-safe-area-inset-*`, `--uzu-hud-inset-x`, `--uzu-hud-inset-y`) and adds `--band-top`.
 - Certification (https://docs.code.uzu-app.com/certification): call `firstFrameReady()`, use relative paths, file names only `[A-Za-z0-9_.-]`, no external network access.
 
 ## Fonts

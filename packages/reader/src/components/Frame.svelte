@@ -87,8 +87,8 @@
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
     /* Below the HUD and the band, with a gap so a line cut off by scrolling reads as the list's edge. */
-    padding: calc(var(--band-bottom) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
-      calc(var(--footer-height) + 0.5em) calc(var(--safe-left, 0px) + 0.8em);
+    padding: calc(var(--band-bottom) + 0.5em) calc(var(--uzu-safe-area-inset-right, 0px) + 0.8em)
+      calc(var(--footer-height) + 0.5em) calc(var(--uzu-safe-area-inset-left, 0px) + 0.8em);
     background: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
@@ -148,9 +148,9 @@
     right: 0;
     bottom: 0;
     box-sizing: border-box;
-    min-height: calc(var(--safe-bottom, 0px) + var(--footer-h));
-    padding: 0.3em calc(var(--safe-right, 0px) + 0.8em) calc(var(--safe-bottom, 0px) + 0.5em)
-      calc(var(--safe-left, 0px) + 0.8em);
+    min-height: calc(var(--uzu-safe-area-inset-bottom, 0px) + var(--footer-h));
+    padding: 0.3em calc(var(--uzu-safe-area-inset-right, 0px) + 0.8em) calc(var(--uzu-safe-area-inset-bottom, 0px) + 0.5em)
+      calc(var(--uzu-safe-area-inset-left, 0px) + 0.8em);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     background: var(--color-bubble);

@@ -216,7 +216,7 @@
     display: flex;
     align-items: center;
     /* Clear of the UZU HUD where it is wider than the guide's logo. */
-    left: max(calc(var(--tag-x) * var(--u)), calc(var(--safe-left, 0px) + var(--hud-x, 0px) + 0.4em));
+    left: max(calc(var(--tag-x) * var(--u)), calc(var(--uzu-safe-area-inset-left, 0px) + var(--uzu-hud-inset-x, 0px) + 0.4em));
     padding: 0 0.6em;
     border-radius: var(--radius-control);
     background: var(--color-bubble);

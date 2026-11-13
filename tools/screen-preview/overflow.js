@@ -9,8 +9,8 @@
   const TOL = 1;
   const root = getComputedStyle(document.documentElement);
   const px = (name) => parseFloat(root.getPropertyValue(name)) || 0;
-  const safe = { top: px('--safe-top'), right: px('--safe-right'), bottom: px('--safe-bottom'), left: px('--safe-left') };
-  const hud = { right: px('--safe-left') + px('--hud-x'), bottom: px('--safe-top') + px('--hud-y') };
+  const safe = { top: px('--uzu-safe-area-inset-top'), right: px('--uzu-safe-area-inset-right'), bottom: px('--uzu-safe-area-inset-bottom'), left: px('--uzu-safe-area-inset-left') };
+  const hud = { right: px('--uzu-safe-area-inset-left') + px('--uzu-hud-inset-x'), bottom: px('--uzu-safe-area-inset-top') + px('--uzu-hud-inset-y') };
   const W = innerWidth;
   const H = innerHeight;
   const issues = [];
