@@ -13,6 +13,7 @@
   let {
     parts,
     myPart,
+    done = [],
     phase,
     nav,
     children,
@@ -21,6 +22,8 @@
     parts: readonly Part[];
     /** The part you play (State parts[seat]). */
     myPart: string | undefined;
+    /** Parts done with the current phase, checked in the band. */
+    done?: readonly string[];
     /** The phase label in the band: the scene's name, from a key or the work's data. */
     phase: string;
     /** Buttons that open what can be read back (the phase list, the handouts); none for a one-phase work. */
@@ -33,7 +36,7 @@
 </script>
 
 <main style:--footer-height={`${footerHeight}px`}>
-  <TopBand {parts} {myPart} {phase} />
+  <TopBand {parts} {myPart} {done} {phase} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
   <footer bind:offsetHeight={footerHeight}>
     <div class="act">

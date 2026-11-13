@@ -40,6 +40,11 @@ export interface PhaseView {
    * phase's props.
    */
   keep?: { label: string; view: Component<any> };
+  /**
+   * For a phase every player finishes on their own (such as the handouts): the seats done so
+   * far. The band marks their icons with a check while the phase is current.
+   */
+  done?(state: any): string[];
 }
 
 export interface FlowOptions {

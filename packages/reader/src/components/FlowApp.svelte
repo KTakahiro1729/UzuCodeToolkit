@@ -38,6 +38,10 @@
     void at;
     open = null;
   });
+  // Parts whose players are done with the current phase, for the band's checks.
+  const doneParts = $derived(
+    phase?.done && game.state ? phase.done(game.state.phases[phase.id]).map((seat) => game.state!.parts[seat]) : [],
+  );
   const toggle = (id: string) => (open = open === id ? null : id);
   const propsFor = (p: (typeof phases)[number]) => ({
     ...p.props,
@@ -55,7 +59,7 @@
 </script>
 
 {#if game.state && game.me && phase}
-  <Frame {parts} {myPart} phase={band.label ?? phase.label} nav={phases.length > 1 ? nav : undefined}>
+  <Frame {parts} {myPart} done={doneParts} phase={band.label ?? phase.label} nav={phases.length > 1 ? nav : undefined}>
     {#key phase.id}
       <phase.view
         {...phase.props}

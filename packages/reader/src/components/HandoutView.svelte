@@ -3,8 +3,9 @@
   settings your part fills in. In the footer, always in view: the time left, the button asking for
   more time, and the button that says you are done. That button stays greyed until every setting
   is filled in (optional ones may stay blank), and a dot on the settings tab shows where. Once
-  tapped it says you are waiting for the others, your settings are locked, and the extension
-  button gives way to one that takes done back. The phase ends when everyone is done or the time
+  tapped it keeps its name, greyed with a tick; your settings are locked, the band checks your
+  icon (PhaseView.done), and the extension button gives way to a separate button that takes done
+  back. The phase ends when everyone is done or the time
   runs out (the server's deadline). Settings are sent as you type, so time running out loses none.
 -->
 <script lang="ts">
@@ -87,7 +88,7 @@
       <button type="button" class="quiet" onclick={() => send('extend')}>{STRINGS['handout.extend']}</button>
     {/if}
     <NextButton disabled={done || !filled} onclick={finish}>
-      {STRINGS[done ? 'handout.waiting' : 'handout.done']}
+      {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['handout.done']}
     </NextButton>
   </div>
 </FooterActions>
@@ -155,6 +156,16 @@
     font-variant-numeric: tabular-nums;
   }
   /* Asking for more time, or taking back done, is not the next step: on the page colour, not filled. */
+  /* Done: the button keeps its name, greyed with a tick, so it reads as pressed. */
+  .tick {
+    width: 0.8em;
+    height: 0.7em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
   .quiet {
     margin: 0;
     padding: 0.45em 0.8em;

@@ -30,6 +30,10 @@ export { STRINGS };
 /** PhaseView.reopen for a handout phase: after time ran out, the next screen offers more time. */
 export const handoutReopen = { label: STRINGS['handout.extend'], when: (s: { timeUp: boolean }) => s.timeUp };
 
+/** PhaseView.done for a handout phase: the seats that tapped done. */
+export const handoutDone = (s: { ready: Record<string, boolean> }): string[] =>
+  Object.keys(s.ready).filter((seat) => s.ready[seat]);
+
 /** PhaseView.keep for a handout phase: from the footer, the handouts can be read again. */
 export const handoutKeep = { label: STRINGS['footer.handout'], view: HandoutSheet };
 

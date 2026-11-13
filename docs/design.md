@@ -37,7 +37,7 @@ on cards.
 ### Focus and hierarchy
 
 - During the read-through the focus is the newest line, at the bottom, and the
-  advance button right under it.
+  advance button right under it, in the footer.
 - When you read, the line being read takes the button's blue, so line and
   button read as one cue. The other role's lines are always white.
 - Every player sees the button. It is filled for whoever reads now and greyed
@@ -139,7 +139,10 @@ Decoration is out of scope, but it must not break the rules above:
   bold.
 - The phase label changes when the screen below it does (for example when the
   afterword appears), never before.
-- It does not signal the turn; the current line does.
+- It does not signal the turn; the current line does. In a phase every player
+  finishes on their own (the handouts), a small check at the lower right of an
+  icon marks that player done, so you can see whom you are waiting for. No
+  count is shown.
 - Shows the current phase of the game (read-through, afterword, or other) as a
   short label from a key, in every phase (owner's decision), centred on the
   screen. When the players need more than the right half (several players on
@@ -147,19 +150,27 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Footer
 
-- A work of more than one phase has a footer: a full-width white row along the
-  bottom edge (`--footer-h` above the safe area), the band's counterpart, the
-  same in both orientations. A one-phase work (the samples) has none.
-- It holds only entries for reading back, never for moving the game on: the
-  phase list (always) and, once the game has left a phase whose content stays
-  readable (`PhaseView.keep`, the handouts), that content. Buttons start at the
-  content's left edge, away from the centred advance button.
-- An entry opens a sheet over the current screen, for this player alone; the
-  screen keeps running under it and the sheet hides it fully. The open entry's
-  button sits on the page colour in bold. The sheet's title and a close button
-  share its top row; tapping the open entry again also closes it.
-- A phase change closes the sheet, so a new screen (or your turn) is never
-  hidden under it.
+- The main action area: a full-width white row along the bottom edge, the
+  band's counterpart, on every screen. Every screen's main action sits in it,
+  centred: the advance button, the next button, the handout's time, extension
+  and done buttons, back to the list after a game, and the way back to the
+  handouts beside the next button. So the thing to press is in the same place
+  in every phase. Screens put them there with `FooterActions`.
+- In a work of more than one phase it also has read-back buttons, quieter
+  than the actions (plain text in the quiet colour): the phase list (always)
+  and, once the game has left a phase whose content stays readable
+  (`PhaseView.keep`, the handouts), that content. Landscape: one row, the
+  read-back buttons at the left, the actions centred on the screen, so the
+  short screen keeps its height. Portrait: the actions in a row of their own,
+  the read-back buttons under them.
+- A read-back button opens a sheet over the screen, for this player alone;
+  the screen keeps running under it and the footer's actions stay usable. The
+  open one is bold and underlined, as a chosen tab. The sheet's title and a
+  close button share its top row; tapping the open button again also closes
+  it. A phase change closes the sheet.
+- Every button says what it does, and whether to press it shows at a glance:
+  filled for the step to take, greyed when it cannot be pressed now, on the
+  page colour for a side action.
 
 ### Dialogue line (read-through only)
 
@@ -234,20 +245,23 @@ Decoration is out of scope, but it must not break the rules above:
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
-- Under the area, always in view, one row: the time left, the extension
+- In the footer, always in view, one row: the time left, the extension
   button (`handout.extend`), and the done button (`handout.done`). The done
   button is the next step, so it is the filled one; it stays greyed until
   every setting is filled in (a setting marked optional may stay blank). The
-  extension button is white, not filled, since it is not the next step.
+  extension button sits on the page colour, not filled, since it is not the
+  next step.
 - Once you tap done, your settings lock: each value shows as plain text
   without the input's background (`handout.blank` when left empty), so nothing
-  looks writable. The done button greys and says
-  `handout.waiting`, and the extension button gives way to the undo button
-  (`handout.unready`), white like it. Undo brings back the settings and the
+  looks writable. The done button keeps its
+  name, greyed with a tick, so it reads as pressed rather than changed into
+  something else; the band checks your icon, so everyone sees who is done
+  (no count). The extension button gives way to a separate undo button that
+  names what it undoes (`handout.unready`), styled like it. Undo brings back the settings and the
   extension button, until the phase ends.
 - When time runs out, the game moves on. Until anyone acts on the next screen,
-  that screen shows the extension button at its bottom left, white and small,
-  away from that screen's focus; it brings everyone back to the handout with
+  that screen shows the extension button in the footer beside its main
+  action, on the page colour, not filled; it brings everyone back to the handout with
   more time. It fades in and out with the screen it sits on, so it never shows
   next to the handout's own extension button.
 - After the phase, the footer's handout button opens the same tabs in a sheet,
