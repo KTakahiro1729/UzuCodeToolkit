@@ -58,7 +58,7 @@ on cards.
   from 60em (full-HD monitors). Phones keep one column in both orientations;
   sideways they lack the height. Each column is then at least about 19em, near
   a phone held upright.
-- Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
+- Respect the safe area and the UZU HUD (`--uzu-safe-area-inset-*`, `--uzu-hud-inset-x`, `--uzu-hud-inset-y`).
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No dividers. Lines are edges of controls only (Look by
   role), plus the side lines on a stage direction you are reading.
