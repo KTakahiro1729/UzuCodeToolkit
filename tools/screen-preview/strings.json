@@ -1,0 +1,20 @@
+{
+  "title": "{title} 画面プレビュー",
+  "meta": "{commit}・{player}の画面・HUDは位置だけ表示",
+  "screens": "場面",
+  "labels": "番号を表示",
+  "hint": "番号を押すと、その部分を両方の向きで囲み、寸法を下に出します。指摘は「縦 4番の間隔を狭く」のように一言で大丈夫です。",
+  "landscape": "横",
+  "portrait": "縦",
+  "orientation": "{o}向き",
+  "size": "大きさ",
+  "margin": "外の余白 margin",
+  "padding": "内の余白 padding",
+  "gap": "間隔 gap",
+  "font": "文字",
+  "sides": "上{0} 右{1} 下{2} 左{3}",
+  "box": "要素の範囲",
+  "paddingArea": "内の余白",
+  "em": "em は画面の基準文字サイズ（{base}px）に対する値",
+  "hidden": "この案では表示しない"
+}
