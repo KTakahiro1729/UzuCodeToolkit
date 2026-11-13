@@ -90,6 +90,8 @@ export const states = {
   },
   /** `readThroughPhase(script)`: `lineCount` lines. */
   dialogue: {
+    /** As the game enters it, on the first line. */
+    fresh: () => ({ index: 0, finished: false }),
     /** On the last line, not yet advanced past. */
     lastLine: (lineCount) => ({ index: lineCount - 1, finished: false }),
     over: (lineCount) => ({ index: lineCount - 1, finished: true }),
@@ -162,13 +164,58 @@ export function flowSteps({ ids, parts, past, fresh }) {
 }
 
 /**
+ * A screen for each phase of a work, so a work gets its shots without writing one by hand. Each
+ * phase is `{ id, kind, label?, lines? }`, where `kind` is the toolkit phase it is made of:
+ * `ready`, `dialogue` (a read-through; `lines` is its line count), `handout`, `empty` or
+ * `gameSelect`. A phase of any other kind (a work's own) is skipped: write its screens by hand.
+ *
+ * What is shot of a phase is the work's to choose: `only` lists the phase IDs to shoot (default
+ * all), and `shots` says which states of a phase (default below), by phase ID. A state is
+ * `start` (as the game enters the phase), `last` (a read-through's last line) or `done` (everyone
+ * has finished; a handout has no `start`, since its clock starts when the game does).
+ *
+ *   ready, empty, gameSelect: start      dialogue: start, last      handout: done
+ *
+ * Returns screens (`[key, label, seat, steps]`) numbered from `from`. Numbers are fixed once the
+ * owner has seen them: a phase added later goes at the end of the work's list, never in the middle.
+ * `seats`: seat IDs; `parts`: seat -> part; `values`: part -> setting -> value of the handouts.
+ */
+export function phaseScreens({ phases, seats, parts, values = {}, seat = 0, from = 1, only, shots = {} }) {
+  const DEFAULT = { ready: ['start'], dialogue: ['start', 'last'], handout: ['done'], empty: ['start'], gameSelect: ['start'] };
+  const KINDS = Object.keys(DEFAULT);
+  const known = phases.filter((p) => KINDS.includes(p.kind));
+  const past = {};
+  const fresh = {};
+  for (const p of known) {
+    const st = states[p.kind];
+    past[p.id] = p.kind === 'dialogue' ? st.over(p.lines) : p.kind === 'handout' ? st.over({ seats, values }) : st.over(seats);
+    if (p.kind !== 'handout') fresh[p.id] = p.kind === 'dialogue' ? st.fresh() : st.fresh(seats);
+  }
+  // Phases of other kinds count as over (an empty state a work's own phase never reads here).
+  for (const p of phases) if (!(p.id in past)) past[p.id] = {};
+  const { jump } = flowSteps({ ids: phases.map((p) => p.id), parts, past, fresh });
+  const out = [];
+  for (const p of known) {
+    if (only && !only.includes(p.id)) continue;
+    for (const shot of shots[p.id] ?? DEFAULT[p.kind]) {
+      if (shot === 'start' && !(p.id in fresh)) throw new Error(`phase ${p.id} (${p.kind}) has no start state to shoot`);
+      const own = shot === 'last' ? states.dialogue.lastLine(p.lines) : shot === 'done' ? past[p.id] : undefined;
+      if (shot === 'last' && p.kind !== 'dialogue') throw new Error(`phase ${p.id} (${p.kind}) has no last line`);
+      const n = String(from + out.length).padStart(2, '0');
+      out.push([`${n}-${p.id}-${shot}`, `${p.label ?? p.id} (${shot})`, seat, jump(p.id, own)]);
+    }
+  }
+  return out;
+}
+
+/**
  * The config for capture.mjs. `screens`: `[key, label, seat, steps]` in order, `key` starting with
  * its two-digit number ("07-handout-own"). Numbers must run 01, 02, ... without gaps or repeats:
  * they are what the owner points at, so a screen is added at the end and never renumbered. A
  * screen's parts are the toolkit's (PARTS) and then the work's own `parts`; steps may be nested
  * (a helper returning several) and are flattened.
  */
-export function catalogue({ title, player = 0, parts = [], screens }) {
+export function catalogue({ title, player = 0, orientation, parts = [], screens }) {
   screens.forEach(([key], i) => {
     const want = String(i + 1).padStart(2, '0');
     if (!key.startsWith(`${want}-`)) throw new Error(`screen ${i + 1} must be keyed "${want}-...", got "${key}"`);
@@ -177,6 +224,8 @@ export function catalogue({ title, player = 0, parts = [], screens }) {
   return {
     title,
     player,
+    // `both` for a work that serves both orientations; otherwise the manifest's decides what --check looks at.
+    orientation,
     next: NEXT,
     scroll: [SCROLL],
     screens: screens.map(([key, label, seat, steps, reach]) => ({ key, label, seat, steps: steps.flat(), reach, parts: all })),

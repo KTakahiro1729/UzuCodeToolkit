@@ -190,19 +190,32 @@ node tools/screen-preview/capture.mjs --check samples/yubiwa
 
 walks the same screens in both orientations, writes no page, and lists what
 spills over ([`overflow.js`](../tools/screen-preview/overflow.js)), exiting 1
-if anything does:
+if anything hinders play (a warning, below, does not):
 
 | Kind | Means |
 |---|---|
 | `screen` | A box runs past the viewport |
 | `inset` | Text or an image sits under the safe area or the UZU HUD (backgrounds may reach under them) |
 | `parent` | A box runs past its parent, or text past its own box, where they show overflow |
-| `clipped` | An element that hides overflow cuts its content off, or a scroll list runs sideways |
+| `clipped` | An element that hides overflow cuts its content off, or a scroll list runs sideways. A small cut (under a third of the element) of text that is not in a button or field is a `warn` line: listed, not failing |
+
+The check looks at the orientation the work's `manifest.json` fixes (`orientation`): the app holds a
+phone to it, so the other one is never played, and certification's size table is read in that
+orientation's column. A work that serves both says so with `orientation: 'both'` in its shots config
+(or `--orientation both` on the command line); `--orientation landscape|portrait` picks one.
+
+`--size all` checks certification's three sizes (lower, device, wide) in one run; `--size
+device,reference` names the sizes. For a portrait work it adds `desktop` (1280×720, landscape): a PC
+window has any shape, and a portrait work may be opened wide, so it should hold a column in the
+middle (`max-width` and centring). Lines then read `<screen> <size> <orientation>`. Certification asks
+for all three sizes, and a check at one size does not prove the others.
 
 Each line gives the side, how many px it is out by, the element and the start
 of its text. Inside a scroll list only the list itself has to fit. Mark an
 element `data-overflow-ok` where spilling over is meant; the check skips it and
-everything in it. It sees only the screens and the text the config reaches, so
+everything in it. An element that only reaches past its parent on purpose (a sheet's
+panel) takes `data-overflow-parent-ok` instead: only the parent check skips it, and its
+size against the screen, the safe area and its content are still checked. It sees only the screens and the text the config reaches, so
 run it on every sample after a layout change.
 
 The overflow check cannot see a button that is cut off inside a scroll area, since

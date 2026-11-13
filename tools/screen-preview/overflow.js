@@ -4,7 +4,12 @@
 //   inset   - text or an image under the safe area or the UZU HUD (boxes may reach under them)
 //   parent  - a box past its parent's edge, where the parent shows overflow
 //   clipped - content cut off by an element that hides overflow, or a list scrolling sideways
-// An element or subtree marked data-overflow-ok is skipped.
+// Each issue has a `severity`: 'error' (it hinders play) or 'warn'. A cut-off (`clipped`) is only a warning
+// when it is small (under a third of the element's own size on that axis) and the element is not part of
+// something to press or type in: a label that loses its last letter still reads. Everything else is an error.
+// An element or subtree marked data-overflow-ok is skipped. An element marked data-overflow-parent-ok
+// is only exempt from the "parent" check (it reaches past its parent on purpose, as a sheet's panel
+// does); its own size against the screen and the safe area, and its content, are still checked.
 () => {
   const TOL = 1;
   const root = getComputedStyle(document.documentElement);
@@ -22,7 +27,14 @@
     return names.join(' > ');
   };
   const label = (el) => (el.textContent ?? '').trim().slice(0, 20);
-  const add = (kind, el, by, side) => issues.push({ kind, path: path(el), side, by: Math.round(by), text: label(el) });
+  const add = (kind, el, by, side) => {
+    let severity = 'error';
+    if (kind === 'clipped' && !el.closest('button, a, input, textarea, select, [role="button"]')) {
+      const size = side === 'y' ? el.clientHeight : el.clientWidth;
+      if (by < size / 3) severity = 'warn';
+    }
+    issues.push({ kind, severity, path: path(el), side, by: Math.round(by), text: label(el) });
+  };
   const clips = (st, axis) => st[axis] !== 'visible';
   const scrolls = (st, axis) => ['auto', 'scroll'].includes(st[axis]);
 
@@ -81,7 +93,7 @@
     // Past the parent's edge, where the parent lets it show.
     const p = el.parentElement;
     // An inline parent is only its text's line, so it bounds nothing (ruby stands above its word).
-    if (p && p !== document.body && st.position !== 'fixed') {
+    if (p && p !== document.body && st.position !== 'fixed' && !el.hasAttribute('data-overflow-parent-ok')) {
       const ps = getComputedStyle(p);
       if (ps.display !== 'inline' && ps.overflowX === 'visible' && ps.overflowY === 'visible')
         for (const [side, by] of sides(r, p.getBoundingClientRect())) add('parent', el, by, side);
