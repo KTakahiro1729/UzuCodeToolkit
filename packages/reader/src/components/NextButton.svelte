@@ -1,7 +1,7 @@
 <!--
   The button that moves the game on: the advance button of the read-through, and the next
   button of other scenes. The primary Button: filled for whoever can tap it, greyed for the others.
-  With `on` it is a toggle: tapped once it is outlined in red, and tapping it again takes it back.
+  With `on` it is a toggle: tapped once it is outlined with a dark 2px edge and a tick, and tapping it again takes it back.
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';

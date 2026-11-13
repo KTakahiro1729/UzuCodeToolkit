@@ -191,8 +191,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   line on who they are (the manifest's description). Yours comes first and
   takes your role's tint.
 - In the footer one next button (`button.next`), with no count of who is
-  ready (owner's decision). Once tapped it keeps its name, turns red-outlined
-  with a tick, and the band checks your icon (`readyDone`); tapping it again
+  ready (owner's decision). Once tapped it keeps its name, turns outlined in a
+  dark 2px edge with a tick (never red), and the band checks your icon (`readyDone`); tapping it again
   takes it back (owner's decision, a toggle: `Button` `on`). The
   phase moves on when everyone is ready.
 - On a landscape screen the story text and the cast stand side by side.
@@ -276,6 +276,19 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   (`FooterActions place="status"`). The row is there on every screen so the
   footer does not change height between phases. The phase list is not here: it
   opens from the band's phase button.
+- **The state line.** When the main row holds a button whose state is not
+  obvious, the upper row says in one sentence what the screen waits for or why
+  a button cannot be pressed (`status.*` strings): "他の人を待っています" after
+  you tap next, "相手の番です" while another player reads, "設定を埋めると押せます"
+  while the handout's next button is greyed, "全員が押すと次へ進みます" before you
+  tap the cast's next button, "誰かが押すと全員が次へ進みます" on a button any
+  one player can tap for everyone. It states a fact of the screen; it never
+  repeats a button's label or invents a rule. One sentence, 16px, quiet colour.
+- **Red is for danger only.** A dangerous action (one that loses what a player
+  made) is a secondary button whose label and edge take `--color-danger`
+  (`Button variant="danger"`). Red means nothing else, and a danger button is
+  never the rightmost one of the main row, which is the button to press now: it
+  goes before it, or in the upper row. A pressed toggle is not red.
 - A read-back button opens a sheet over the screen, for this player alone;
   the screen keeps running under it and the footer's actions stay usable.
   The sheet floats: a panel with rounded corners, anchored to the bottom, a

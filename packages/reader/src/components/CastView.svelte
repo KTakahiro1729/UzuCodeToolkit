@@ -1,7 +1,7 @@
 <!--
   The introduction with the cast (readyPhase()): optional story text, then whom you play and every
   part (icon, name, one line on who they are), yours first and tinted. The next button sits in the footer;
-  once you tap it, it keeps its name, turns red-outlined with a tick and the band checks your
+  once you tap it, it keeps its name, turns outlined in a dark 2px edge with a tick and the band checks your
   icon; tapping it again takes it back.
   The phase ends when everyone is ready. On a landscape screen the text and the cast stand side by side.
 -->
@@ -57,6 +57,7 @@
     <div class="flow"><FlowStrip /></div>
   </div>
 </div>
+<FooterActions place="status"><span>{STRINGS[ready ? 'status.waitOthers' : 'status.allNext']}</span></FooterActions>
 <FooterActions>
   <NextButton on={ready} onclick={() => send(ready ? 'unready' : 'ready')}>
     {#if ready}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.next']}
@@ -134,7 +135,7 @@
   .about {
     color: var(--color-text-quiet);
   }
-  /* Ready: the button keeps its name, red-outlined with a tick, so it reads as pressed. */
+  /* Ready: the button keeps its name, outlined in a dark 2px edge with a tick, so it reads as pressed. */
   .tick {
     width: 0.8em;
     height: 0.7em;
