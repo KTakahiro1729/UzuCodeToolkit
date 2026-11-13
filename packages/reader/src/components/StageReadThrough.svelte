@@ -127,7 +127,7 @@
         {#if scene.mine}
           <div class="next" data-uzu-actions="main" style="top:calc({L.next[1]} * var(--u));right:calc({ref.width - L.next[0] - L.next[2]} * var(--u));min-width:calc({L.next[2]} * var(--u));min-height:calc({L.next[3]} * var(--u))">
             <NextButton onclick={advance}>
-              {#if last}{STRINGS[final ? 'button.end' : 'button.nextPhase']}{:else}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{STRINGS['button.nextLine']}{/if}
+              {STRINGS[last ? (final ? 'button.end' : 'button.nextPhase') : 'stage.nextLine']}
             </NextButton>
           </div>
         {/if}

@@ -40,5 +40,6 @@
   "stage.next": "次",
   "stage.narration": "ナレーション",
   "log.open": "ログ確認",
-  "log.title": "これまでのセリフ"
+  "log.title": "これまでのセリフ",
+  "stage.nextLine": "次へ"
 }
