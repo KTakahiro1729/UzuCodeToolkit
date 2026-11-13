@@ -1,6 +1,7 @@
 <!--
   The handout read again after its phase, from the footer: the same tabs, the settings showing
-  what was filled in. Nothing here changes the game.
+  what was filled in. Nothing here changes the game. `ownLabel` names the part's own tab in place
+  of the part's name (the post-game screen, where the part is already chosen above).
 -->
 <script lang="ts">
   import { type Handout, type HandoutState, settingsOf } from '@uzu-toolkit/kit';
@@ -9,10 +10,18 @@
   // UI strings by key.
   import STRINGS from '../strings.json';
 
-  let { state: phase, part, names, handout }: PhaseViewProps<HandoutState> & { handout: Handout } = $props();
+  let {
+    state: phase,
+    part,
+    names,
+    handout,
+    ownLabel,
+    guide,
+    memory,
+  }: Pick<PhaseViewProps<HandoutState>, 'state' | 'part' | 'names'> & { handout: Handout; ownLabel?: string; guide?: string; memory?: string } = $props();
 </script>
 
-<HandoutTabs {handout} {part} partName={names[part] ?? ''}>
+<HandoutTabs {handout} {part} {guide} {memory} partName={ownLabel ?? names[part] ?? ''}>
   {#snippet fields()}
     <dl>
       {#each settingsOf(handout, part) as f (f.id)}
