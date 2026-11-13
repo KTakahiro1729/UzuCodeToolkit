@@ -74,4 +74,16 @@ describe('layout export to slides', () => {
     expect(deck.slides).toHaveLength(6);
     expectBoxes(landscape, 'landscape', deck.slides);
   });
+
+  it('reserved boxes are see-through and small boxes keep their id on one line', async () => {
+    const files = await exportLayout(READ_THROUGH_LAYOUT, dir);
+    const zip = await JSZip.loadAsync(readFileSync(files[0]!));
+    const xml = await zip.file('ppt/slides/slide1.xml')!.async('string');
+    const reserved = Object.keys(READ_THROUGH_LAYOUT.reserved ?? {}).length;
+    expect(xml.match(/<a:alpha val="40000"\/>/g)).toHaveLength(reserved);
+    const tag = xml.split('<p:sp>').find((sp) => sp.includes('name="tag"'))!;
+    expect(tag).toContain('wrap="none"');
+    expect(tag).toContain('sz="700"');
+    expect(tag).toContain('<a:t>tag 150×24</a:t>');
+  });
 });

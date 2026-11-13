@@ -38,16 +38,19 @@ export function buildDeck(layout, orientation) {
   pptx.layout = `${layout.screen}-${orientation}`;
   pptx.title = `${layout.screen} ${orientation}`;
 
-  const addBox = (slide, id, label, rect, c) => {
+  // A box too small for its caption keeps only "id size" on one line at 7pt; the id is the key
+  // the importer reads, so it is never dropped.
+  const addBox = (slide, id, label, rect, c, opts = {}) => {
     const [x, y, w, h] = rect;
-    slide.addText(boxText(label, id, w, h), {
+    const small = w < 80 || h < 30;
+    slide.addText(boxText(small ? '' : label, id, w, h).trim(), {
       x: inch(x), y: inch(y), w: inch(w), h: inch(h),
       shape: pptx.ShapeType.rect,
-      fill: { color: c.fill },
+      fill: { color: c.fill, transparency: opts.transparency ?? 0 },
       line: { color: c.line, width: 1 },
       color: c.text,
-      fontSize: h < 40 ? 8 : 11,
-      align: 'left', valign: 'top', margin: 2, fit: 'none', wrap: true,
+      fontSize: small ? 7 : h < 40 ? 8 : 11,
+      align: opts.align ?? 'left', valign: opts.valign ?? 'top', margin: 2, fit: 'none', wrap: !small,
       objectName: id,
     });
   };
@@ -59,10 +62,11 @@ export function buildDeck(layout, orientation) {
       const part = layout.parts[id];
       const rect = part?.[orientation];
       if (!rect) throw new Error(`layout ${layout.screen}: scene "${scene.key}" shows "${id}" with no ${orientation} box`);
-      addBox(slide, id, part.label, rect, scene.mine.includes(id) ? COLORS.mine : COLORS.part);
+      // The background sits bottom right so its text clears the boxes drawn over its top left.
+      addBox(slide, id, part.label, rect, scene.mine.includes(id) ? COLORS.mine : COLORS.part, id === 'bg' ? { align: 'right', valign: 'bottom' } : {});
     }
     for (const [id, area] of Object.entries(layout.reserved ?? {})) {
-      if (area[orientation]) addBox(slide, id, area.label, area[orientation], COLORS.reserved);
+      if (area[orientation]) addBox(slide, id, area.label, area[orientation], COLORS.reserved, { transparency: 60 });
     }
   }
   return pptx;
