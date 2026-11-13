@@ -113,7 +113,7 @@
           </span>
           {#if scene.plate2 && scene.next && next}
             <span class="plate two" class:mine={scene.next.mine && !scene.mine} class:fixed={scene.plate2 === 'tag'} style:--fixed={L.nextTagWidth}>
-              {#if !scenario.isDirection(next)}<img class="face" src={`./assets/icon-${readerOf(next)}.webp`} alt="" onerror={noPicture} />{/if}
+              {#if !scenario.isDirection(next)}<img class="face" class:tight={scene.plate2 === 'tag'} src={`./assets/icon-${readerOf(next)}.webp`} alt="" onerror={noPicture} />{/if}
               {#if !scene.next.mine || scene.plate2 === 'tag'}<span class="who">{nameOf(next)}</span>{/if}
               <span class="mark">{STRINGS['stage.next']}</span>
               {#if scene.plate2 !== 'tag'}
@@ -285,16 +285,16 @@
     color: var(--color-mine-text);
   }
   .plate.one {
-    flex: none;
+    flex: 0 1 auto;
     min-width: calc(var(--min) * var(--u));
     max-width: 75%;
   }
   .plate.two {
     flex: 1;
   }
-  /* The guide's width for the mark and name, giving way to a longer ①. */
+  /* The guide's width for the mark and name; a longer ① is cut short instead. */
   .plate.two.fixed {
-    flex: 0 1 calc(var(--fixed) * var(--u));
+    flex: 0 0 calc(var(--fixed) * var(--u));
   }
   .who {
     min-width: 0;
@@ -306,6 +306,10 @@
   .face {
     flex: none;
   }
+  /* A narrow nameplate ② (portrait) gives its icon up before it cuts the name short. */
+  .fit[data-orientation='portrait'] .face.tight {
+    display: none;
+  }
   .face {
     width: 1.5em;
     height: 1.5em;
@@ -315,7 +319,7 @@
   /* The guide's badge ("your turn") and box ("next") inside a nameplate. */
   .turn,
   .mark {
-    padding: 0.15em 0.5em;
+    padding: 0.1em 0.35em;
     border-radius: var(--radius-control);
     font-weight: 400;
   }

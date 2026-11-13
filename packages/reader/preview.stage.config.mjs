@@ -17,14 +17,15 @@ const parts = [
   ['.rows li', 'ログの1行'],
 ];
 export default {
-  player: 0,
+  player: 1,
   next: '[data-uzu-actions="main"] button:not([disabled])',
   scroll: ['[data-uzu-scroll]'],
   screens: [
-    { key: 'first-mine', label: '初登場（自分）', seat: 0, taps: 0, parts },
-    { key: 'first-other', label: '初登場（相手）', seat: 1, taps: 0, parts },
-    { key: 'mine', label: '自分が話している', seat: 0, taps: 2, parts },
-    { key: 'other', label: '相手が話し、自分が次', seat: 1, taps: 0, parts },
-    { key: 'log', label: 'ログ', seat: 1, taps: 0, steps: [{ click: '.log-link' }], parts },
+    { key: 'mine', label: '1 自分が話している', seat: 1, taps: 4, parts },
+    { key: 'next', label: '2 相手が話し、自分が次', seat: 1, taps: 2, parts },
+    { key: 'first', label: '3 初登場（相手）', seat: 0, taps: 1, parts },
+    { key: 'narr-mine', label: '4 ナレーション（自分）', seat: 1, taps: 0, parts },
+    { key: 'narr-other', label: '5 ナレーション（相手）', seat: 0, taps: 0, parts },
+    { key: 'log', label: '6 ログ', seat: 1, taps: 2, steps: [{ click: '.log-link' }], parts },
   ],
 };
