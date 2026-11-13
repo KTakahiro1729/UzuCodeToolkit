@@ -82,7 +82,7 @@
     {/key}
     {#if reopen}
       <FooterActions place="aside">
-        <Slot icon="plus" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>{reopen.reopen?.label}</Slot>
+        <Slot icon="plus" part="reopen" onclick={() => sendAction(phaseAction(reopen.id, 'reopen'), {})}>{reopen.reopen?.label}</Slot>
       </FooterActions>
     {/if}
     {#if open === FLOW}
@@ -103,6 +103,6 @@
 
 {#snippet nav()}
   {#each kept as p (p.id)}
-    <Slot icon="sheet" class="tab" aside={p === side} active={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</Slot>
+    <Slot icon="sheet" class="tab" part="tab" aside={p === side} active={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</Slot>
   {/each}
 {/snippet}

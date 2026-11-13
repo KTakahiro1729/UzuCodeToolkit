@@ -7,7 +7,7 @@
   let { text }: { text: string } = $props();
 </script>
 
-<p class="guide">{text}</p>
+<p class="guide" data-uzu-part="guide">{text}</p>
 
 <style>
   p {

@@ -102,23 +102,23 @@
   <div class="columns" class:one={cols === 1} style:grid-template-columns={`repeat(${cols}, minmax(0, 1fr))`}>
     {#each lead as t (t.id)}
       <section class="column">
-        <h3>{t.label}{#if t.id === 'fields' && mark}<span class="dot" aria-hidden="true"></span>{/if}</h3>
-        <div class="scroll panel">{@render body(t.id)}</div>
+        <h3>{t.label}{#if t.id === 'fields' && mark}<span class="dot" data-uzu-part="tab-dot" aria-hidden="true"></span>{/if}</h3>
+        <div class="scroll panel" data-uzu-part="panel">{@render body(t.id)}</div>
       </section>
     {/each}
     <section class="column last">
       {#if rest.length > 1}
-        <div class="tabs" role="tablist">
+        <div class="tabs" data-uzu-part="tabs" role="tablist">
           {#each rest as t (t.id)}
             <button type="button" role="tab" aria-selected={t.id === current} onclick={() => choose(t.id)}>
-              {t.label}{#if t.id === 'fields' && mark}<span class="dot" aria-hidden="true"></span>{/if}
+              {t.label}{#if t.id === 'fields' && mark}<span class="dot" data-uzu-part="tab-dot" aria-hidden="true"></span>{/if}
             </button>
           {/each}
         </div>
       {:else if rest[0]}
-        <h3>{rest[0].label}{#if rest[0].id === 'fields' && mark}<span class="dot" aria-hidden="true"></span>{/if}</h3>
+        <h3>{rest[0].label}{#if rest[0].id === 'fields' && mark}<span class="dot" data-uzu-part="tab-dot" aria-hidden="true"></span>{/if}</h3>
       {/if}
-      <div class="scroll panel" class:first={rest.length > 1 && current === rest[0]?.id} role="tabpanel" bind:this={scroller} onscroll={remember}>
+      <div class="scroll panel" data-uzu-part="panel" class:first={rest.length > 1 && current === rest[0]?.id} role="tabpanel" bind:this={scroller} onscroll={remember}>
         {#if current}{@render body(current)}{/if}
       </div>
     </section>
@@ -131,7 +131,7 @@
   {#if id === 'common'}
     {#each handout.common as para}<p>{para}</p>{/each}
   {:else if id === 'own' && own}
-    <h2>{own.heading}</h2>
+    <h2 data-uzu-part="panel-title">{own.heading}</h2>
     {#each own.body as para}<p>{para}</p>{/each}
   {:else if id === 'impressions' && own?.impressions}
     {#each own.impressions as imp}<p><span class="who">{imp.name}</span>{imp.text}</p>{/each}

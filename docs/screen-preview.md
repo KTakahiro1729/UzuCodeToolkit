@@ -97,15 +97,15 @@ A work with many screens keeps one numbered list of all of them, so the owner ca
 keeps a `shots.mjs` with its own screens and the parts of its own games.
 
 ```js
-import { btn, catalogue, flowSteps, NEXT } from './toolkit/tools/screen-preview/catalogue.mjs';
-const { at, jump, patch } = flowSteps({ ids, parts, past, fresh });
+import { btn, catalogue, flowSteps, NEXT, states } from './toolkit/tools/screen-preview/catalogue.mjs';
+const { at, jump, patch, play } = flowSteps({ ids, parts, past, fresh }); // past: { intro: states.ready.over(seats), … }
 export default catalogue({
   title: '…',
   player: 1,
   parts: [['.board', 'chess: board']], // the work's own parts, numbered after the toolkit's
   screens: [
     ['01-intro', 'はじめに', 1, [{ reload: true }, { waitFor: btn('次へ') }]],
-    ['02-opening', 'オープニング', 1, [jump('opening', { index: 79, finished: false })]],
+    ['02-opening', 'オープニング', 1, [jump('opening', states.dialogue.lastLine(lines.length))]],
   ],
 });
 ```
@@ -122,9 +122,13 @@ cd toolkit && node tools/screen-preview/capture.mjs --config ../shots.mjs .. ../
   screen; a part not on a screen is left out of its list.
 - Screens are reached by clicking (`click`, `fill`, `tap`) or, for a state that takes long to play to, by
   setting the game state: `at(id, state)` puts the game in a phase with the earlier ones over, `jump`
-  adds a `reload`, `patch(id, fn)` changes one phase's state.
-- Find parts by the marks the default screens carry (`PHASE`, `MAIN`, `SCROLL`: `data-uzu-*`), not by
-  class names.
+  adds a `reload`, `patch(id, fn)` changes one phase's state, `play(id, fn)` the state of the game being
+  played in a game-select phase. A work never writes a toolkit phase's state itself: `states` has
+  what each toolkit phase looks like fresh, over and in between (`states.ready`, `.dialogue`,
+  `.handout`, `.empty`, `.gameSelect`), and a test keeps them equal to the phases.
+- Find parts by the marks the default screens carry (`PHASE`, `MAIN`, `SCROLL`: `data-uzu-*`, and
+  `data-uzu-part` names such as `part('footer-row')`), not by class names. A new part of a toolkit
+  screen gets a `data-uzu-part` name and an entry at the end of `PARTS`.
 
 ## One pass, limits and trial runs
 

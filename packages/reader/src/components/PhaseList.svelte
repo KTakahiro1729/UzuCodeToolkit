@@ -44,13 +44,13 @@
   }
 </script>
 
-<ol class:scroll={!inline} class:inline>
+<ol data-uzu-part="flow-list" class:scroll={!inline} class:inline>
   {#each entries as e, n (e.first)}
     {@const state = stateOf(e)}
     {#if state === 'now'}
-      <li data-state={state} aria-current="step" use:intoView={!inline}><span class="num">{n + 1}</span>{e.label}</li>
+      <li data-uzu-part="flow-row" data-state={state} aria-current="step" use:intoView={!inline}><span class="num">{n + 1}</span>{e.label}</li>
     {:else}
-      <li data-state={state}><span class="num">{n + 1}</span>{e.label}</li>
+      <li data-uzu-part="flow-row" data-state={state}><span class="num">{n + 1}</span>{e.label}</li>
     {/if}
   {/each}
 </ol>

@@ -43,7 +43,7 @@
   } = $props();
 </script>
 
-<button type="button" data-variant={variant} aria-pressed={on ?? pressed} aria-label={label} class:with-note={note} data-on={on ? '' : undefined} {disabled} {onclick}>{#if note}<span class="label">{@render children()}</span><span class="note">{note}</span>{:else}{@render children()}{/if}</button>
+<button type="button" data-variant={variant} aria-pressed={on ?? pressed} aria-label={label} class:with-note={note} data-on={on ? '' : undefined} {disabled} {onclick}>{#if note}<span class="label">{@render children()}</span><span class="note" data-uzu-part="note">{note}</span>{:else}{@render children()}{/if}</button>
 
 <style>
   button {

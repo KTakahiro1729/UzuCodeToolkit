@@ -39,12 +39,12 @@
 
 <svelte:window onkeydown={(e) => e.key === 'Escape' && onclose()} />
 
-<section use:modal>
+<section data-uzu-part="sheet" use:modal>
   <!-- Escape and the close button are the keyboard's ways out; the dimmed screen is a tap target only. -->
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="scrim" data-overflow-ok transition:fade|global={{ duration }} onclick={onclose}></div>
   <div class="panel" transition:rise|global>
-    <div class="head">
+    <div class="head" data-uzu-part="sheet-head">
       <h2>{title}</h2>
       <Button variant="secondary" onclick={onclose}>{STRINGS['sheet.close']}</Button>
     </div>

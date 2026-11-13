@@ -37,23 +37,23 @@
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
 
-<header style:--roles-w="{rolesWidth}px">
+<header data-uzu-part="header" style:--roles-w="{rolesWidth}px">
   <!-- With a way to open the phase list the phase is a pill with a down mark, so it reads as tappable. -->
   {#if onphase}
     <button type="button" class="phase" data-uzu-phase aria-expanded={phaseOpen} onclick={onphase}>
       {@render label()}
-      <svg class="more" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
+      <svg class="more" data-uzu-part="phase-more" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
     </button>
   {:else}
     <div class="phase" data-uzu-phase>{@render label()}</div>
   {/if}
-  <div class="roles" bind:clientWidth={rolesWidth}>
+  <div class="roles" data-uzu-part="roles" bind:clientWidth={rolesWidth}>
     {#each shown as part (part.id)}
-      <span class="who">
+      <span class="who" data-uzu-part={part.id === myPart ? 'role role-own' : 'role'}>
         <span class="icon">
-          <img src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />
+          <img data-uzu-part="role-icon" src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />
           {#if done.includes(part.id)}
-            <svg class="check" viewBox="0 0 16 16" aria-hidden="true" transition:fade={{ duration }}>
+            <svg class="check" data-uzu-part="role-check" viewBox="0 0 16 16" aria-hidden="true" transition:fade={{ duration }}>
               <circle cx="8" cy="8" r="8" />
               <path d="M4.5 8.2l2.3 2.3 4.7-4.8" />
             </svg>

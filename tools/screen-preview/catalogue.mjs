@@ -7,6 +7,11 @@
 export const PHASE = '[data-uzu-phase]';
 export const MAIN = '[data-uzu-actions="main"]';
 export const SCROLL = '[data-uzu-scroll]';
+/**
+ * A part of a toolkit screen. `data-uzu-part` holds one or more names ("slot tab"), so a part is
+ * found by name, never by class.
+ */
+export const part = (name) => `[data-uzu-part~="${name}"]`;
 /** The button that moves the game on, in whichever seat's screen has it. */
 export const NEXT = `${MAIN} button:not([disabled])`;
 /** A button by its exact label. */
@@ -14,61 +19,109 @@ export const btn = (text) => `button:text-is("${text}")`;
 
 /**
  * The toolkit screens' numbered parts. A number is a part's position in the list, so a part is
- * only ever added at the end, and a work's own parts come after them (`catalogue`).
+ * only ever added at the end, and a work's own parts come after them (`catalogue`). The four
+ * marked "no longer drawn" are kept for their number; a part that is not on a screen is left out.
  */
 export const PARTS = [
-  ['main', '画面の外枠'],
-  ['header', '上の帯'],
+  [part('main'), '画面の外枠'],
+  [part('header'), '上の帯'],
   [PHASE, '場面名'],
-  ['header .roles', '役の並び'],
-  ['header .who:last-child', '自分の役（アイコン＋名前）'],
-  ['header .who img', '役アイコン'],
-  ['header .check', '済みのチェック'],
-  ['footer', 'フッター'],
-  ['footer .act', 'メインボタンの列'],
+  [part('roles'), '役の並び'],
+  [part('role-own'), '自分の役（アイコン＋名前）'],
+  [part('role-icon'), '役アイコン'],
+  [part('role-check'), '済みのチェック'],
+  [part('footer'), 'フッター'],
+  [part('footer-row'), 'メインボタンの列'],
   [`${MAIN} button:last-child`, 'メインボタン'],
   [`${MAIN} button:first-child`, '控えめなボタン'],
-  ['footer nav', '読み返しタブの列'],
-  ['footer nav .tab', '読み返しタブ'],
-  ['.guide', 'ガイド文'],
-  ['.cast .text', '作品の紹介文'],
-  ['.cast .you', 'あなたは〜を演じます'],
-  ['.cast .parts', '役の一覧'],
-  ['.cast .parts li', '役の行'],
-  ['.cast .parts li img', '役の行のアイコン'],
-  ['.cast .parts li .about', '役の説明'],
-  ['.read', '会話とボタンの列'],
-  ['.chat', '会話の列'],
-  ['.chat li .name', '話者名'],
-  ['.chat li p', '吹き出し'],
-  ['.tabs', 'HOのタブ'],
-  ['.tabs .dot', '未記入の印'],
-  ['.panel', 'HOの本文'],
-  ['.panel h2', 'HOの見出し'],
-  ['.fields', '設定の欄'],
-  ['.fields label', '設定の項目'],
-  ['.fields textarea', '設定の入力欄'],
-  ['.fields .value', '設定の記入済みの値'],
-  ['.fields .optional', '任意の印'],
-  ['.clock', '残り時間'],
-  ['.reopen', 'HOに戻るボタン'],
-  ['section:has(> .head)', 'シート'],
-  ['.head', 'シートの見出し'],
-  ['.head button', 'シートの閉じる'],
-  ['section ol', 'ゲームの流れの一覧'],
-  ['section ol li', 'ゲームの流れの行'],
-  ['.empty', '空の場面'],
-  ['.list', 'ゲーム一覧'],
-  ['.list li', 'ゲームの行'],
-  ['.list li .name', 'ゲーム名'],
-  ['.list li .about', 'ゲームの説明'],
-  ['.playing', '遊んでいるゲーム'],
-  ['footer .opts', 'フッターの上の行（古い形の状態の行）'],
-  ['footer .opts .status', '上の行の状態表示'],
-  ['header .phase .more', '場面名の矢印'],
-  ['footer .slot', 'フッターの項目（延長・読み返し・残り時間）'],
-  ['footer .note', 'ボタンの中の一文'],
+  [part('footer-tabs'), '読み返しタブの列'],
+  [part('tab'), '読み返しタブ'],
+  [part('guide'), 'ガイド文'],
+  [part('cast-text'), '作品の紹介文'],
+  [part('cast-you'), 'あなたは〜を演じます（今は描かない）'],
+  [part('cast-parts'), '役の一覧'],
+  [part('cast-row'), '役の行'],
+  [part('cast-icon'), '役の行のアイコン'],
+  [part('cast-about'), '役の説明'],
+  [part('read'), '会話とボタンの列'],
+  [part('chat'), '会話の列'],
+  [part('speaker'), '話者名'],
+  [part('bubble'), '吹き出し'],
+  [part('tabs'), 'HOのタブ'],
+  [part('tab-dot'), '未記入の印'],
+  [part('panel'), 'HOの本文'],
+  [part('panel-title'), 'HOの見出し'],
+  [part('fields'), '設定の欄'],
+  [part('field'), '設定の項目'],
+  [part('field-input'), '設定の入力欄'],
+  [part('field-value'), '設定の記入済みの値（今は描かない）'],
+  [part('field-optional'), '任意の印'],
+  [part('clock'), '残り時間'],
+  [part('reopen'), 'HOに戻るボタン'],
+  [part('sheet'), 'シート'],
+  [part('sheet-head'), 'シートの見出し'],
+  [`${part('sheet-head')} button`, 'シートの閉じる'],
+  [part('flow-list'), 'ゲームの流れの一覧'],
+  [part('flow-row'), 'ゲームの流れの行'],
+  [part('empty'), '空の場面'],
+  [part('list'), 'ゲーム一覧'],
+  [part('list-row'), 'ゲームの行'],
+  [part('list-name'), 'ゲーム名'],
+  [part('list-about'), 'ゲームの説明'],
+  [part('playing'), '遊んでいるゲーム'],
+  [part('footer-opts'), 'フッターの上の行（古い形の状態の行。今は描かない）'],
+  [part('footer-status'), '上の行の状態表示（今は描かない）'],
+  [part('phase-more'), '場面名の矢印'],
+  [`${part('footer')} ${part('slot')}`, 'フッターの項目（延長・読み返し・残り時間）'],
+  [`${part('footer')} ${part('note')}`, 'ボタンの中の一文'],
 ];
+
+/**
+ * What each toolkit phase's state is when it is over, when the game enters it, and the few
+ * states in between a screenshot needs, so a work's shots never write a state by hand. Each
+ * mirrors the phase's own `setup` and `done` (a test in packages/reader checks them against the
+ * phases). Pass the results to `flowSteps` as `past` and `fresh`, or to a screen's steps.
+ */
+export const states = {
+  /** `readyPhase()`: the introduction that waits for everyone. */
+  ready: {
+    fresh: (seats) => ({ ready: [], seats: [...seats] }),
+    over: (seats) => ({ ready: [...seats], seats: [...seats] }),
+  },
+  /** `readThroughPhase(script)`: `lineCount` lines. */
+  dialogue: {
+    /** On the last line, not yet advanced past. */
+    lastLine: (lineCount) => ({ index: lineCount - 1, finished: false }),
+    over: (lineCount) => ({ index: lineCount - 1, finished: true }),
+  },
+  /** `handoutLogic(...)`: `values` is part -> setting -> value. */
+  handout: {
+    /** Everyone has finished before the time ran out. */
+    over: ({ seats, values }) => ({
+      endsAt: 0,
+      pausedAt: null,
+      timeUp: false,
+      ready: Object.fromEntries(seats.map((s) => [s, true])),
+      values,
+    }),
+    /** The time ran out; `readySeats` are the seats that had finished. */
+    timeUp: (state, readySeats) => ({
+      ...state,
+      timeUp: true,
+      ready: Object.fromEntries(Object.keys(state.ready).map((s) => [s, readySeats.includes(s)])),
+    }),
+  },
+  /** `emptyPhase()`: a phase moved on with `next`. */
+  empty: {
+    fresh: () => ({ next: false }),
+    over: () => ({ next: true }),
+  },
+  /** `gameSelectPhase(...)`: the list, and the list left by `next`. */
+  gameSelect: {
+    fresh: () => ({ game: null, play: null, players: null, next: false }),
+    over: () => ({ game: null, play: null, players: null, next: true }),
+  },
+};
 
 /**
  * Steps that put the game in a phase without playing up to it.
@@ -96,6 +149,14 @@ export function flowSteps({ ids, parts, past, fresh }) {
     /** Changes one phase's state: `fn` gets it and returns the new one. */
     patch: (id, fn) => ({
       state: (s) => ({ ...s, phases: { ...s.phases, [id]: fn(s.phases[id]) } }),
+    }),
+    /** Changes the state of the game being played in the game-select phase `id`: `fn` gets it and returns the new one. */
+    play: (id, fn) => ({
+      state: (s) => ({ ...s, phases: { ...s.phases, [id]: { ...s.phases[id], play: fn(s.phases[id].play) } } }),
+    }),
+    /** Puts the handout phase `id` in the state where the time ran out (`states.handout.timeUp`). */
+    handoutTimeUp: (id, readySeats) => ({
+      state: (s) => ({ ...s, phases: { ...s.phases, [id]: states.handout.timeUp(s.phases[id], readySeats) } }),
     }),
   };
 }

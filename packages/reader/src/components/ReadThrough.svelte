@@ -122,8 +122,8 @@
 
 {#snippet text(t: string)}{#each parseRuby(t) as seg}{#if seg.ruby}<span class="rb">{seg.text}<span class="rt">{seg.ruby}</span></span>{:else}{seg.text}{/if}{/each}{/snippet}
 
-<div class="read" in:sceneIn|global out:sceneOut|global>
-  <ol class="chat" data-uzu-scroll bind:this={chat}>
+<div class="read" data-uzu-part="read" in:sceneIn|global out:sceneOut|global>
+  <ol class="chat" data-uzu-part="chat" data-uzu-scroll bind:this={chat}>
     {#if scenario.script.notice}<li class="notice"><span>{scenario.script.notice}</span></li>{/if}
     {#each shown as l, i}
       <li
@@ -136,12 +136,12 @@
         <div class="row">
           {#if !scenario.isDirection(l) && !l.cont}
             <img src={`./assets/icon-${readerOf(l)}.webp`} alt={scenario.nameOf(l, STRINGS['name.and'])} />
-            <span class="name">{scenario.nameOf(l, STRINGS['name.and'])}</span>
+            <span class="name" data-uzu-part="speaker">{scenario.nameOf(l, STRINGS['name.and'])}</span>
           {/if}
           {#if scenario.isDirection(l)}
-            <p>{@render text(l.text)}</p>
+            <p data-uzu-part="bubble">{@render text(l.text)}</p>
           {:else}
-            <p use:fit><span>{@render text(l.text)}</span></p>
+            <p data-uzu-part="bubble" use:fit><span>{@render text(l.text)}</span></p>
           {/if}
         </div>
       </li>

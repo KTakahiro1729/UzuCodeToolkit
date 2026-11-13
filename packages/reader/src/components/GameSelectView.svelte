@@ -74,7 +74,7 @@
 
 {#if playing}
   {#key playing.id}
-    <div class="playing" in:sceneIn|global out:sceneOut|global>
+    <div class="playing" data-uzu-part="playing" in:sceneIn|global out:sceneOut|global>
       <div class="scroll game">
         <playing.view
           state={phase.play}
@@ -97,18 +97,18 @@
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
-    <div class="scroll list">
+    <div class="scroll list" data-uzu-part="list">
       {#if guide}<Guide text={guide} />{/if}
       <ul>
         {#each choices as { game: g, players } (g.id)}
-          <li>
+          <li data-uzu-part="list-row">
             <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
-              <span class="name"
+              <span class="name" data-uzu-part="list-name"
                 >{#if selected === g.id}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"
                     ><path d="M1 5l3.5 3.5L11 1.5" /></svg
                   >{/if}{g.label}</span
               >
-              <span class="about" class:on={selected === g.id}>{about(players, g.description)}</span>
+              <span class="about" data-uzu-part="list-about" class:on={selected === g.id}>{about(players, g.description)}</span>
             </Button>
           </li>
         {/each}
