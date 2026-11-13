@@ -72,7 +72,7 @@
     {/if}
     {#if open === FLOW}
       <Sheet title={STRINGS['footer.flow']} onclose={() => (open = null)}>
-        <PhaseList labels={phases.map((p) => p.label)} {at} />
+        <PhaseList {phases} {at} ended={game.state.ended} />
       </Sheet>
     {:else if sheet?.keep}
       <Sheet title={sheet.keep.label} onclose={() => (open = null)}>

@@ -237,6 +237,22 @@ Decoration is out of scope, but it must not break the rules above:
   button without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
+### Phase list
+
+- The work's phases in order, opened from the footer, so a player can see
+  where the game is and what comes next. One column at the chat's reading
+  width; it scrolls when the phases do not fit, starting with the current one
+  in view.
+- Each entry is a number and the phase's band label. Phases in a row that
+  share a label (such as the handouts and the pause after them) are one entry.
+- The current entry is the one with a background (white), in bold. Entries
+  already over are in the quieter text colour, with no mark, since sitting
+  above the current one already says so. Once the game has ended, every entry
+  is over.
+- Reading only: tapping an entry does nothing. No player moves the game from
+  here (owner's decision; the official sample's list that moves everyone
+  belongs to its game-master seat, which this toolkit does not have).
+
 ### Other screens
 
 - Screens other than the read-through, such as the afterword, do not use the
