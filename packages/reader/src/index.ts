@@ -44,6 +44,7 @@ export { default as Frame } from './components/Frame.svelte';
 export { default as TopBand } from './components/TopBand.svelte';
 export { default as FooterActions } from './components/FooterActions.svelte';
 export { default as PhaseList } from './components/PhaseList.svelte';
+export { provideFlow, type FlowInfo } from './flowContext';
 export { default as Sheet } from './components/Sheet.svelte';
 
 /** PhaseView.reopen for a handout phase: after time ran out, the next screen offers more time. */
@@ -103,7 +104,10 @@ function applyInsets({ safeArea, hud }: UzuInsets): void {
   s.setProperty('--hud-x', `${hud.x}px`);
   s.setProperty('--hud-y', `${hud.y}px`);
   const width = innerWidth - safeArea.left - safeArea.right;
-  s.setProperty('--band-top', `${hud.x <= width * SHARED_ROW_MAX ? 0 : hud.y}px`);
+  const shared = hud.x <= width * SHARED_ROW_MAX;
+  s.setProperty('--band-top', `${shared ? 0 : hud.y}px`);
+  // The band's CSS tells the two layouts apart by this (TopBand).
+  document.documentElement.dataset.bandRow = shared ? 'shared' : 'own';
 }
 
 /**

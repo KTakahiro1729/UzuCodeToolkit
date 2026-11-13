@@ -58,14 +58,12 @@
     z-index: 1;
     min-height: 0;
     position: relative;
-    margin: -0.5em -0.8em;
-    padding: 0.5em 0.8em;
     display: grid;
     grid-template-rows: minmax(0, 1fr);
   }
   .scrim {
     position: absolute;
-    inset: 0;
+    inset: -0.5em -0.8em;
     background: var(--color-scrim);
   }
   .panel {

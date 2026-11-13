@@ -235,6 +235,31 @@
       grid-column: 1;
     }
   }
+  /*
+   * Under the HUD (an upright phone) the phase goes up into the HUD's row, in the room beside the
+   * HUD, and the players keep the band's own row under it. Under 380px there is not room for
+   * both beside the HUD, so the rule above stands: the phase sits above the players, below the HUD.
+   */
+  @media (min-width: 380px) {
+    :global(:root[data-band-row='own']) header {
+      padding-top: var(--safe-top, 0px);
+      grid-template-columns: var(--hud-x, 0px) minmax(0, 1fr);
+      grid-template-rows: var(--band-top) minmax(0, 1fr);
+      row-gap: 0;
+      align-items: center;
+    }
+    :global(:root[data-band-row='own']) .phase {
+      /* Clear of the HUD (the first column), centred in what is left of the row. */
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      max-width: 100%;
+    }
+    :global(:root[data-band-row='own']) .roles {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
   /* Short: a phone held sideways. Icon and name side by side, so the band takes less of the height. */
   @media (max-height: 479px) {
     .who {
