@@ -17,9 +17,9 @@ describe('read-through', () => {
     };
     script.lines.forEach((line, i) => {
       const other = players.find((p) => p.id !== seatOf(readerOf(line)))!.id;
-      expect(() => logic.actions.advance({ state, playerId: other, payload: { index: i }, ctx })).toThrow();
-      logic.actions.advance({ state, playerId: seatOf(readerOf(line)), payload: { index: i }, ctx });
+      expect(() => logic.actions['reading:advance']({ state, playerId: other, payload: { index: i }, ctx })).toThrow();
+      logic.actions['reading:advance']({ state, playerId: seatOf(readerOf(line)), payload: { index: i }, ctx });
     });
-    expect(state.dialogue.finished).toBe(true);
+    expect(state.ended).toBe(true);
   });
 });

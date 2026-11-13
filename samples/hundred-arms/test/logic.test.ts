@@ -28,8 +28,8 @@ describe('hundred-arms sample', () => {
     const state = logic.setup({ players, ctx });
     const seatOf = (part: string) => Object.keys(state.parts).find((s) => state.parts[s] === part)!;
     script.lines.forEach((line, i) => {
-      logic.actions.advance({ state, playerId: seatOf(line.speaker), payload: { index: i }, ctx });
+      logic.actions['reading:advance']({ state, playerId: seatOf(line.speaker), payload: { index: i }, ctx });
     });
-    expect(state.dialogue.finished).toBe(true);
+    expect(state.ended).toBe(true);
   });
 });

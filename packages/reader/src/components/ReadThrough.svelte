@@ -1,45 +1,47 @@
 <!--
-  Chat-style read-through.
+  Chat-style read-through, one scene of a work.
   Lines appear as bubbles as they are read: lines of the roles you read on the right, others on
   the left, each with the speaker's icon and name. Stage directions span the column without a
   speaker; a scene heading sits centred above the line that opens the scene. Right under the
   newest line, every player sees the advance button: active for whoever reads now, greyed for
-  the others. After the last line, the title and end mark show, then give way to the post-game
-  screen (with the author's afterword, if any). The top band shows every player and the phase.
+  the others. On the last line it says it ends the work, or moves on when another scene follows.
 -->
 <script lang="ts">
-  import { currentLine, parseRuby, readerOf } from '@uzu-toolkit/kit';
-  import { fade } from 'svelte/transition';
-  import type { Line } from '../script';
-  import { game, getScenario, sendAction } from '../store.svelte';
-  import TopBand from './TopBand.svelte';
+  import { currentLine, type DialogueProgress, parseRuby, readerOf } from '@uzu-toolkit/kit';
+  import type { Line, Scenario } from '../script';
+  import { sceneIn, sceneOut } from './motion';
+  import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
-  const { script, rolesOf, isDirection, nameOf } = getScenario();
-  const LINES = script.lines;
+  let {
+    scenario,
+    progress,
+    myPart,
+    onadvance,
+    final = true,
+  }: {
+    scenario: Scenario;
+    progress: DialogueProgress;
+    /** The part you play (State parts[seat]). */
+    myPart: string | undefined;
+    /** Your tap on the advance button, with the line you were looking at (the action's payload). */
+    onadvance: (index: number) => void;
+    /** True when the last line ends the work; false when another scene follows. */
+    final?: boolean;
+  } = $props();
 
-  const dialogue = $derived(game.state?.dialogue);
-  const myPart = $derived(game.me ? game.state?.parts[game.me] : undefined);
+  const LINES = $derived(scenario.script.lines);
   // The roles you read: several when your part doubles roles.
-  const myRoles = $derived(rolesOf(myPart));
+  const myRoles = $derived(scenario.rolesOf(myPart));
   const isMine = (l: Line): boolean => myRoles.includes(readerOf(l));
-  const line = $derived(dialogue ? currentLine(LINES, dialogue) : null);
+  const line = $derived(currentLine(LINES, progress));
   const mine = $derived(!!line && isMine(line));
   // The button says what it does until your first line is read; after that the mark alone.
-  const labelled = $derived(!!dialogue && dialogue.index <= LINES.findIndex(isMine));
+  const labelled = $derived(progress.index <= LINES.findIndex(isMine));
   // On the last line the button ends the read-through, so it says so instead of the next mark.
-  const last = $derived(!!line && dialogue?.index === LINES.length - 1);
-
-  // The afterword replaces the title and end mark after a moment (CSS, 3 s); the band's phase
-  // changes at the same moment, so the band never says something the screen does not show yet.
-  let review = $state(false);
-  $effect(() => {
-    if (!dialogue?.finished) return void (review = false);
-    const t = setTimeout(() => (review = true), 3000);
-    return () => clearTimeout(t);
-  });
-  const shown = $derived(dialogue ? LINES.slice(0, dialogue.index + 1) : []);
+  const last = $derived(!!line && progress.index === LINES.length - 1);
+  const shown = $derived(LINES.slice(0, progress.index + 1));
 
   let chat: HTMLOListElement | undefined = $state();
   // Set by push(), which scrolls before it moves the lines; scrolling again mid-push would
@@ -98,89 +100,44 @@
   }
 
   function advance(): void {
-    if (mine && dialogue) sendAction('advance', { index: dialogue.index });
+    if (mine) onadvance(progress.index);
   }
 </script>
 
 {#snippet text(t: string)}{#each parseRuby(t) as seg}{#if seg.ruby}<span class="rb">{seg.text}<span class="rt">{seg.ruby}</span></span>{:else}{seg.text}{/if}{/each}{/snippet}
 
-<main>
-  {#if dialogue}
-    <TopBand {myPart} finished={review} />
-  {/if}
-  {#if dialogue?.finished}
-    <div class="end">
-      <p class="closing">{script.title}{#if script.end}<br />{script.end}{/if}</p>
-      <section class="review">
-        <h1>{STRINGS['review.heading']}</h1>
-        {#if script.afterword}
-          <div class="afterword">
-            <h2>{STRINGS['review.afterword']}</h2>
-            <p>{script.afterword}</p>
-          </div>
-        {/if}
-      </section>
-    </div>
-  {:else}
-    <div class="read" out:fade={{ duration: reduceMotion() ? 0 : 200 }}>
-      <ol class="chat" bind:this={chat}>
-        {#if script.notice}<li class="notice">{script.notice}</li>{/if}
-        {#each shown as l, i}
-          <li
-            in:push
-            data-side={isMine(l) ? 'right' : 'left'}
-            data-current={i === dialogue?.index}
-            data-direction={isDirection(l)}
-          >
-            {#if l.scene}<h3>{l.scene}</h3>{/if}
-            <div class="row">
-              {#if !isDirection(l) && !l.cont}
-                <img src={`./assets/icon-${readerOf(l)}.webp`} alt={nameOf(l, STRINGS['name.and'])} />
-                <span class="name">{nameOf(l, STRINGS['name.and'])}</span>
-              {/if}
-              {#if isDirection(l)}
-                <p>{@render text(l.text)}</p>
-              {:else}
-                <p use:fit><span>{@render text(l.text)}</span></p>
-              {/if}
-            </div>
-          </li>
-        {/each}
-      </ol>
-      <!-- Right under the newest line for both players: active for the reader, greyed for the other. -->
-      <button type="button" disabled={!mine} onclick={advance}>
-        {#if last}{STRINGS['button.end']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
-      </button>
-    </div>
-  {/if}
-</main>
+<div class="read" in:sceneIn|global out:sceneOut|global>
+  <ol class="chat" bind:this={chat}>
+    {#if scenario.script.notice}<li class="notice">{scenario.script.notice}</li>{/if}
+    {#each shown as l, i}
+      <li
+        in:push
+        data-side={isMine(l) ? 'right' : 'left'}
+        data-current={i === progress.index}
+        data-direction={scenario.isDirection(l)}
+      >
+        {#if l.scene}<h3>{l.scene}</h3>{/if}
+        <div class="row">
+          {#if !scenario.isDirection(l) && !l.cont}
+            <img src={`./assets/icon-${readerOf(l)}.webp`} alt={scenario.nameOf(l, STRINGS['name.and'])} />
+            <span class="name">{scenario.nameOf(l, STRINGS['name.and'])}</span>
+          {/if}
+          {#if scenario.isDirection(l)}
+            <p>{@render text(l.text)}</p>
+          {:else}
+            <p use:fit><span>{@render text(l.text)}</span></p>
+          {/if}
+        </div>
+      </li>
+    {/each}
+  </ol>
+  <!-- Right under the newest line for every player: active for the reader, greyed for the others. -->
+  <NextButton disabled={!mine} onclick={advance}>
+    {#if last}{STRINGS[final ? 'button.end' : 'button.next']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
+  </NextButton>
+</div>
 
 <style>
-  :global(body) {
-    margin: 0;
-  }
-  main {
-    position: fixed;
-    inset: 0;
-    box-sizing: border-box;
-    /* One cell: the chat and the end screen overlap while one gives way to the other. */
-    display: grid;
-    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
-    /* The HUD's bottom is measured from the safe area's top; the top band sits beside the HUD. */
-    /* Below the HUD and the band, with a gap so a line cut off by scrolling reads as the list's edge. */
-    padding: calc(var(--band-bottom) + 0.5em) calc(var(--safe-right, 0px) + 0.8em)
-      calc(var(--safe-bottom, 0px) + 0.8em) calc(var(--safe-left, 0px) + 0.8em);
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-family: var(--font-body);
-    /* Sizes are in em; the base scales with the screen's short side. */
-    font-size: clamp(16px, 4.4vmin, 28px);
-    overflow: hidden;
-    user-select: none;
-  }
-  main > :global(*) {
-    grid-area: 1 / 1;
-  }
   /* The chat and, under it, the button for your turn. */
   .read {
     align-self: end;
@@ -331,108 +288,5 @@
   li[data-current='true'][data-side='right'] p {
     background: var(--color-mine-current);
     color: var(--color-mine-text);
-  }
-  button {
-    align-self: center;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    margin: 0;
-    padding: 0.45em 1.2em;
-    border: none;
-    border-radius: 999px;
-    background: var(--color-mine-current);
-    color: var(--color-mine-text);
-    font: inherit;
-    font-family: var(--font-ui);
-    cursor: pointer;
-  }
-  button:disabled {
-    background: var(--color-button-off);
-    color: var(--color-text-quiet);
-    cursor: default;
-  }
-  button svg {
-    width: 0.55em;
-    height: 0.45em;
-    fill: currentColor;
-  }
-  /* The end mark holds for a moment, then fades out and the post-game screen fades in after it,
-     one at a time so the two never show through each other. */
-  .end {
-    margin: auto;
-    display: grid;
-    place-items: center;
-    text-align: center;
-  }
-  .end > * {
-    grid-area: 1 / 1;
-    margin: 0;
-  }
-  .closing {
-    line-height: 2.4;
-    /* Comes in as the chat goes out, so the screen does not cut. */
-    animation:
-      fade-in 0.2s ease-out both,
-      fade-out 0.2s 2.8s ease-out both;
-  }
-  /* The post-game screen: a heading, and under it an area for the author's afterword. */
-  .review {
-    width: min(30em, calc(100vw - 1.6em));
-    /* Text that can run to several lines starts at one left edge; the heading shares it. */
-    text-align: start;
-    display: grid;
-    gap: 0.8em;
-    animation: fade-in 0.2s 3s ease-out both;
-  }
-  /* The greeting stands for the whole screen, so it is centred. */
-  h1 {
-    margin: 0;
-    text-align: center;
-    font-family: var(--font-ui);
-    font-size: 1.2em;
-    font-weight: 700;
-  }
-  .afterword {
-    display: grid;
-    gap: 0.3em;
-    padding: 1em 1.2em;
-    border-radius: 0.8em;
-    background: var(--color-bubble);
-  }
-  /* The area's label, on the same left edge as the text it names. */
-  h2 {
-    margin: 0;
-    color: var(--color-text-quiet);
-    font-family: var(--font-ui);
-    font-size: max(16px, 0.8em);
-    font-weight: 700;
-  }
-  .afterword p {
-    margin: 0;
-    line-height: 2;
-    /* If it wraps, break between phrases. */
-    word-break: auto-phrase;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .closing {
-      animation: fade-out 0s 3s both;
-    }
-    .review {
-      animation: fade-in 0s 3s both;
-    }
-  }
-  /* Opacity only; visibility keeps a faded-out screen from being read or selected. */
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      visibility: hidden;
-    }
-  }
-  @keyframes fade-out {
-    to {
-      opacity: 0;
-      visibility: hidden;
-    }
   }
 </style>
