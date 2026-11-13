@@ -7,7 +7,6 @@
   "description": "The read-through screens and server logic shared by the samples (Svelte 5).",
   "exports": {
     ".": "./src/index.ts",
-    "./cards": "./src/cards.ts",
     "./logic": "./src/logic.ts",
     "./dev-harness": "./dev-harness.js"
   },

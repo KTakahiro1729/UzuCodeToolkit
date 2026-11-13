@@ -38,6 +38,9 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it.
+- A newest line taller than the chat shows from its top, its speaker's name
+  included, so its reader starts at its first words and scrolls on; earlier
+  lines can always be scrolled back to.
 - When you read, the line being read takes the button's blue, so line and
   button read as one cue. The other role's lines are always white.
 - Every player sees the button. It is filled for whoever reads now and greyed
@@ -104,10 +107,7 @@ on cards.
 Decoration is out of scope, but it must not break the rules above:
 
 - Colours are tokens in `packages/reader/src/theme.css`; screens use the
-  variables, never raw colours. Those values are neutral defaults for the
-  samples. A work's look (colours, art, effects) is the work's own: it sets the
-  tokens in its own stylesheet, and a colour only its screens use (such as a
-  chess board's) becomes a token there too.
+  variables, never raw colours.
 - Every text colour meets WCAG AA (4.5:1) on its background.
 - No gradients, edge fades, shadows or glows.
 - No colour, size or weight that competes with the focus.
@@ -123,32 +123,6 @@ Decoration is out of scope, but it must not break the rules above:
   at half the text size (owner's decision).
 
 ## Components
-
-### Buttons
-
-- One `Button` everywhere (`packages/reader`). `primary` is the next step,
-  filled; one screen has at most one primary at a time. `secondary` is any
-  other choice, white. A choice that stays selected (such as your vote) takes
-  the primary's fill while selected (`pressed`).
-- A button greys only while it cannot be tapped, never to look quieter.
-
-### Whose turn (games)
-
-- As in the read-through: on your turn your button for the next step is
-  filled; on another player's turn that player's block (name, hand) sits on
-  white, and your buttons grey. Nothing else marks the turn: no outlines, no
-  tints. A game without player blocks (chess) says whose turn it is in a short
-  line instead.
-
-### Time left
-
-- A timer shows the time left as m:ss (`TimeLeft`), from the game time the
-  state holds, so every player sees the same.
-
-### Watching a game
-
-- A seat that sits a game out watches it: it sees only what every player may
-  see, and no buttons of the game. The game's screen gets `watching`.
 
 ### Top band
 
@@ -254,27 +228,16 @@ Decoration is out of scope, but it must not break the rules above:
 ### Game select
 
 - The games this many players can play, as a list of white blocks (game
-  names from the work's data). A game that
+  names from the work's data), and the next button under it. A game that
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
-- A tap on the list only selects a game (filled, as a pressed choice); the
-  play button (`game.play`) under the list starts it for everyone, and stays
-  greyed until a game is selected (owner's decision). One tap by any player
-  never starts a game nobody can leave.
-- Beside the play button, the next button (`button.next`) is white: leaving
-  the phase is not the next step on this screen, and it cannot be undone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result
   stays and the back button appears under it.
-- The row under the game is kept from the start, so the game never shrinks or
-  jumps when the back button appears. A game taller than its space scrolls
-  there; it never runs under the row.
-- A seat that sits the game out sees `game.watching` in that row, in the
-  quieter text colour, until the back button takes its place.
-- On a landscape screen the list has two columns, so it fits above the buttons
-  without scrolling.
+- On a landscape screen the list has two columns, so it fits above the next
+  button without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Other screens

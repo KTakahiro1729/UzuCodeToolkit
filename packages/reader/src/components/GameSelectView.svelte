@@ -1,25 +1,22 @@
 <!--
   The game-select phase's screen (gameSelectPhase()). Choosing: the games this many players can
-  play; a tap selects one (on this screen only), and the play button under the list starts it for
-  everyone. The next button beside it is white, since leaving the phase is not the next step.
-  Playing: the game's own screen, scrolling if it runs long; the band names the game. Under it a
-  row is kept from the start, so nothing moves when the back button shows: it is there once the
-  game is done, and before that the row is empty, or says that you watch for a seat that sits the
-  game out (gameSelectPhase's `spectator`, passed here too). The game's screen gets only the seats
-  that play it as `parts`, and `watching` for a seat that is not among them.
+  play, then the next button. Playing: the game's own screen; the band names the game. Once the
+  game is done, a back button under it returns to the list; there is none before. The game's
+  screen gets only the seats that play it as `parts`; a spectator (gameSelectPhase's
+  `spectator`, passed here too) sees it with `me` not among them.
 -->
 <script lang="ts">
   import { gameAction, type GameSelectState, playersFor } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
   import type { GameView } from '../games';
   import { band } from '../store.svelte';
-  import Button from './Button.svelte';
   import { sceneIn, sceneOut } from './motion';
+  import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
   let {
-    state: phase,
+    state,
     me,
     part,
     parts,
@@ -31,15 +28,8 @@
   }: PhaseViewProps<GameSelectState> & { games: readonly GameView[]; spectator?: string } = $props();
 
   const choices = $derived(games.filter((g) => playersFor(g, parts, spectator)));
-  const playing = $derived(games.find((g) => g.id === phase.game));
-  const over = $derived(playing ? playing.logic.done(phase.play) : false);
-  const watching = $derived(!(me in (phase.players ?? parts)));
-
-  // The game this player has selected on the list; nothing starts until the play button.
-  let selected = $state<string | null>(null);
-  $effect(() => {
-    if (playing) selected = null;
-  });
+  const playing = $derived(games.find((g) => g.id === state.game));
+  const over = $derived(playing ? playing.logic.done(state.play) : false);
 
   $effect(() => {
     band.label = playing?.label ?? null;
@@ -52,48 +42,33 @@
     <div class="playing" in:sceneIn|global out:sceneOut|global>
       <div class="game">
         <playing.view
-          state={phase.play}
+          state={state.play}
           {me}
           {part}
-          parts={phase.players ?? parts}
-          {watching}
+          parts={state.players ?? parts}
           {names}
           send={(name: string, payload?: Record<string, unknown>) => send(gameAction(playing.id, name), payload)}
           {last}
         />
       </div>
-      <!-- Kept from the start, so the game does not shrink when the back button appears. -->
-      <div class="after">
-        {#if over}
-          <Button onclick={() => send('back')}>{STRINGS['button.back']}</Button>
-        {:else if watching}
-          <p>{STRINGS['game.watching']}</p>
-        {:else}
-          <span class="hold" aria-hidden="true"><Button disabled onclick={() => {}}>{STRINGS['button.back']}</Button></span>
-        {/if}
-      </div>
+      {#if over}
+        <NextButton onclick={() => send('back')}>{STRINGS['button.back']}</NextButton>
+      {/if}
     </div>
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
     <ul>
       {#each choices as g (g.id)}
-        <li>
-          <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>{g.label}</Button>
-        </li>
+        <li><button type="button" class="choice" onclick={() => send('pick', { id: g.id })}>{g.label}</button></li>
       {/each}
     </ul>
-    <div class="actions">
-      <Button variant="secondary" onclick={() => send('next')}>{STRINGS['button.next']}</Button>
-      <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
-        {STRINGS['game.play']}
-      </Button>
-    </div>
+    <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
   </div>
 {/if}
 
 <style>
-  /* The list and the buttons, centred as one group. */
+  /* The list and the next button, centred as one group. */
   .choosing {
     display: flex;
     flex-direction: column;
@@ -113,7 +88,7 @@
     overflow-y: auto;
     list-style: none;
   }
-  /* Two columns on a wide, short screen, so the list fits above the buttons. */
+  /* Two columns on a wide, short screen, so the list fits above the next button. */
   @media (orientation: landscape) {
     ul {
       display: grid;
@@ -121,18 +96,21 @@
       width: min(100%, 24em);
     }
   }
-  /* A game on the list: a white block as wide as the list, not a round button. */
-  li > :global(button) {
+  button {
+    margin: 0;
+    border: none;
+    font: inherit;
+    font-family: var(--font-ui);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .choice {
     width: 100%;
     padding: 0.7em 1em;
     border-radius: 0.6em;
+    background: var(--color-bubble);
   }
-  .actions {
-    display: flex;
-    justify-content: center;
-    gap: 1em;
-  }
-  /* The game scrolls in its own space; the row under it is always there. */
+  /* The game fills the screen; the back button sits under it. */
   .playing {
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
@@ -142,21 +120,8 @@
   .game {
     display: grid;
     min-height: 0;
-    overflow-y: auto;
   }
-  .after {
-    display: grid;
-    justify-items: center;
-  }
-  /* Holds the back button's height while the game runs. */
-  .hold {
-    display: grid;
-    visibility: hidden;
-  }
-  p {
-    margin: 0;
-    padding: 0.45em 0;
-    color: var(--color-text-quiet);
-    font-family: var(--font-ui);
+  .playing > :global(button) {
+    justify-self: center;
   }
 </style>
