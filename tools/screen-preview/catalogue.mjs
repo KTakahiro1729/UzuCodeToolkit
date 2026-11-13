@@ -215,7 +215,7 @@ export function phaseScreens({ phases, seats, parts, values = {}, seat = 0, from
  * screen's parts are the toolkit's (PARTS) and then the work's own `parts`; steps may be nested
  * (a helper returning several) and are flattened.
  */
-export function catalogue({ title, player = 0, parts = [], screens }) {
+export function catalogue({ title, player = 0, orientation, parts = [], screens }) {
   screens.forEach(([key], i) => {
     const want = String(i + 1).padStart(2, '0');
     if (!key.startsWith(`${want}-`)) throw new Error(`screen ${i + 1} must be keyed "${want}-...", got "${key}"`);
@@ -224,6 +224,8 @@ export function catalogue({ title, player = 0, parts = [], screens }) {
   return {
     title,
     player,
+    // `both` for a work that serves both orientations; otherwise the manifest's decides what --check looks at.
+    orientation,
     next: NEXT,
     scroll: [SCROLL],
     screens: screens.map(([key, label, seat, steps, reach]) => ({ key, label, seat, steps: steps.flat(), reach, parts: all })),

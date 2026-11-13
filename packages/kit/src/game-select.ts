@@ -53,16 +53,21 @@ export function playersFor(
  * from the list. A game's own actions are `${gameId}.${name}`, rejected unless that game is
  * being played, and from a seat that sits it out. Games get only the seats that play them as
  * `parts` (see playersFor() and `spectator`). A game that is done stays on screen, showing its
- * result, until `back`.
+ * result, until `back`. With `facilitator` (a part ID) only the player of that part can pick,
+ * go back or move on; the others still play the game's own actions.
  */
 export function gameSelectPhase(
   games: readonly GameEntry[],
-  { spectator }: { spectator?: string } = {},
+  { spectator, facilitator }: { spectator?: string; facilitator?: string } = {},
 ): PhaseLogic<GameSelectState> {
   if (new Set(games.map((g) => g.id)).size !== games.length) throw new Error('game IDs must differ');
 
+  const only = (part: string): void => {
+    if (facilitator !== undefined && part !== facilitator) throw new Error('not the facilitator');
+  };
   const actions: NonNullable<PhaseLogic<GameSelectState>['actions']> = {
-    pick({ state, parts, payload, time }: PhaseArgs<GameSelectState, { id: string }>) {
+    pick({ state, parts, payload, time, part }: PhaseArgs<GameSelectState, { id: string }>) {
+      only(part);
       if (state.game !== null) throw new Error('a game is being played');
       const game = games.find((g) => g.id === payload.id);
       if (!game) throw new Error(`no game ${payload.id}`);
@@ -72,7 +77,8 @@ export function gameSelectPhase(
       state.players = players;
       state.play = game.logic.setup(players, time);
     },
-    back({ state }) {
+    back({ state, part }) {
+      only(part);
       const game = games.find((g) => g.id === state.game);
       if (!game) throw new Error('no game is being played');
       if (!game.logic.done(state.play)) throw new Error('the game is not over');
@@ -80,7 +86,8 @@ export function gameSelectPhase(
       state.play = null;
       state.players = null;
     },
-    next({ state }) {
+    next({ state, part }) {
+      only(part);
       if (state.game !== null) throw new Error('go back from the game first');
       state.next = true;
     },

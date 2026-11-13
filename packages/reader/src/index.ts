@@ -29,6 +29,7 @@ export { default as Vote } from './components/Vote.svelte';
 export { default as Guide } from './components/Guide.svelte';
 export { default as CastView } from './components/CastView.svelte';
 export { default as EmptyView } from './components/EmptyView.svelte';
+export { default as TimedTextView } from './components/TimedTextView.svelte';
 export { default as HandoutView } from './components/HandoutView.svelte';
 export { default as HandoutReviewView } from './components/HandoutReviewView.svelte';
 export { default as GameSelectView } from './components/GameSelectView.svelte';

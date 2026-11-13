@@ -37,6 +37,10 @@ Read this when you touch the game select or a game. Rules every screen follows a
   never starts a game nobody can leave.
 - Beside the play button, leaving the phase is an item at the left, not a capsule:
   it is not the next step on this screen, and it cannot be undone.
+- With a `facilitator` part, only that player can pick, go back and leave; for the others
+  the list is greyed and the footer says whose turn it is (`status.facilitator`). A `memo`
+  gives each part its own line under the guide. Both are optional: a work that names none
+  keeps the list open to everyone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result
