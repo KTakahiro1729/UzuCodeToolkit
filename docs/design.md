@@ -196,7 +196,7 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Empty phase
 
-- A phase whose content is not made yet shows the next button alone, centred, labelled `button.next`. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
+- A phase with no game of its own (an empty phase) shows the next button, centred, labelled `button.next`, under optional story text (such as an introduction): left-aligned paragraphs in the story font, at the chat's reading width. Without text it holds the place of a phase not made yet. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
 - On the last line of a read-through that another phase follows, the advance button says `button.next` instead of `button.end`.
 
 ### Other screens
