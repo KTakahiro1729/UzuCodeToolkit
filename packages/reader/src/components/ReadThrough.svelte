@@ -162,9 +162,8 @@
   .read {
     align-self: end;
     /* A reading width, so the eye does not cross a wide landscape screen between lines. */
-    justify-self: center;
+    justify-self: stretch;
     width: 100%;
-    max-width: 30em;
     max-height: 100%;
     display: flex;
     flex-direction: column;
@@ -173,7 +172,6 @@
   .chat {
     min-height: 0;
     margin: 0;
-    padding: 0;
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -181,9 +179,10 @@
        overflow past the top of a scroll box cannot be scrolled to. */
     justify-content: safe flex-end;
     gap: 0.45em;
-    /* Older lines scroll up; the list keeps the newest line in view. */
+    /* Older lines scroll up; the list keeps the newest line in view. It spans the whole screen so
+       its scrollbar sits at the screen's right edge; the lines keep the reading width. */
+    padding-inline: max(0px, calc((100% - 30em) / 2));
     overflow-y: auto;
-    scrollbar-width: none;
   }
   /* One line, with the heading of the scene it opens above it. */
   li {

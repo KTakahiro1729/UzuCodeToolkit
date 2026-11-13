@@ -1,7 +1,8 @@
 <!--
-  A page opened from the footer over the current screen, which keeps running under it: its title
-  and a close button in one row, the content under them. It hides the screen under it fully, so
-  the two never show through each other. Fades in and out (opacity only).
+  A page opened from the footer over the current screen, which keeps running under it: a panel
+  floating above the screen with its title and a close button in one row, the content under
+  them. The screen stays in view behind it, dimmed, so the reader keeps their place; tapping the
+  dimmed part closes the sheet like the close button does. Fades in and out (opacity only).
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -35,37 +36,62 @@
 <svelte:window onkeydown={(e) => e.key === 'Escape' && onclose()} />
 
 <section transition:fade={{ duration }} use:modal>
-  <div class="head">
-    <h2>{title}</h2>
-    <Button variant="secondary" onclick={onclose}>{STRINGS['sheet.close']}</Button>
+  <!-- Escape and the close button are the keyboard's ways out; the dimmed screen is a tap target only. -->
+  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+  <div class="scrim" onclick={onclose}></div>
+  <div class="panel">
+    <div class="head">
+      <h2>{title}</h2>
+      <Button variant="secondary" onclick={onclose}>{STRINGS['sheet.close']}</Button>
+    </div>
+    <div class="scroll body">{@render children()}</div>
   </div>
-  <div class="body">{@render children()}</div>
 </section>
 
 <style>
-  /* Fills the screen's cell, on the page colour, above the screen. */
+  /*
+   * The scrim dims the screen's whole area (the cell and the page margin around it, not the band
+   * or the footer, which stay as they are); the panel floats above it, anchored to the bottom,
+   * and leaves a strip of the screen showing at the top.
+   */
   section {
     z-index: 1;
+    min-height: 0;
+    position: relative;
+    margin: -0.5em -0.8em;
+    padding: 0.5em 0.8em;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: var(--color-scrim);
+  }
+  .panel {
+    position: relative;
+    box-sizing: border-box;
+    align-self: end;
+    justify-self: center;
+    width: 100%;
+    max-width: 32em;
+    height: calc(100% - 2.2em);
     min-height: 0;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     gap: 0.6em;
+    padding: 0.6em 0.8em;
+    border-radius: var(--radius-read);
     background: var(--color-bg);
   }
   /* The content fills the rest; content that does not scroll by itself scrolls here. */
   .body {
     min-height: 0;
     overflow-y: auto;
-    scrollbar-width: none;
     display: grid;
     grid-template-rows: minmax(0, 1fr);
   }
-  /* The title and close share the content's reading width. */
   .head {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 30em;
-    margin-inline: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;

@@ -73,6 +73,11 @@
 {/snippet}
 
 <style>
+  /* The one scrollbar style: thin, a quiet thumb, no track. Every scrolling area takes the class. */
+  :global(.scroll) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scroll) transparent;
+  }
   /*
    * Full width on its own background, under the HUD or beside it (--band-top, set in src/index.ts).
    * Three columns: empty (the HUD's side), the phase centred on the screen, the roles at the right.
