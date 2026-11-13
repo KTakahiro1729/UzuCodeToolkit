@@ -25,4 +25,6 @@ export function allPhases(o: {
   drive?: Record<string, Driver>;
   cwd?: string;
   stepTimeoutMs?: number;
+  /** Part(s) whose seat has left: it never acts and the drivers get no seat for it; every phase must still end. */
+  away?: string | readonly string[];
 }): Promise<void>;
