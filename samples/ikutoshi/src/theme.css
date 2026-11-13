@@ -1,0 +1,18 @@
+:root {
+  --color-bg: #291a21;
+  --color-text: #f8ecdd;
+  --color-text-quiet: #eee1c9;
+  --color-bubble: #412330;
+  --color-bubble-mine: #603447;
+  --color-mine-current: #71394b;
+  --color-mine-text: #fff1de;
+  --color-button-off: #584e53;
+  --color-line: #d7ad77;
+  --color-field: #fff5e8;
+  --color-scroll: #b98c6c;
+  --color-scrim: rgb(12 7 14 / 0.75);
+  --radius-read: 0.2em;
+  --radius-control: 0.2em;
+  --font-body: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif CJK JP', serif;
+  --font-ui: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif CJK JP', serif;
+}
