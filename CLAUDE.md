@@ -58,9 +58,9 @@ The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orient
 Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of the characters that work shows, declared in its `src/fonts.css`. No CDN: certification forbids external network access.
 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
-- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and `packages/reader/src/strings.json`.
+- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (listed in `scripts/subset-fonts.sh`; a sample shows no other screen, and every string the subset holds adds weight).
 
-Rebuild a sample's subsets when those characters change, including after editing `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
+Rebuild a sample's subsets when those characters change, including after editing a read-through string in `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
 
 ```bash
 scripts/subset-fonts.sh samples/<name>
