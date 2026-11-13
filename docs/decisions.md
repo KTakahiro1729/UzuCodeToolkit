@@ -18,3 +18,4 @@ Owner decisions for this repository, newest last.
 - **Stage directions have no background.** They read as narration, as plain text across the chat column; the advance button alone shows whose turn it is.
 - **Ruby above the word, at half size.** Readings from the script show as ruby above their word, the one exception to the 16px minimum, rather than inline in brackets at full size. Ruby may run past its word instead of spreading the word's letters.
 - **A stage direction you read gets side lines.** While you read a stage direction, a line in the advance button's colour stands at each side of it, instead of colouring the whole block.
+- **Playing cards keep their court figures.** The deck is Adrian Kennard's CC0 SVG cards with the figure art on J, Q and K (about 310 KB for 54 cards), not a plain version; each face loads the first time it shows.
