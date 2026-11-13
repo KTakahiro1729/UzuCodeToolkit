@@ -226,8 +226,11 @@ Decoration is out of scope, but it must not break the rules above:
   the chosen tab shares its white, as a folder tab, the others sit on the
   page. The text scrolls under the tab bar and starts from the top when the
   tab changes.
-- Each setting is a name with an input under it. The example, when there is
-  one, sits in the empty input.
+- Each setting is a name with an input under it. A setting that may stay
+  blank says so after its name (`handout.optional`, in the quiet colour). The
+  example, when there is one, sits in the empty input. The input starts one
+  line tall and grows with its text, so a long example or answer shows whole.
+  Focus shows as a ring in the button's blue, not the browser's black.
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
@@ -236,14 +239,17 @@ Decoration is out of scope, but it must not break the rules above:
   button is the next step, so it is the filled one; it stays greyed until
   every setting is filled in (a setting marked optional may stay blank). The
   extension button is white, not filled, since it is not the next step.
-- Once you tap done, your settings lock, the done button greys and says
+- Once you tap done, your settings lock: each value shows as plain text
+  without the input's background (`handout.blank` when left empty), so nothing
+  looks writable. The done button greys and says
   `handout.waiting`, and the extension button gives way to the undo button
   (`handout.unready`), white like it. Undo brings back the settings and the
   extension button, until the phase ends.
 - When time runs out, the game moves on. Until anyone acts on the next screen,
   that screen shows the extension button at its bottom left, white and small,
   away from that screen's focus; it brings everyone back to the handout with
-  more time.
+  more time. It fades in and out with the screen it sits on, so it never shows
+  next to the handout's own extension button.
 - After the phase, the footer's handout button opens the same tabs in a sheet,
   read-only: each setting's name with what was filled in under it, or
   `handout.blank` in the quiet colour when it was left empty.
