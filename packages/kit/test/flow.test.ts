@@ -147,3 +147,26 @@ describe('emptyPhase with a facilitator', () => {
     expect(logic.done(s)).toBe(true);
   });
 });
+
+describe('flowLogic voice rooms', () => {
+  const rooms: PhaseLogic<{ room: Record<string, string> }> = {
+    setup: (parts) => ({ room: Object.fromEntries(Object.keys(parts).map((s) => [s, 'hall'])) }),
+    voicePlan: ({ state, seat }) => ({ room: state.room[seat], mic: 'free' }),
+    done: () => false,
+  };
+  const logic = flowLogic([{ id: 'talk', logic: rooms }, { id: 'end', logic: emptyPhase() }], ['x', 'y']);
+
+  it('asks the current phase for each player’s room', () => {
+    const state = logic.setup({ players, ctx });
+    expect(logic.voicePlan!({ state, playerId: 'seat-a' })).toEqual({ room: 'hall', mic: 'free' });
+    (state.phases.talk as { room: Record<string, string> }).room['seat-b'] = 'attic';
+    expect(logic.voicePlan!({ state, playerId: 'seat-b' })).toEqual({ room: 'attic', mic: 'free' });
+  });
+
+  it('is the whole-game room when the phase names none', () => {
+    const plain = flowLogic([{ id: 'a', logic: emptyPhase() }], ['x', 'y']);
+    const state = plain.setup({ players, ctx });
+    expect(plain.voicePlan!({ state, playerId: 'seat-a' })).toEqual({ room: null, mic: 'free' });
+  });
+});
+
