@@ -3,7 +3,7 @@
   settings your part fills in. In the footer, always in view: the time left (upper row), the button asking for
   more time, and the next button that says you are done. That button stays greyed until every setting
   is filled in (optional ones may stay blank), and a dot on the settings tab shows where. Once
-  tapped it keeps its name, red-outlined with a tick (tapping it again takes done back); your
+  tapped it keeps its name, outlined in a dark 2px edge with a tick (tapping it again takes done back); your
   settings are locked and the extension button is greyed. Who is done is not shown while reading.
   Tapping a locked setting also takes done back and lets you type. The phase ends when everyone is
   done or the time runs out (the server's deadline). Settings are sent as you type, so time
@@ -93,7 +93,10 @@
   </HandoutTabs>
 </div>
 <!-- The time left is state, so it sits in the footer's lower row; the buttons in the upper one. -->
-<FooterActions place="status"><span class="clock">{clock}</span></FooterActions>
+<FooterActions place="status">
+  <span class="clock">{STRINGS['status.timeLeft'].replace('{time}', clock)}</span>
+  {#if done}<span>{STRINGS['status.waitOthers']}</span>{:else if !filled}<span>{STRINGS['status.fillSettings']}</span>{/if}
+</FooterActions>
 <FooterActions>
   <Button variant="secondary" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Button>
   <NextButton on={done} disabled={!done && !filled} onclick={() => (done ? send('unready') : finish())}>
@@ -156,7 +159,7 @@
     color: var(--color-text-quiet);
     font-variant-numeric: tabular-nums;
   }
-  /* Done: the button keeps its name, red-outlined with a tick, so it reads as pressed. */
+  /* Done: the button keeps its name, outlined in a dark 2px edge with a tick, so it reads as pressed. */
   .tick {
     width: 0.8em;
     height: 0.7em;
