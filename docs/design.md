@@ -301,7 +301,9 @@ Decoration is out of scope, but it must not break the rules above:
   is left out. The tabs sit at the chat's reading width over one white area;
   the chosen tab shares its white, as a folder tab, the others sit on the
   page. The text scrolls under the tab bar and starts from the top when the
-  tab changes.
+  tab changes. Each reader's tab and scroll position are remembered on their
+  own device, so closing the handout sheet and opening it again resumes where
+  they left off.
 - A guide (`guide`, see Guide) opens the first tab and scrolls away with its
   text; it is not repeated on the other tabs.
 - Each setting is a name with an input under it. A setting that may stay
