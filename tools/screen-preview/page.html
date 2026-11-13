@@ -22,8 +22,8 @@
   .meta { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
   .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
   .bar[hidden] { display: none; }
-  .tabs { display: inline-flex; background: var(--panel); border-radius: 8px; padding: 3px; gap: 2px; }
-  .tabs button { font: inherit; border: 0; background: none; color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; }
+  .tabs { display: flex; flex-wrap: wrap; background: var(--panel); border-radius: 8px; padding: 3px; gap: 2px; }
+  .tabs button { font: inherit; border: 0; background: none; color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
   .tabs button[aria-pressed="true"] { background: var(--accent); color: #fff; }
   .tabs button:focus-visible, .parts button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .pick { display: inline-flex; align-items: center; gap: 8px; }
@@ -71,9 +71,11 @@
   <section class="detail" id="detail" hidden></section>
 </div>
 
+<script type="application/json" id="shared">__SHARED__</script>
 <script type="application/json" id="data">__DATA__</script>
 <script>
-  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const SHARED = JSON.parse(document.getElementById('shared').textContent);
+  const DATA = JSON.parse(document.getElementById('data').textContent.replace(/\{\{uri:(\d+)\}\}/g, (_, i) => SHARED[i]));
   const T = DATA.strings;
   const fmt = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k]);
   const ORIENTATIONS = ['landscape', 'portrait'];
@@ -90,7 +92,7 @@
   tabs.setAttribute('aria-label', T.screens);
   for (const s of DATA.screens) {
     const b = document.createElement('button');
-    b.type = 'button'; b.textContent = s.label; b.setAttribute('aria-pressed', String(s.key === screen));
+    b.type = 'button'; b.textContent = (s.key.match(/^\d+(?=-)/)?.[0] ?? '') + ' ' + s.label; b.setAttribute('aria-pressed', String(s.key === screen));
     b.onclick = () => {
       screen = s.key; picked = null; detail.hidden = true;
       for (const x of tabs.children) x.setAttribute('aria-pressed', String(x === b));
