@@ -2,14 +2,15 @@
   Chat-style read-through, one scene of a work.
   Lines appear as bubbles as they are read: lines of the roles you read on the right, others on
   the left, each with the speaker's icon and name. Stage directions span the column without a
-  speaker; a scene heading sits centred above the line that opens the scene. Right under the
-  newest line, every player sees the advance button: active for whoever reads now, greyed for
-  the others. On the last line it says it ends the work, or moves on when another scene follows.
+  speaker; a scene heading sits centred above the line that opens the scene. In the footer,
+  right under the newest line, every player sees the advance button: active for whoever reads
+  now, greyed for the others. On the last line it says it ends the work, or moves on when another scene follows.
 -->
 <script lang="ts">
   import { currentLine, type DialogueProgress, parseRuby, readerOf } from '@uzu-toolkit/kit';
   import type { Line, Scenario } from '../script';
   import { sceneIn, sceneOut } from './motion';
+  import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
@@ -131,14 +132,16 @@
       </li>
     {/each}
   </ol>
-  <!-- Right under the newest line for every player: active for the reader, greyed for the others. -->
+</div>
+<!-- In the footer, right under the newest line, for every player: active for the reader, greyed for the others. -->
+<FooterActions>
   <NextButton disabled={!mine} onclick={advance}>
     {#if last}{STRINGS[final ? 'button.end' : 'button.next']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
   </NextButton>
-</div>
+</FooterActions>
 
 <style>
-  /* The chat and, under it, the button for your turn. */
+  /* The chat, down to the footer that holds the button for your turn. */
   .read {
     align-self: end;
     /* A reading width, so the eye does not cross a wide landscape screen between lines. */

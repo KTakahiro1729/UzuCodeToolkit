@@ -2,7 +2,7 @@
 // A sample can keep its own preview.config.mjs instead. Labels are what the owner calls each part.
 export default {
   player: 0,
-  next: '.read > button:not([disabled])',
+  next: 'footer .act button:not([disabled])',
   scroll: ['.chat'],
   screens: [
     {

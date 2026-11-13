@@ -1,6 +1,6 @@
 <!--
   Handout (HO) phase. The handout in tabs (./HandoutTabs.svelte), the last tab holding the
-  settings your part fills in. Under it, always in view: the time left, the button asking for
+  settings your part fills in. In the footer, always in view: the time left, the button asking for
   more time, and the button that says you are done. That button stays greyed until every setting
   is filled in (optional ones may stay blank), and a dot on the settings tab shows where. Once
   tapped it says you are waiting for the others, your settings are locked, and the extension
@@ -13,6 +13,7 @@
   import type { PhaseViewProps } from '../flow';
   import { sceneIn, sceneOut } from './motion';
   import HandoutTabs from './HandoutTabs.svelte';
+  import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
@@ -70,6 +71,8 @@
       </div>
     {/snippet}
   </HandoutTabs>
+</div>
+<FooterActions>
   <div class="actions">
     <span class="clock">{clock}</span>
     {#if done}
@@ -81,15 +84,14 @@
       {STRINGS[done ? 'handout.waiting' : 'handout.done']}
     </NextButton>
   </div>
-</div>
+</FooterActions>
 
 <style>
-  /* Fills the area under the band: the tabs and their text, the actions under them. */
+  /* Fills the area between the band and the footer with the tabs and their text. */
   .handout {
     min-height: 0;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 0.6em;
+    grid-template-rows: minmax(0, 1fr);
   }
   .fields {
     display: grid;
@@ -121,7 +123,7 @@
   input:disabled {
     color: var(--color-text);
   }
-  /* Time left, then the two buttons, together in one row under the column. */
+  /* Time left, then the two buttons, together in one row in the footer. */
   .actions {
     display: flex;
     justify-content: center;
@@ -134,13 +136,13 @@
     color: var(--color-text-quiet);
     font-variant-numeric: tabular-nums;
   }
-  /* Asking for more time, or taking back done, is not the next step, so it is white, not filled. */
+  /* Asking for more time, or taking back done, is not the next step: on the page colour, not filled. */
   .quiet {
     margin: 0;
     padding: 0.45em 0.8em;
     border: none;
     border-radius: 999px;
-    background: var(--color-bubble);
+    background: var(--color-bg);
     color: var(--color-text);
     font: inherit;
     cursor: pointer;

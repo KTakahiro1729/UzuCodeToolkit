@@ -1,11 +1,12 @@
 <!--
   The screen of a phase with no game of its own (emptyPhase()): optional story text, such as an
-  introduction, and under it the next button, which every player can tap. Without text it is a
-  placeholder for a phase not made yet. The band's label names the phase.
+  introduction, and the next button in the footer, which every player can tap. Without text it
+  is a placeholder for a phase not made yet. The band's label names the phase.
 -->
 <script lang="ts">
   import type { PhaseViewProps } from '../flow';
   import { sceneIn, sceneOut } from './motion';
+  import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
@@ -21,11 +22,13 @@
       {#each paragraphs as p}<p>{p}</p>{/each}
     </div>
   {/if}
-  <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
 </div>
+<FooterActions>
+  <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
+</FooterActions>
 
 <style>
-  /* The text and the button under it, centred as one; the button alone without text. */
+  /* The text, centred. */
   .empty {
     align-self: center;
     justify-self: center;

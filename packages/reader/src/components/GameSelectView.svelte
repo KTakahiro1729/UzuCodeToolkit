@@ -1,7 +1,7 @@
 <!--
   The game-select phase's screen (gameSelectPhase()). Choosing: the games this many players can
-  play, then the next button. Playing: the game's own screen; the band names the game. Once the
-  game is done, a back button under it returns to the list; there is none before. The game's
+  play, and the next button in the footer. Playing: the game's own screen; the band names the game. Once the
+  game is done, a back button in the footer returns to the list; there is none before. The game's
   screen gets only the seats that play it as `parts`; a spectator (gameSelectPhase's
   `spectator`, passed here too) sees it with `me` not among them.
 -->
@@ -11,6 +11,7 @@
   import type { GameView } from '../games';
   import { band } from '../store.svelte';
   import { sceneIn, sceneOut } from './motion';
+  import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
@@ -52,7 +53,9 @@
         />
       </div>
       {#if over}
-        <NextButton onclick={() => send('back')}>{STRINGS['button.back']}</NextButton>
+        <FooterActions>
+          <NextButton onclick={() => send('back')}>{STRINGS['button.back']}</NextButton>
+        </FooterActions>
       {/if}
     </div>
   {/key}
@@ -63,12 +66,14 @@
         <li><button type="button" class="choice" onclick={() => send('pick', { id: g.id })}>{g.label}</button></li>
       {/each}
     </ul>
-    <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
   </div>
+  <FooterActions>
+    <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
+  </FooterActions>
 {/if}
 
 <style>
-  /* The list and the next button, centred as one group. */
+  /* The list, centred. */
   .choosing {
     display: flex;
     flex-direction: column;
@@ -88,7 +93,7 @@
     overflow-y: auto;
     list-style: none;
   }
-  /* Two columns on a wide, short screen, so the list fits above the next button. */
+  /* Two columns on a wide, short screen, so the list fits. */
   @media (orientation: landscape) {
     ul {
       display: grid;
@@ -110,18 +115,14 @@
     border-radius: 0.6em;
     background: var(--color-bubble);
   }
-  /* The game fills the screen; the back button sits under it. */
+  /* The game fills the screen; the back button is in the footer. */
   .playing {
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 0.6em;
+    grid-template-rows: minmax(0, 1fr);
     min-height: 0;
   }
   .game {
     display: grid;
     min-height: 0;
-  }
-  .playing > :global(button) {
-    justify-self: center;
   }
 </style>
