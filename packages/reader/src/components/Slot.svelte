@@ -57,7 +57,7 @@
     align-items: center;
     justify-content: center;
     margin: 0;
-    padding: 0 0.15em;
+    padding: 0 0.1em;
     border: none;
     background: none;
     color: var(--color-text-quiet);

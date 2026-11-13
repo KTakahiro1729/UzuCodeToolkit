@@ -9,4 +9,6 @@
 
 - The time item shows no clock mark (the name 残り says what the number is), so the room goes to the digits; the pause item is named 停止 because 一時停止 plus the clock and the extension leave the main button too little room on a 390px screen. The row's gaps and the button's side padding are tighter for the same reason, on every screen.
 
+- The main button has one fixed width (7.4em of the footer's text size) in every state and phase, at the right end; the label and note wrap inside it. Items and notes adapt to it, not the other way round.
+
 Not taken: a time that is not at a fixed place. Where it shows: `HandoutView`, `Slot`, `FooterActions`, `strings.json`, `docs/design.md` (Footer).

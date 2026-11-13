@@ -53,9 +53,10 @@
     /* Room for a label and a note, so the footer never changes height; also 9mm or more to tap at the screen's edge. */
     min-height: 3.5em;
   }
+  /* The main button has one width in every state and phase, so it stays where the thumb expects it. */
   .actions > :global(button:last-child) {
-    flex: 1 1 5em;
-    min-width: 5em;
+    flex: none;
+    width: 7.4em;
   }
   /*
    * Two or more buttons that could each be the main one are fused into a single capsule: the

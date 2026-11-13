@@ -47,7 +47,7 @@
 <style>
   /* The time left: large and dark, the one number to watch; quiet while paused. */
   :global(.slot.time .clock) {
-    font-size: 1.45em;
+    font-size: 1.3em;
     font-weight: 700;
     line-height: 1.1;
     color: var(--color-text);
