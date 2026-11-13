@@ -1,5 +1,5 @@
 // Writes a layout definition (docs/design/layout.md) out as slides to move boxes on.
-// One slide per scene, at the reference size; each box holds "label id width×height".
+// One slide per scene, at the reference size; each box holds "label id".
 // A pptx has one slide size, so each orientation gets its own file:
 // layout.pptx when the layout has one orientation, else layout-landscape.pptx and layout-portrait.pptx.
 import { readFileSync } from 'node:fs';
@@ -20,8 +20,8 @@ const COLORS = {
 };
 
 /** The text a box carries; the importer reads the id from here. */
-export function boxText(label, id, w, h) {
-  return `${label} ${id} ${w}×${h}`;
+export function boxText(label, id) {
+  return `${label} ${id}`.trim();
 }
 
 /** The orientations a layout supports, in a fixed order. */
@@ -38,12 +38,12 @@ export function buildDeck(layout, orientation) {
   pptx.layout = `${layout.screen}-${orientation}`;
   pptx.title = `${layout.screen} ${orientation}`;
 
-  // A box too small for its caption keeps only "id size" on one line at 7pt; the id is the key
+  // A box too small for its caption keeps only the id on one line at 7pt; the id is the key
   // the importer reads, so it is never dropped.
   const addBox = (slide, id, label, rect, c, opts = {}) => {
     const [x, y, w, h] = rect;
     const small = w < 80 || h < 30;
-    slide.addText(boxText(small ? '' : label, id, w, h).trim(), {
+    slide.addText(boxText(small ? '' : label, id), {
       x: inch(x), y: inch(y), w: inch(w), h: inch(h),
       shape: pptx.ShapeType.rect,
       fill: { color: c.fill, transparency: opts.transparency ?? 0 },

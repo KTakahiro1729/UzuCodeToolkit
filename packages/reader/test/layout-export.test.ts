@@ -45,7 +45,7 @@ function expectBoxes(layout: ScreenLayout, o: Orientation, slides: Box[][]): voi
       const b = slides[i]![j]!;
       expect([b.x, b.y, b.w, b.h].map(Math.round)).toEqual([...rect]);
       expect(b.text.split(' ')).toContain(id);
-      expect(b.text.endsWith(`${rect[2]}×${rect[3]}`)).toBe(true);
+      expect(b.text).not.toMatch(/\d+×\d+/);
     });
   });
 }
@@ -84,6 +84,6 @@ describe('layout export to slides', () => {
     const tag = xml.split('<p:sp>').find((sp) => sp.includes('name="tag"'))!;
     expect(tag).toContain('wrap="none"');
     expect(tag).toContain('sz="700"');
-    expect(tag).toContain('<a:t>tag 150×24</a:t>');
+    expect(tag).toContain('<a:t>tag</a:t>');
   });
 });
