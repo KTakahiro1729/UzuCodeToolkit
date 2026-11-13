@@ -145,6 +145,22 @@ Decoration is out of scope, but it must not break the rules above:
   screen. When the players need more than the right half (several players on
   an upright phone), the label gives way to the left, keeping a gap.
 
+### Footer
+
+- A work of more than one phase has a footer: a full-width white row along the
+  bottom edge (`--footer-h` above the safe area), the band's counterpart, the
+  same in both orientations. A one-phase work (the samples) has none.
+- It holds only entries for reading back, never for moving the game on: the
+  phase list (always) and, once the game has left a phase whose content stays
+  readable (`PhaseView.keep`, the handouts), that content. Buttons start at the
+  content's left edge, away from the centred advance button.
+- An entry opens a sheet over the current screen, for this player alone; the
+  screen keeps running under it and the sheet hides it fully. The open entry's
+  button sits on the page colour in bold. The sheet's title and a close button
+  share its top row; tapping the open entry again also closes it.
+- A phase change closes the sheet, so a new screen (or your turn) is never
+  hidden under it.
+
 ### Dialogue line (read-through only)
 
 - The speaker's small icon and name on one row, the bubble under them. Your
