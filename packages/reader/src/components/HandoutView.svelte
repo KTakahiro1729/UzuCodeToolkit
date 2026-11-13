@@ -1,12 +1,13 @@
 <!--
   Handout (HO) phase. The handout in tabs (./HandoutTabs.svelte), the last tab holding the
-  settings your part fills in. In the footer, always in view: the time left (lower row), the button asking for
-  more time, and the button that says you are done. That button stays greyed until every setting
+  settings your part fills in. In the footer, always in view: the time left (upper row), the button asking for
+  more time, and the next button that says you are done. That button stays greyed until every setting
   is filled in (optional ones may stay blank), and a dot on the settings tab shows where. Once
-  tapped it keeps its name, greyed with a tick; your settings are locked, the band checks your
-  icon (PhaseView.done), and the extension button gives way to a separate button that takes done
-  back. The phase ends when everyone is done or the time
-  runs out (the server's deadline). Settings are sent as you type, so time running out loses none.
+  tapped it keeps its name, red-outlined with a tick (tapping it again takes done back); your
+  settings are locked and the extension button is greyed. Who is done is not shown while reading.
+  Tapping a locked setting also takes done back and lets you type. The phase ends when everyone is
+  done or the time runs out (the server's deadline). Settings are sent as you type, so time
+  running out loses none.
 -->
 <script lang="ts">
   import { type Handout, type HandoutState, HANDOUT_VALUE_MAX, settingsOf } from '@uzu-toolkit/kit';
@@ -63,25 +64,28 @@
     {#snippet fields()}
       <div class="fields">
         {#each settings as f (f.id)}
-          <!-- Locked once done: the value shows as text, so nothing looks writable. -->
           <label>
             <span>{f.label}{#if f.optional}<span class="optional">{STRINGS['handout.optional']}</span>{/if}</span>
-            {#if done}
-              <span class="value" class:blank={!value(f.id).trim()}>{value(f.id).trim() || STRINGS['handout.blank']}</span>
-            {:else}
-              <!-- Grows with what is typed, so the example and long answers show whole. -->
-              <textarea
-                rows="1"
-                maxlength={HANDOUT_VALUE_MAX}
-                placeholder={f.example && STRINGS['handout.example'] + f.example}
-                value={value(f.id)}
-                oninput={(e) => {
-                  typed[f.id] = e.currentTarget.value.replace(/\n/g, '');
-                  commit(f.id);
-                }}
-                onkeydown={(e) => e.key === 'Enter' && e.preventDefault()}
-              ></textarea>
-            {/if}
+            <!-- Grows with what is typed, so the example and long answers show whole. Once done it
+                 is locked but stays a field; tapping it takes done back and lets you type. -->
+            <textarea
+              rows="1"
+              readonly={done}
+              class:locked={done}
+              maxlength={HANDOUT_VALUE_MAX}
+              placeholder={done ? STRINGS['handout.blank'] : f.example && STRINGS['handout.example'] + f.example}
+              value={value(f.id)}
+              onclick={(e) => {
+                if (!done) return;
+                send('unready');
+                e.currentTarget.focus();
+              }}
+              oninput={(e) => {
+                typed[f.id] = e.currentTarget.value.replace(/\n/g, '');
+                commit(f.id);
+              }}
+              onkeydown={(e) => e.key === 'Enter' && e.preventDefault()}
+            ></textarea>
           </label>
         {/each}
       </div>
@@ -91,16 +95,10 @@
 <!-- The time left is state, so it sits in the footer's lower row; the buttons in the upper one. -->
 <FooterActions place="status"><span class="clock">{clock}</span></FooterActions>
 <FooterActions>
-  <div class="actions">
-    {#if done}
-      <Button variant="secondary" onclick={() => send('unready')}>{STRINGS['handout.unready']}</Button>
-    {:else}
-      <Button variant="secondary" onclick={() => send('extend')}>{STRINGS['handout.extend']}</Button>
-    {/if}
-    <NextButton disabled={done || !filled} onclick={finish}>
-      {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['handout.done']}
-    </NextButton>
-  </div>
+  <Button variant="secondary" disabled={done} onclick={() => send('extend')}>{STRINGS['handout.extend']}</Button>
+  <NextButton on={done} disabled={!done && !filled} onclick={() => (done ? send('unready') : finish())}>
+    {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.next']}
+  </NextButton>
 </FooterActions>
 
 <style>
@@ -141,6 +139,11 @@
   textarea::placeholder {
     color: var(--color-text-quiet);
   }
+  /* Done: the same field on the page's grey, so it reads as set and not as a greyed-out control. */
+  textarea.locked {
+    background: var(--color-bg);
+    cursor: pointer;
+  }
   textarea:focus-visible {
     outline: 2px solid var(--color-mine-current);
   }
@@ -149,23 +152,11 @@
     padding-inline-start: 0.6em;
     color: var(--color-text-quiet);
   }
-  .blank {
-    color: var(--color-text-quiet);
-  }
-  /* Time left, then the two buttons, together in one row in the footer. */
-  .actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.6em;
-    font-family: var(--font-ui);
-  }
   .clock {
     color: var(--color-text-quiet);
     font-variant-numeric: tabular-nums;
   }
-  /* Done: the button keeps its name, greyed with a tick, so it reads as pressed. */
+  /* Done: the button keeps its name, red-outlined with a tick, so it reads as pressed. */
   .tick {
     width: 0.8em;
     height: 0.7em;
