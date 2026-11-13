@@ -43,6 +43,7 @@ export { default as FlowApp } from './components/FlowApp.svelte';
 export { default as Frame } from './components/Frame.svelte';
 export { default as TopBand } from './components/TopBand.svelte';
 export { default as FooterActions } from './components/FooterActions.svelte';
+export { default as Slot } from './components/Slot.svelte';
 export { default as PhaseList } from './components/PhaseList.svelte';
 export { provideFlow, type FlowInfo } from './flowContext';
 export { default as Sheet } from './components/Sheet.svelte';

@@ -63,9 +63,11 @@ export const PARTS = [
   ['.list li .name', 'ゲーム名'],
   ['.list li .about', 'ゲームの説明'],
   ['.playing', '遊んでいるゲーム'],
-  ['footer .opts', 'フッターの下段'],
-  ['footer .opts .status', '下段の状態表示'],
+  ['footer .opts', 'フッターの上の行（古い形の状態の行）'],
+  ['footer .opts .status', '上の行の状態表示'],
   ['header .phase .more', '場面名の矢印'],
+  ['footer .slot', 'フッターの項目（延長・読み返し・残り時間）'],
+  ['footer .note', 'ボタンの中の一文'],
 ];
 
 /**

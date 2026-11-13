@@ -54,14 +54,12 @@
   <TopBand {parts} {myPart} {done} {phase} {onphase} {phaseOpen} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
   <footer bind:offsetHeight={footerHeight}>
-    <!-- The upper row, slim: read-back buttons at the left, the state (the time left) at the right. -->
-    <div class="opts">
-      {#if nav}<nav>{@render nav()}</nav>{/if}
-      <div class="cell status" bind:this={footerSlots.status}></div>
-    </div>
-    <!-- The lower row, the main one: the screen's actions, the one to press now at the right. -->
+    <!-- Above the row, only while something is in it: the older line of state (FooterActions place="status"). -->
+    <div class="opts"><div class="cell status" bind:this={footerSlots.status}></div></div>
+    <!-- One row: the items (read-back buttons, more time, the time left) at the left, the main button at the right, the one to press now. -->
     <div class="act">
-      <div class="cell" bind:this={footerSlots.aside}></div>
+      {#if nav}<nav>{@render nav()}</nav>{/if}
+      <div class="cell aside" bind:this={footerSlots.aside}></div>
       <div class="cell main" bind:this={footerSlots.main}></div>
     </div>
   </footer>
@@ -142,10 +140,9 @@
     }
   }
   /*
-   * The footer, white and full width along the bottom edge as the band's counterpart, in two
-   * rows. Upper, slim: options and state, the read-back buttons at the left and the time left at
-   * the right. Lower, the main row: the screen's actions with big buttons, quieter ones at the left
-   * and the one to tap now at the right edge, where the thumb rests.
+   * The footer, white and full width along the bottom edge as the band's counterpart, in one
+   * row: the items at the left (read-back buttons, more time, the time left), and the main button
+   * with room for a note, taking the rest, at the right edge, where the thumb rests.
    */
   footer {
     position: fixed;
@@ -165,7 +162,15 @@
     grid-row: 2;
     display: flex;
     align-items: stretch;
-    gap: 0.6em;
+    gap: 0.4em;
+    /* On a wide screen the row keeps to the thumb's side, so the main button is not a bar across the screen. */
+    width: 100%;
+    max-width: 34em;
+    justify-self: end;
+  }
+  .act > nav,
+  .act > .aside {
+    flex: none;
   }
   /* The main cell takes the room, so its last button can be wide. */
   .act > .main {
@@ -176,12 +181,14 @@
     grid-column: 1 / -1;
     grid-row: 1;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     gap: 0.6em;
-    min-height: 1.6em;
     font-family: var(--font-ui);
     color: var(--color-text-quiet);
+  }
+  .opts:has(> .cell:empty) {
+    display: none;
   }
   nav {
     display: flex;

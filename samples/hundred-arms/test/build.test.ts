@@ -7,8 +7,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-/** The whole output, measured on 2026-11-13 at about 145 KB, with a little room. */
-const MAX_BYTES = 160 * 1024;
+/** The whole output, measured on 2026-11-13 at about 160 KB (the footer with a note in its button and items beside it added 2 KB), with a little room. */
+const MAX_BYTES = 165 * 1024;
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const cardNames = readdirSync(fileURLToPath(new URL('../../../packages/reader/src/cards', import.meta.url)))

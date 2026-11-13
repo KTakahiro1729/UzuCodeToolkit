@@ -55,7 +55,7 @@ export interface HandoutState {
 }
 
 /** What one request for more time adds. */
-export const EXTENSION_MS = 2 * 60_000;
+export const EXTENSION_MS = 60_000;
 
 /** Longest value a setting takes. */
 export const HANDOUT_VALUE_MAX = 40;

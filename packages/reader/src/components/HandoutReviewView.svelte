@@ -45,9 +45,8 @@
     <HandoutSheet {handout} state={handoutState} part={who} {names} ownLabel={STRINGS['handout.body']} {guide} memory="review" />
   {/if}
 </div>
-{#if !last}<FooterActions place="status"><span>{STRINGS['status.anyoneNext']}</span></FooterActions>{/if}
 <FooterActions>
-  <NextButton onclick={() => send('next')}>{STRINGS[last ? 'button.end' : 'button.next']}</NextButton>
+  <NextButton note={last ? undefined : STRINGS['status.anyoneNext']} onclick={() => send('next')}>{STRINGS[last ? 'button.end' : 'button.nextPhase']}</NextButton>
 </FooterActions>
 
 <style>

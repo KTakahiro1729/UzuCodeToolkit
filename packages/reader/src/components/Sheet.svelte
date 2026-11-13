@@ -1,8 +1,10 @@
 <!--
   A page opened from the footer over the current screen, which keeps running under it: a panel
-  floating above the screen with its title and a close button in one row, the content under
-  them. The screen stays in view behind it, dimmed, so the reader keeps their place; tapping the
-  dimmed part closes the sheet like the close button does. Fades in and out (opacity only).
+  rising from the footer, its bottom edge flush against it and the sides at the screen's edge
+  (where the screen is narrow enough), only the top corners round, with its title and a close
+  button in one row, the content under them. The screen stays in view behind it, dimmed, so the
+  reader keeps their place; tapping the dimmed part closes the sheet like the close button does.
+  Slides up and fades in, and the reverse (transform and opacity only).
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
@@ -12,7 +14,9 @@
   import STRINGS from '../strings';
 
   let { title, onclose, children }: { title: string; onclose: () => void; children: Snippet } = $props();
-  const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150;
+  const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
+  /** Rises from a little below its place while it fades in (transform and opacity only), and the reverse. */
+  const rise = (_node: Element) => ({ duration, css: (t: number) => `opacity: ${t}; transform: translateY(${(1 - t) * 2}em)` });
 
   /**
    * The sheet is a modal: while it shows, the screen under it cannot be reached by keyboard or
@@ -35,11 +39,11 @@
 
 <svelte:window onkeydown={(e) => e.key === 'Escape' && onclose()} />
 
-<section transition:fade={{ duration }} use:modal>
+<section use:modal>
   <!-- Escape and the close button are the keyboard's ways out; the dimmed screen is a tap target only. -->
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-  <div class="scrim" data-overflow-ok onclick={onclose}></div>
-  <div class="panel">
+  <div class="scrim" data-overflow-ok transition:fade|global={{ duration }} onclick={onclose}></div>
+  <div class="panel" transition:rise|global>
     <div class="head">
       <h2>{title}</h2>
       <Button variant="secondary" onclick={onclose}>{STRINGS['sheet.close']}</Button>
@@ -72,15 +76,17 @@
     box-sizing: border-box;
     align-self: end;
     justify-self: center;
-    width: 100%;
+    /* Out over the screen's padding, so the bottom and the sides sit against the footer and the edges. */
+    width: calc(100% + 1.6em);
     max-width: 32em;
-    height: calc(100% - 2.2em);
+    translate: 0 0.5em;
+    height: calc(100% - 1.2em);
     min-height: 0;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     gap: 0.6em;
     padding: 0.6em 0.8em;
-    border-radius: var(--radius-read);
+    border-radius: var(--radius-read) var(--radius-read) 0 0;
     background: var(--color-bg);
   }
   /* The content fills the rest; content that does not scroll by itself scrolls here. */
