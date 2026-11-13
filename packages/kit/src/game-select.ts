@@ -48,8 +48,8 @@ export function playersFor(
 }
 
 /**
- * The phase over `games`. Actions: `pick { id }` starts a game, `back` drops it and returns to
- * the list (at any time, so a game with no end never traps the players), `next` ends the phase
+ * The phase over `games`. Actions: `pick { id }` starts a game, `back` drops a game that is done
+ * and returns to the list (not before: a game runs to its end), `next` ends the phase
  * from the list. A game's own actions are `${gameId}.${name}`, rejected unless that game is
  * being played, and from a seat that sits it out. Games get only the seats that play them as
  * `parts` (see playersFor() and `spectator`). A game that is done stays on screen, showing its
@@ -73,7 +73,9 @@ export function gameSelectPhase(
       state.play = game.logic.setup(players, time);
     },
     back({ state }) {
-      if (state.game === null) throw new Error('no game is being played');
+      const game = games.find((g) => g.id === state.game);
+      if (!game) throw new Error('no game is being played');
+      if (!game.logic.done(state.play)) throw new Error('the game is not over');
       state.game = null;
       state.play = null;
       state.players = null;

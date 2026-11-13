@@ -57,6 +57,7 @@ describe('gameSelectPhase', () => {
     serverSend(state, 'idle:cards.deal');
     expect(phase(state).play).toMatchObject({ hands: { 'seat-a': ['KC', 'JC'], 'seat-b': ['QC', 'TC'] } });
     send(state, 'idle:cards.show', {}, 'seat-a');
+    expect(() => send(state, 'idle:back')).toThrow();
     send(state, 'idle:cards.show', {}, 'seat-b');
     expect(phase(state).game).toBe('cards');
     send(state, 'idle:back');

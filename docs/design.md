@@ -229,11 +229,12 @@ Decoration is out of scope, but it must not break the rules above:
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
-- While a game is played, the game fills the screen, the band names it, and a
-  back button sits under it. Back is plain quiet text while the game runs and
-  becomes the filled button once the game is done, since going back is then
-  the one thing left to do. Back works at any time, so a game with no end
-  never traps the players.
+- While a game is played, the game fills the screen and the band names it.
+  There is no way back while it runs (owner's decision: the only way back in
+  the work is the step after the handouts). Once the game is done, its result
+  stays and the back button appears under it.
+- On a landscape screen the list has two columns, so it fits above the next
+  button without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Other screens

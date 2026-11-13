@@ -1,8 +1,9 @@
 <!--
   The game-select phase's screen (gameSelectPhase()). Choosing: the games this many players can
-  play, then the next button. Playing: the game's own screen with a back button under it; the
-  band names the game. Back is quiet while the game runs and becomes the filled button once the
-  game is done, since going back is then the one thing left to do.
+  play, then the next button. Playing: the game's own screen; the band names the game. Once the
+  game is done, a back button under it returns to the list; there is none before. The game's
+  screen gets only the seats that play it as `parts`; a spectator (gameSelectPhase's
+  `spectator`, passed here too) sees it with `me` not among them.
 -->
 <script lang="ts">
   import { gameAction, type GameSelectState, playersFor } from '@uzu-toolkit/kit';
@@ -52,8 +53,6 @@
       </div>
       {#if over}
         <NextButton onclick={() => send('back')}>{STRINGS['button.back']}</NextButton>
-      {:else}
-        <button type="button" class="quiet" onclick={() => send('back')}>{STRINGS['button.back']}</button>
       {/if}
     </div>
   {/key}
@@ -89,6 +88,14 @@
     overflow-y: auto;
     list-style: none;
   }
+  /* Two columns on a wide, short screen, so the list fits above the next button. */
+  @media (orientation: landscape) {
+    ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: min(100%, 24em);
+    }
+  }
   button {
     margin: 0;
     border: none;
@@ -113,12 +120,6 @@
   .game {
     display: grid;
     min-height: 0;
-  }
-  .quiet {
-    justify-self: center;
-    padding: 0.45em 1.2em;
-    background: none;
-    color: var(--color-text-quiet);
   }
   .playing > :global(button) {
     justify-self: center;
