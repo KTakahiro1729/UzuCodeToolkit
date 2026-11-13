@@ -102,7 +102,7 @@
     justify-content: center;
     gap: 0.3em;
     white-space: nowrap;
-    /* A seven-character label (次のフェーズへ) must fit the fixed button width. */
+    /* An eight-character label (このゲームで遊ぶ) must fit the fixed button width. */
     font-size: 0.92em;
   }
   /* The sentence under the label: quiet, no smaller than 16px, free to wrap on a narrow button. */
