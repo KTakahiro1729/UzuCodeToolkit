@@ -79,12 +79,12 @@ export const LAYOUT: Record<Orientation, StageLayout> = {
 };
 
 /**
- * Nameplate ①'s width by what it holds, the same in both orientations. The short one (a name
- * alone) is what is left of the guide's nameplate ② position (x187 landscape, x135 portrait)
- * after the 10px gap; the guide's own text gives another value for it, 78, which does not match
- * those positions. A longer name makes the plate grow and ② gives way.
+ * Nameplate ①'s least width by what it holds. A name alone has none: the plate fits its name (the
+ * guide says its width follows the name's length, 78 in its template) and ② follows 10px after it
+ * and takes the rest of the row. The guide's x187 (landscape) and x135 (portrait) for ② in that
+ * case do not agree with 78 (84 + 78 + 10 = 172), so only the two fixed widths are kept as numbers.
  */
-export const NAME_WIDTH = { full: 190, short: 93, narration: 116 } as const;
+export const NAME_WIDTH = { full: 190, narration: 116 } as const;
 /** The space between the two nameplates. */
 export const NAME_GAP = 10;
 

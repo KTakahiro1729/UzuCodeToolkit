@@ -45,8 +45,9 @@ describe('the guide layout', () => {
       const second = (first: number): [number, number] => [x + first + NAME_GAP, w - first - NAME_GAP];
       // ② with the next mark and name alone: x284 and 190 wide landscape, x232 and 138 portrait.
       expect([second(NAME_WIDTH.full)[0], L.nextTagWidth]).toEqual(o === 'landscape' ? [284, 190] : [232, 138]);
-      // ② with the next line (another speaks, you are next): x187 landscape, x135 portrait.
-      expect(second(NAME_WIDTH.short)).toEqual(o === 'landscape' ? [187, 603] : [135, 235]);
+      // ② with the next line (another speaks, you are next) follows ①'s own width, 10px after it, and takes the rest of the row
+      // (the guide: x187 and 603 wide landscape, x135 and 235 portrait, with its template's 78-wide ①).
+      expect(right(L.names) - second(78)[0]).toBe(second(78)[1]);
       // ② in the narration another reads: x210 and 580 wide, x158 and 212.
       expect(second(NAME_WIDTH.narration)).toEqual(o === 'landscape' ? [210, 580] : [158, 212]);
     });

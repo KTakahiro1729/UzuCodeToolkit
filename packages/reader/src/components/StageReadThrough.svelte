@@ -51,8 +51,8 @@
   const heading = $derived(LINES.slice(0, progress.index + 1).reverse().find((l) => l.scene)?.scene);
   const next = $derived(scene?.next ? LINES[scene.next.index] : undefined);
 
-  // Nameplate ①'s least width: yours holds the name and "your turn"; narration is a little wider than a bare name.
-  const w1 = $derived(scene?.mine ? NAME_WIDTH.full : scene?.direction ? NAME_WIDTH.narration : NAME_WIDTH.short);
+  // Nameplate ①'s least width: yours holds the name and "your turn"; narration is a little wider than a bare name; another's name alone fits the name.
+  const w1 = $derived(scene?.mine ? NAME_WIDTH.full : scene?.direction ? NAME_WIDTH.narration : 0);
 
   // Your tap on the next button.
   function advance(): void {
