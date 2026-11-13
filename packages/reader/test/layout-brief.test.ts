@@ -5,8 +5,15 @@ import { buildBrief, DEFAULT_LAYOUT, imageList, pickOrientation } from '../../..
 const layout = JSON.parse(readFileSync(DEFAULT_LAYOUT, 'utf8'));
 
 describe('image order sheet', () => {
-  it('the sheet for the read-through, landscape, world left open', () => {
-    expect(buildBrief(layout)).toMatchSnapshot();
+  it('the sheet kept in docs/ is the one the tool writes (npm run layout:brief -- --out docs/image-brief/read-through.md)', () => {
+    const kept = readFileSync(new URL('../../../docs/image-brief/read-through.md', import.meta.url), 'utf8');
+    expect(kept).toBe(buildBrief(layout));
+  });
+
+  it('the sheet stands alone: it names no command and says the design policy is out of scope', () => {
+    const sheet = buildBrief(layout);
+    expect(sheet).not.toMatch(/npm |node |\.mjs/);
+    expect(sheet).toContain('デザイン方針の文書は、機能面の決まりであり、この発注書の対象外');
   });
 
   it('the world text goes into the world hole', () => {
@@ -44,10 +51,10 @@ describe('image order sheet', () => {
     ]);
   });
 
-  it('asks for a flat green background, not a transparent one', () => {
+  it('asks for alpha PNGs, with no workaround for opaque output', () => {
     const sheet = buildBrief(layout);
-    expect(sheet).toContain('#00FF00');
-    expect(sheet).not.toMatch(/背景を透明/);
+    expect(sheet).toContain('アルファ（透過）付きの PNG');
+    expect(sheet).not.toContain('#00FF00');
   });
 
   it('only the nameplate stretches, and only the full-screen image is opaque', () => {
