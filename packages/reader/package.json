@@ -8,6 +8,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./cards": "./src/cards.ts",
+    "./stage": "./src/stage.ts",
     "./logic": "./src/logic.ts",
     "./dev-harness": "./dev-harness.js"
   },

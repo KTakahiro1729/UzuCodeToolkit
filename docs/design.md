@@ -226,6 +226,12 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 - A seat that sits a game out watches it: it sees only what every player may
   see, and no buttons of the game. The game's screen gets `watching`.
 
+### Stage read-through (UZU's layout)
+
+- The read-through's second screen, on UZU's design guide (`StageReadThrough`; decisions: the-official-read-through-layout-is-a-second-screen, in-the-stage-layout-the-turn-rules-follow-the-guide). One dialogue frame shows the line being read, with the speaker's nameplate above its left edge and the next reader's beside it; the characters stand behind.
+- Your turn: the frame and nameplate ① take your colour, nameplate ① says whose turn it is, and the next button (dark, so it stands out from the frame) is at the frame's lower right. Another's turn: no button; nameplate ② shows the next line, in your colour when you read next. The log link is always at the lower left and opens the log over a dimmed screen, without characters.
+- It is the whole screen: no band, no footer. Sizes come from the guide's reference screen scaled to the screen, text 18px (never under 16px). The numbers are in `stage-layout.ts` and nowhere else.
+
 ### Top band
 
 - A full-width row on a white background that reaches the top edge behind the

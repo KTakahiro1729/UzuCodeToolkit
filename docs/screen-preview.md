@@ -20,6 +20,10 @@ change.
    node tools/screen-preview/capture.mjs samples/yubiwa out.html
    ```
 
+   `--size lower|device|wide|reference` picks the screen size: certification's three (780×360, 844×390 (the
+   default), 1194×834) or UZU's design guide size (874×402), which is none of them. A screen built on the guide
+   is looked at in `reference` and checked in all four.
+
    It needs Playwright with Chromium where it runs (the cloud container has it;
    elsewhere `npx playwright install chromium`). `HARNESS` overrides the
    harness URL (default `http://localhost:10001`). The output defaults to
@@ -75,6 +79,9 @@ sleeps only when a step or screen gives `wait`. A step followed by one that wait
 time, so a screen that reloads (after a reset or a resize) does not make it
 miss. Use `state` to start a screen deep in the game instead of playing up to
 it.
+
+The stage read-through (UZU's layout) has its own list,
+[`packages/reader/preview.stage.config.mjs`](../packages/reader/preview.stage.config.mjs); pass it with `--config`.
 
 A shot list for one piece of work can live in its own file next to the
 sample and be passed with `--config`, leaving the shared config alone. See
