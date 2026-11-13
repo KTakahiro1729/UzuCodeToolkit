@@ -168,12 +168,16 @@ export function flowLogic(
   };
 }
 
-/** A phase whose content is not made yet: over when any player sends `next`. */
-export function emptyPhase(): PhaseLogic<{ next: boolean }> {
+/**
+ * A phase whose content is not made yet: over when any player sends `next`. With `facilitator`
+ * (a part ID) only the player of that part can.
+ */
+export function emptyPhase({ facilitator }: { facilitator?: string } = {}): PhaseLogic<{ next: boolean }> {
   return {
     setup: () => ({ next: false }),
     actions: {
-      next({ state }) {
+      next({ state, part }) {
+        if (facilitator !== undefined && part !== facilitator) throw new Error('not the facilitator');
         state.next = true;
       },
     },

@@ -156,3 +156,4 @@ export function startReader(script: Script, logic: GameLogic<FlowState>, orienta
   });
 }
 export { default as TransitionFooter } from './components/TransitionFooter.svelte';
+export { fitsButton, MAX_BUTTON_TEXT, textWidth } from './fit';

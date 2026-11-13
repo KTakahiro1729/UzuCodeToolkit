@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { GAME_START } from '@uzuhq/code-sdk';
 import { emptyPhase, type FlowState, flowLogic, type PhaseLogic } from '../src';
 
 const ctx = { time: 0 } as never;
@@ -133,5 +134,16 @@ describe('reopen', () => {
     const locked = logic.setup({ players, ctx });
     send(locked, 'read:lock');
     expect(() => send(locked, 'read:reopen')).toThrow();
+  });
+});
+
+describe('emptyPhase with a facilitator', () => {
+  it('lets only the facilitator’s part move the phase on', () => {
+    const logic = emptyPhase({ facilitator: 'a' });
+    const s = logic.setup({}, GAME_START);
+    const args = (part: string) => ({ state: s, playerId: 'x', part, parts: {}, payload: {}, time: GAME_START });
+    expect(() => logic.actions!.next(args('b'))).toThrow();
+    logic.actions!.next(args('a'));
+    expect(logic.done(s)).toBe(true);
   });
 });

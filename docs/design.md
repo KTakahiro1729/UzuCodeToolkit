@@ -268,6 +268,16 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Footer
 
+- **Options on the footer** (a work chooses; the defaults are the plain forms):
+  - The note of a button that waits for others can say how many are left: a work sets
+    `status.waitCount` (such as `あと{n}人`); empty (the default) keeps the plain `status.waitOthers`.
+  - The time left (`TransitionFooter`) is the footer's leftmost item by default, or sits beside the
+    phase label in the band with `clockAt="band"`; pause and more time stay in the footer.
+  - The last 30 seconds of the clock are heavier and darker, with no edge: no red (red is for
+    danger), no motion.
+  - A phase that one part moves on (`emptyPhase({ facilitator })`, view prop `facilitator`) shows
+    the other seats a greyed button with `status.facilitator` (`{name}待ち`). The
+    read-through keeps `status.theirTurn`.
 - The main action area: a full-width white block along the bottom edge, the
   band's counterpart, on every screen, as one row.
 - **The main button** is at the right edge, one fixed width; **it is
@@ -285,10 +295,11 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   The mark never stands alone (▤ ◷ ＋ »): the name is always written. Items go into
   `FooterActions place="aside"`; the open read-back item is bold and underlined.
 - **The note.** A button whose state is not obvious says why in one short sentence under
-  its label, inside the button (`Button` `note`, `status.*` strings): "他の人を待っています"
+  its label, inside the button (`Button` `note`, `status.*` strings): "他の人待ち"
   after you tap ready or done, "相手の番です" while another player reads, "設定が未記入"
-  while the handout's done button is greyed, "ゲームを選ぶと押せます" on the play button,
-  "押すと全員が進みます" on a next-phase button any one player can tap for everyone. A button that
+  while the handout's done button is greyed, "選ぶと押せます" on the play button,
+  "押すと全員進む" on a next-phase button any one player can tap for everyone. The label and the note are one line each: the main button has a fixed width, so each is at most 7 full-width
+  characters (`packages/reader/test/notes.test.ts` fails on a longer `status.*` or `button.*` string; a work's own test calls `fitsButton(label, note)` from `@uzu-toolkit/reader` on its labels). A button that
   can be pressed and says what it does by its label alone has no note: text is read only
   where its absence would leave the player guessing. It states a fact of the screen; it
   never repeats the label or invents a rule. 16px, quiet colour.
