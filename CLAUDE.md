@@ -14,8 +14,8 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 
 | Path | Role |
 |---|---|
-| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`), playing cards (`deck`, `deal`), timers (`secondsLeft`, `formatClock`) and vote counting (`tally`, `soleTop`). Called from both server actions and the view |
-| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `HandoutView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
+| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`), playing cards (`deck`, `deal`), timers (`secondsLeft`, `formatClock`), vote counting (`tally`, `soleTop`) and a phase that waits for everyone (`readyPhase`). Called from both server actions and the view |
+| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `CastView`, `HandoutView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`, `Guide`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
 | `samples/hundred-arms` | Sample work 百本腕と勇者. Two players |
 | `samples/yubiwa` | Sample work 指環 (江戸川乱歩, Aozora Bunko). Two players |
 | `samples/mittsu-no-takara` | Sample work 三つの宝 (芥川龍之介, Aozora Bunko). Three players, two of them doubling roles |
@@ -58,9 +58,9 @@ The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orient
 Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of the characters that work shows, declared in its `src/fonts.css`. No CDN: certification forbids external network access.
 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
-- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and `packages/reader/src/strings.json`.
+- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (listed in `scripts/subset-fonts.sh`; a sample shows no other screen, and every string the subset holds adds weight).
 
-Rebuild a sample's subsets when those characters change, including after editing `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
+Rebuild a sample's subsets when those characters change, including after editing a read-through string in `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
 
 ```bash
 scripts/subset-fonts.sh samples/<name>

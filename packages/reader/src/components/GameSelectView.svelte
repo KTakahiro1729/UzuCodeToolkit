@@ -1,6 +1,6 @@
 <!--
   The game-select phase's screen (gameSelectPhase()). Choosing: the games this many players can
-  play; a tap selects one (on this screen only), and the play button under the list starts it for
+  play, each with how many play, who watches and the game's own line; a tap selects one (on this screen only), and the play button under the list starts it for
   everyone. The next button beside it is white, since leaving the phase is not the next step.
   Playing: the game's own screen, scrolling if it runs long; the band names the game. Under it a
   row is kept from the start, so nothing moves when the back button shows: it is there once the
@@ -12,8 +12,10 @@
   import { gameAction, type GameSelectState, playersFor } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
   import type { GameView } from '../games';
+  import { fill } from '../fill';
   import { band } from '../store.svelte';
   import Button from './Button.svelte';
+  import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
   import STRINGS from '../strings.json';
@@ -28,9 +30,31 @@
     last,
     games,
     spectator,
-  }: PhaseViewProps<GameSelectState> & { games: readonly GameView[]; spectator?: string } = $props();
+    guide,
+    finish,
+  }: PhaseViewProps<GameSelectState> & {
+    games: readonly GameView[];
+    spectator?: string;
+    /** What to do now, at the top of the list. */
+    guide?: string;
+    /** The label of the button that leaves the list for the next phase; `button.next` without one. */
+    finish?: string;
+  } = $props();
 
-  const choices = $derived(games.filter((g) => playersFor(g, parts, spectator)));
+  const choices = $derived(
+    games.flatMap((g) => {
+      const players = playersFor(g, parts, spectator);
+      return players ? [{ game: g, players }] : [];
+    }),
+  );
+  /** Under a game's name: how many play, who watches, and the game's own line. */
+  const about = (players: Record<string, string>, description?: string): string => {
+    const n = Object.keys(players).length;
+    const out = [fill(STRINGS['gameSelect.players'], { n })];
+    if (n < Object.keys(parts).length && spectator) out.push(fill(STRINGS['gameSelect.watches'], { name: names[spectator] }));
+    if (description) out.push(description);
+    return out.join(STRINGS['list.sep']);
+  };
   const playing = $derived(games.find((g) => g.id === phase.game));
   const over = $derived(playing ? playing.logic.done(phase.play) : false);
   const watching = $derived(!(me in (phase.players ?? parts)));
@@ -76,15 +100,19 @@
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
+    {#if guide}<Guide text={guide} />{/if}
     <ul>
-      {#each choices as g (g.id)}
+      {#each choices as { game: g, players } (g.id)}
         <li>
-          <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>{g.label}</Button>
+          <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
+            <span class="name">{g.label}</span>
+            <span class="about" class:on={selected === g.id}>{about(players, g.description)}</span>
+          </Button>
         </li>
       {/each}
     </ul>
     <div class="actions">
-      <Button variant="secondary" onclick={() => send('next')}>{STRINGS['button.next']}</Button>
+      <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.next']}</Button>
       <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
         {STRINGS['game.play']}
       </Button>
@@ -105,7 +133,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5em;
-    width: min(100%, 14em);
+    width: min(100%, 22em);
     max-height: 100%;
     align-self: center;
     margin: 0;
@@ -113,19 +141,38 @@
     overflow-y: auto;
     list-style: none;
   }
-  /* Two columns on a wide, short screen, so the list fits above the buttons. */
+  /* Three columns on a wide, short screen, so the list (two lines a game) fits above the buttons. */
   @media (orientation: landscape) {
     ul {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: min(100%, 24em);
+      grid-template-columns: 1fr 1fr 1fr;
+      width: min(100%, 48em);
     }
   }
   /* A game on the list: a white block as wide as the list, not a round button. */
   li > :global(button) {
     width: 100%;
-    padding: 0.7em 1em;
+    height: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15em;
+    padding: 0.6em 1em;
     border-radius: 0.6em;
+    text-align: left;
+  }
+  /* The name, and under it the quieter line on players and the game. */
+  .name {
+    font-weight: bold;
+  }
+  .about {
+    color: var(--color-text-quiet);
+  }
+  /* On the selected game's fill, the line takes the fill's text colour, for contrast. */
+  .about.on {
+    color: inherit;
+  }
+  .choosing > :global(p) {
+    max-width: 22em;
   }
   .actions {
     display: flex;

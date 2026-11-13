@@ -124,6 +124,28 @@ Decoration is out of scope, but it must not break the rules above:
 
 ## Components
 
+### Guide
+
+- A phase's screen may open with what to do now, in a line or two of UI text
+  at the top (`guide`, the work's own words). It is not shown all the time
+  (owner's decision): it fades out after 8 seconds, keeping its room so
+  nothing moves, and needs no tap: no window to close. Only where players
+  would otherwise guess (why the game waits, what is secret), not to repeat
+  the band.
+
+### Introduction with the cast
+
+- The introduction shows, under its story text, whom you play (`cast.you`,
+  the part's name bold) and every part as a white block: icon, name and one
+  line on who they are (the manifest's description). Yours comes first and
+  takes your role's tint.
+- Under it one ready button (`button.ready`), with no count of who is ready
+  (owner's decision). Once tapped it greys and says `ready.waiting`, and a
+  separate white button (`button.unready`) takes it back: a button says what
+  it does, so taking back is never the same button (owner's decision). The
+  phase moves on when everyone is ready.
+- On a landscape screen the story text and the cast stand side by side.
+
 ### Buttons
 
 - One `Button` everywhere (`packages/reader`). `primary` is the next step,
@@ -253,8 +275,11 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Game select
 
-- The games this many players can play, as a list of white blocks (game
-  names from the work's data). A game that
+- The games this many players can play, as a list of white blocks: the game's
+  name, and under it in the quieter colour how many play, who watches when the
+  spectator sits out, and the game's own line (`description`), joined by
+  `list.sep`. The next button may carry the work's own label (such as
+  暇つぶしを終える), since leaving the list ends the phase. A game that
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
@@ -273,8 +298,8 @@ Decoration is out of scope, but it must not break the rules above:
   there; it never runs under the row.
 - A seat that sits the game out sees `game.watching` in that row, in the
   quieter text colour, until the back button takes its place.
-- On a landscape screen the list has two columns, so it fits above the buttons
-  without scrolling.
+- On a landscape screen the list has three columns, so it fits above the
+  buttons without scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Other screens

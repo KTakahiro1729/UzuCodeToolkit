@@ -16,5 +16,12 @@
   "handout.extend": "延長希望",
   "button.back": "戻る",
   "game.play": "遊ぶ",
-  "game.watching": "観戦中"
+  "game.watching": "観戦中",
+  "cast.you": "あなたは{name}を演じます",
+  "button.ready": "準備できた",
+  "ready.waiting": "ほかの人を待っています",
+  "gameSelect.players": "{n}人",
+  "gameSelect.watches": "{name}は観戦",
+  "list.sep": "・",
+  "button.unready": "取り消す"
 }
