@@ -11,6 +11,7 @@
     variant = 'primary',
     pressed = undefined,
     disabled = false,
+    label = undefined,
     onclick,
     children,
   }: {
@@ -18,12 +19,14 @@
     /** For a choice that stays selected; leave out for a plain button. */
     pressed?: boolean;
     disabled?: boolean;
+    /** The accessible name, for a button whose visible content is a mark alone. */
+    label?: string;
     onclick: () => void;
     children: Snippet;
   } = $props();
 </script>
 
-<button type="button" data-variant={variant} aria-pressed={pressed} {disabled} {onclick}>{@render children()}</button>
+<button type="button" data-variant={variant} aria-pressed={pressed} aria-label={label} {disabled} {onclick}>{@render children()}</button>
 
 <style>
   button {

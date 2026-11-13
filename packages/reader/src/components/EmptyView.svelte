@@ -13,7 +13,7 @@
   // UI strings by key.
   import STRINGS from '../strings.json';
 
-  let { send, text, guide }: PhaseViewProps<{ next: boolean }> & { text?: string; guide?: string } = $props();
+  let { send, text, guide, last }: PhaseViewProps<{ next: boolean }> & { text?: string; guide?: string } = $props();
   // Paragraphs are separated by a blank line.
   const paragraphs = $derived(text ? text.split(/\n{2,}/) : []);
 </script>
@@ -29,7 +29,7 @@
   </div>
 </div>
 <FooterActions>
-  <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
+  <NextButton onclick={() => send('next')}>{STRINGS[last ? 'button.end' : 'button.nextAll']}</NextButton>
 </FooterActions>
 
 <style>

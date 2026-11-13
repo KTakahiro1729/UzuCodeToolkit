@@ -1,6 +1,6 @@
 <!--
   The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design.md, Top band).
-  Centre: the game's phase, in the quieter text colour. Right: every player's part, name under
+  Centre: the game's phase, in the quieter text colour; in a work of several phases a button that opens the phase list. Right: every player's part, name under
   icon, the others left and yours right as in the chat, yours marked with a double circle. A part
   that doubles roles shows its first role's icon; a check marks a player done with a phase
   everyone finishes on their own. It does not signal the turn; the advance button does.
@@ -9,25 +9,41 @@
   import type { Part } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
   import { sceneIn, sceneOut } from './motion';
+  // UI strings by key.
+  import STRINGS from '../strings.json';
 
   let {
     parts,
     myPart,
     done = [],
     phase,
-  }: { parts: readonly Part[]; myPart: string | undefined; done?: readonly string[]; phase: string } = $props();
+    onphase,
+    phaseOpen = false,
+  }: {
+    parts: readonly Part[];
+    myPart: string | undefined;
+    done?: readonly string[];
+    phase: string;
+    /** Makes the phase a button that opens the phase list; leave out for a one-phase work. */
+    onphase?: () => void;
+    /** Whether what the phase button opens is showing. */
+    phaseOpen?: boolean;
+  } = $props();
 
   const shown = $derived(myPart ? [...parts.filter((p) => p.id !== myPart), ...parts.filter((p) => p.id === myPart)] : parts);
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
 
 <header>
-  <div class="phase">
-    <!-- Like the screen under it: the old label fades out, then the new one fades in. -->
-    {#key phase}
-      <span in:sceneIn out:sceneOut>{phase}</span>
-    {/key}
-  </div>
+  <!-- With a way to open the phase list the phase is a pill with a down mark, so it reads as tappable. -->
+  {#if onphase}
+    <button type="button" class="phase" aria-expanded={phaseOpen} onclick={onphase}>
+      {@render label()}
+      <svg class="more" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
+    </button>
+  {:else}
+    <div class="phase">{@render label()}</div>
+  {/if}
   <div class="roles">
     {#each shown as part (part.id)}
       <span class="who">
@@ -44,6 +60,15 @@
     {/each}
   </div>
 </header>
+
+<!-- Like the screen under it: the old label fades out, then the new one fades in. -->
+{#snippet label()}
+  <span class="label">
+    {#key phase}
+      <span in:sceneIn out:sceneOut>{phase}</span>
+    {/key}
+  </span>
+{/snippet}
 
 <style>
   /*
@@ -76,13 +101,43 @@
   }
   .phase {
     grid-column: 2;
-    display: grid;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+    padding: 0.3em 0.8em;
+    border: none;
+    border-radius: 999px;
+    background: none;
     color: var(--color-text-quiet);
+    font: inherit;
     font-size: 18px;
   }
+  button.phase {
+    background: var(--color-bg);
+    color: var(--color-text);
+    cursor: pointer;
+    pointer-events: auto;
+  }
   /* The old and new phase share the cell, one fading out before the other fades in. */
-  .phase > span {
+  .label {
+    display: grid;
+  }
+  .label > span {
     grid-area: 1 / 1;
+  }
+  .more {
+    flex: none;
+    width: 0.6em;
+    height: 0.4em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  button.phase[aria-expanded='true'] .more {
+    transform: scaleY(-1);
   }
   .roles {
     grid-column: 3;

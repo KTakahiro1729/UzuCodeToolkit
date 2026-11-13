@@ -11,9 +11,29 @@
 
   let { title, onclose, children }: { title: string; onclose: () => void; children: Snippet } = $props();
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150;
+
+  /**
+   * The sheet is a modal: while it shows, the screen under it cannot be reached by keyboard or
+   * screen reader (the footer and the band stay usable), focus starts on the close button and
+   * returns to what opened the sheet.
+   */
+  function modal(node: HTMLElement) {
+    const opener = document.activeElement as HTMLElement | null;
+    const covered = [...node.parentElement!.children].filter((el) => el !== node && !el.matches('footer, header'));
+    for (const el of covered) (el as HTMLElement).inert = true;
+    node.querySelector('button')?.focus();
+    return {
+      destroy() {
+        for (const el of covered) (el as HTMLElement).inert = false;
+        opener?.focus();
+      },
+    };
+  }
 </script>
 
-<section transition:fade={{ duration }}>
+<svelte:window onkeydown={(e) => e.key === 'Escape' && onclose()} />
+
+<section transition:fade={{ duration }} use:modal>
   <div class="head">
     <h2>{title}</h2>
     <button type="button" onclick={onclose}>{STRINGS['sheet.close']}</button>

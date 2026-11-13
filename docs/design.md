@@ -210,24 +210,26 @@ Decoration is out of scope, but it must not break the rules above:
   count is shown.
 - Shows the current phase of the game (read-through, afterword, or other) as a
   short label from a key, in every phase (owner's decision), centred on the
-  screen. When the players need more than the right half (several players on
+  screen. In a work of more than one phase the label is a button (a pill with
+  a down mark) that opens the phase list as a sheet. When the players need more than the right half (several players on
   an upright phone), the label gives way to the left, keeping a gap.
 
 ### Footer
 
-- The main action area: a full-width white row along the bottom edge, the
-  band's counterpart, on every screen. Every screen's main action sits in it,
-  centred: the advance button, the next button, the handout's time, extension
-  and done buttons, back to the list after a game, and the way back to the
-  handouts beside the next button. So the thing to press is in the same place
-  in every phase. Screens put them there with `FooterActions`.
-- In a work of more than one phase it also has read-back buttons, quieter
-  than the actions (plain text in the quiet colour): the phase list (always)
-  and, once the game has left a phase whose content stays readable
-  (`PhaseView.keep`, the handouts), that content. Landscape: one row, the
-  read-back buttons at the left, the actions centred on the screen, so the
-  short screen keeps its height. Portrait: the actions in a row of their own,
-  the read-back buttons under them.
+- The main action area: a full-width white block along the bottom edge, the
+  band's counterpart, on every screen, in two rows like a chat input.
+- Upper row, the screen's actions: the advance button, the next button, the
+  handout's extension and done buttons, back to the list after a game, and the
+  way back to the handouts. Quieter actions sit at the left; **the rightmost
+  button is always the one to press now** (the send button of a chat), in
+  every phase. Screens put them there with `FooterActions`.
+- Lower row, options and state: the read-back buttons at the left, quieter
+  than the actions (plain text in the quiet colour): once the game has left a
+  phase whose content stays readable (`PhaseView.keep`, the handouts), that
+  content; the state at the right, such as the handout's time left
+  (`FooterActions place="status"`). The row is there on every screen so the
+  footer does not change height between phases. The phase list is not here: it
+  opens from the band's phase button.
 - A read-back button opens a sheet over the screen, for this player alone;
   the screen keeps running under it and the footer's actions stay usable. The
   open one is bold and underlined, as a chosen tab. The sheet's title and a
