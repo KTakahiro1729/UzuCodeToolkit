@@ -71,7 +71,7 @@
     display: grid;
     gap: 0.3em;
     padding: 1em 1.2em;
-    border-radius: 0.8em;
+    border-radius: var(--radius-read);
     background: var(--color-bubble);
   }
   /* The area's label, on the same left edge as the text it names. */

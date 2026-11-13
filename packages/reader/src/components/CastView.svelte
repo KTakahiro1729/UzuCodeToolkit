@@ -119,7 +119,7 @@
     column-gap: 0.8em;
     align-items: center;
     padding: 0.6em 0.9em;
-    border-radius: 0.6em;
+    border-radius: var(--radius-read);
     background: var(--color-bubble);
   }
   li.mine {

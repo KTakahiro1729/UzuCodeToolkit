@@ -260,8 +260,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   close button share its top row; tapping the open button again also closes
   it. A phase change closes the sheet.
 - Every button says what it does, and whether to press it shows at a glance:
-  filled for the step to take, greyed when it cannot be pressed now, on the
-  page colour for a side action.
+  filled for the step to take, greyed when it cannot be pressed now, outlined
+  for a side action (secondary).
 
 ### Dialogue line (read-through only)
 
@@ -340,11 +340,11 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   button (`handout.extend`), and the done button (`handout.done`). The done
   button is the next step, so it is the filled one; it stays greyed until
   every setting is filled in (a setting marked optional may stay blank). The
-  extension button sits on the page colour, not filled, since it is not the
+  extension button is secondary (outlined, not filled), since it is not the
   next step.
 - Once you tap done, your settings lock: each value shows as plain text
-  without the input's background (`handout.blank` when left empty), so nothing
-  looks writable. The done button keeps its
+  without the input's edge or fill (`handout.blank` when left empty), so
+  nothing looks writable. The done button keeps its
   name, greyed with a tick, so it reads as pressed rather than changed into
   something else; the band checks your icon, so everyone sees who is done
   (no count). The extension button gives way to a separate undo button that
@@ -352,7 +352,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   extension button, until the phase ends.
 - When time runs out, the game moves on. Until anyone acts on the next screen,
   that screen shows the extension button in the footer beside its main
-  action, on the page colour, not filled; it brings everyone back to the handout with
+  action, secondary (outlined, not filled); it brings everyone back to the handout with
   more time. It fades in and out with the screen it sits on, so it never shows
   next to the handout's own extension button.
 - After the phase, the footer's handout button opens the same tabs in a sheet,
@@ -363,7 +363,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Game select
 
-- The games this many players can play, as a list of white blocks: the game's
+- The games this many players can play, as a list of choices (Look by role:
+  an edge, no fill, filled when selected): the game's
   name, and under it in the quieter colour how many play, who watches when the
   spectator sits out, and the game's own line (`description`), joined by
   `list.sep`. The next button may carry the work's own label (such as
@@ -375,7 +376,7 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   play button (`game.play`) in the footer starts it for everyone, and stays
   greyed until a game is selected (owner's decision). One tap by any player
   never starts a game nobody can leave.
-- Beside the play button, the next button (`button.next`) is white: leaving
+- Beside the play button, the next button (`button.next`) is secondary: leaving
   the phase is not the next step on this screen, and it cannot be undone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
@@ -396,7 +397,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   in view.
 - Each entry is a number and the phase's band label. Phases in a row that
   share a label (such as the handouts and the pause after them) are one entry.
-- The current entry is the one with a background (white), in bold. Entries
+- The current entry is bold with a small mark at its start, and no
+  background, so the read-only list never looks like choices. Entries
   already over are in the quieter text colour, with no mark, since sitting
   above the current one already says so. Once the game has ended, every entry
   is over.
