@@ -6,6 +6,7 @@
 <script lang="ts">
   import type { DialogueProgress } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
+  import type { ScreenLayout } from '../layout';
   import { type Script, scenario as scenarioOf } from '../script';
   import { band } from '../store.svelte';
   import Ending from './Ending.svelte';
@@ -20,6 +21,7 @@
     last,
     script,
     screen = ReadThrough,
+    layout,
   }: PhaseViewProps<DialogueProgress> & {
     script: Script;
     /**
@@ -28,6 +30,8 @@
      * work that never uses it does not ship it.
      */
     screen?: typeof ReadThrough;
+    /** The work's own layout definition for a screen laid out from one (`StageReadThrough`); the toolkit's when left out. */
+    layout?: ScreenLayout;
   } = $props();
 
   const scenario = $derived(scenarioOf(script));
@@ -42,5 +46,5 @@
   <Ending {script} onreview={() => (band.label = STRINGS['phase.review'])} />
 {:else}
   {@const Screen = screen}
-  <Screen {scenario} progress={state} myPart={part} final={last} onadvance={(index) => send('advance', { index })} />
+  <Screen {scenario} progress={state} myPart={part} final={last} onadvance={(index) => send('advance', { index })} {...layout ? { layout } : {}} />
 {/if}

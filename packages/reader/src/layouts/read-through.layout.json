@@ -1,0 +1,39 @@
+{
+  "screen": "read-through",
+  "source": "https://docs.code.uzu-app.com/guides/design/reading",
+  "reference": { "landscape": [874, 402], "portrait": [402, 874] },
+  "parts": {
+    "bg": { "label": "背景", "image": "bg", "landscape": [0, 0, 874, 402], "portrait": [0, 0, 402, 874] },
+    "tag": { "label": "状況（日付・時間・章）", "align": "left", "landscape": [206, 18, 150, 24], "portrait": [144, 72, 150, 24] },
+    "c1": { "label": "キャラ① 話している人", "image": "stand-{role}", "landscape": [97, 56, 163, 346], "portrait": [16, 156, 256, 718] },
+    "c2": { "label": "キャラ② 次に話す人", "image": "stand-{role}", "landscape": [297, 69, 163, 333], "portrait": [250, 184, 136, 690] },
+    "solo": { "label": "キャラ 初登場", "image": "stand-{role}", "landscape": [262, 16, 350, 386], "portrait": [16, 120, 370, 754] },
+    "frame": { "label": "セリフ枠", "image": "frame", "landscape": [68, 233, 738, 140], "portrait": [16, 608, 370, 224] },
+    "text": { "label": "セリフ", "align": "left", "landscape": [84, 257, 706, 56], "portrait": [32, 632, 338, 84] },
+    "plate1": { "label": "名札① 話している人", "align": "left", "image": "plate", "stretch": true, "landscape": [84, 217, 190, 32], "portrait": [32, 592, 190, 32] },
+    "plateNarration": { "label": "名札① ナレーション", "align": "left", "image": "plate", "stretch": true, "landscape": [84, 217, 116, 32], "portrait": [32, 592, 116, 32] },
+    "plate2": { "label": "名札② 次", "align": "left", "image": "plate", "stretch": true, "landscape": [284, 217, 190, 32], "portrait": [232, 592, 138, 32] },
+    "log": { "label": "ログ確認", "align": "center", "landscape": [84, 321, 120, 44], "portrait": [32, 780, 120, 44] },
+    "next": { "label": "次へ", "align": "center", "image": "button", "landscape": [670, 321, 120, 44], "portrait": [250, 780, 120, 44] },
+    "panel": { "label": "これまでのセリフ", "image": "panel", "landscape": [68, 56, 738, 317], "portrait": [16, 150, 370, 682] }
+  },
+  "reserved": {
+    "hud": { "label": "UZUのHUD", "landscape": [62, 0, 138, 52], "portrait": [0, 62, 138, 52] },
+    "toast": { "label": "UZUのお知らせ", "landscape": [68, 56, 260, 36], "portrait": [16, 110, 260, 36] }
+  },
+  "margin": {
+    "landscape": { "top": 0, "right": 62, "bottom": 21, "left": 62 },
+    "portrait": { "top": 62, "right": 0, "bottom": 34, "left": 0 }
+  },
+  "scenes": [
+    { "id": 1, "key": "self", "label": "自分が話している", "show": ["bg", "tag", "c2", "c1", "frame", "text", "plate1", "plate2", "log", "next"], "mine": ["frame", "plate1"] },
+    { "id": 2, "key": "other", "label": "相手が話し、自分が次", "show": ["bg", "tag", "c2", "c1", "frame", "text", "plate1", "plate2", "log"], "mine": ["plate2"],
+      "boxes": { "plate1": { "landscape": [84, 217, 93, 32], "portrait": [32, 592, 93, 32] }, "plate2": { "landscape": [187, 217, 603, 32], "portrait": [135, 592, 235, 32] } } },
+    { "id": 3, "key": "first", "label": "キャラ初登場", "show": ["bg", "tag", "solo", "frame", "text", "plate1", "plate2", "log", "next"], "mine": ["frame", "plate1"] },
+    { "id": 4, "key": "narr-self", "label": "ナレーション（自分が読む）", "show": ["bg", "tag", "frame", "text", "plateNarration", "plate2", "log", "next"], "mine": ["frame", "plateNarration"],
+      "boxes": { "plateNarration": { "landscape": [84, 217, 190, 32], "portrait": [32, 592, 190, 32] } } },
+    { "id": 5, "key": "narr-other", "label": "ナレーション（他の人が読む）", "show": ["bg", "tag", "frame", "text", "plateNarration", "plate2", "log"], "mine": ["plate2"],
+      "boxes": { "plate2": { "landscape": [210, 217, 580, 32], "portrait": [158, 592, 212, 32] } } },
+    { "id": 6, "key": "log", "label": "ログ", "show": ["bg", "panel"], "mine": [] }
+  ]
+}

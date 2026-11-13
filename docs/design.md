@@ -97,7 +97,7 @@ Decoration is out of scope, but it must not break the rules above:
   tokens in its own stylesheet, and a colour only its screens use (such as a
   chess board's) becomes a token there too.
 - Every text colour meets WCAG AA (4.5:1) on its background.
-- No gradients, edge fades, shadows or glows.
+- No gradients, edge fades, shadows or glows in what the toolkit draws (its default look). A work's own images (backgrounds, characters, frames, nameplates, buttons) are its look and are free of this; text on them still meets AA.
 - No colour, size or weight that competes with the focus.
 
 ### Look by role
@@ -158,6 +158,7 @@ shows a control is there).
 |---|---|
 | The read-through: chat, dialogue line, stage layout, stage direction, notice, end screen | [design/read-through.md](design/read-through.md) |
 | Top band, footer, `Button`, sheets | [design/chrome.md](design/chrome.md) |
+| A layout definition (parts, boxes, images, scenes), `tools/layout/` | [design/layout.md](design/layout.md) |
 | Handout screens, post-game handouts | [design/handout.md](design/handout.md) |
 | Guide, introduction, empty phase, phase list, phase changes | [design/phases.md](design/phases.md) |
 | Game select, turn marks in games, spectating, the clock | [design/games.md](design/games.md) |

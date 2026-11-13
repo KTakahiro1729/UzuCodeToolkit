@@ -1,0 +1,5 @@
+# The limits on decoration are the toolkit's default look, not a work's images
+
+"No gradients, edge fades, shadows or glows" was written for the toolkit's own neutral look. A work that draws its frame, nameplates, buttons and background as images made for its world is not bound by it; contrast for the text set on them (WCAG AA) still holds, since that is function.
+
+Shows in `docs/design.md` (Limits on decoration).
