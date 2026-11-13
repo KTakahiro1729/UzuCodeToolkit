@@ -5,3 +5,6 @@ export * from './game-select';
 export * from './parts';
 export * from './ruby';
 export * from './handout';
+export * from './clock';
+export * from './votes';
+export * from './ready';

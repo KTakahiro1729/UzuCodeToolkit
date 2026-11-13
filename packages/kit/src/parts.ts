@@ -6,6 +6,8 @@
 export interface Part {
   id: string;
   name: string;
+  /** One line on who the part is (manifest characters[].description), shown when casting. */
+  description?: string;
   /** Role IDs this part reads. */
   roles: readonly string[];
 }
