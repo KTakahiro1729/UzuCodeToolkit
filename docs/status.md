@@ -10,7 +10,7 @@ No open decisions. No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#23](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/23) Read-through: show a long line from its top, align the notice with stage directions | Review, merge | Ready. |
+| [#23](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/23) Read-through: show a long line from its top, align the notice with stage directions | Review, merge | Ready. [Preview](https://claude.ai/artifact/T8ijFpSt74qLqLTVGkRiY2) |
 
 ## Done
 
