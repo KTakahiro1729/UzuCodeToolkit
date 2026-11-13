@@ -1,0 +1,49 @@
+:root {
+  --color-bg: #dfd3bd;
+  --color-text: #291c17;
+  --color-text-quiet: #57423a;
+  --color-bubble: #f7edd8;
+  --color-bubble-mine: #efd5ad;
+  --color-mine-current: #ebc58a;
+  --color-mine-text: #291c17;
+  --color-button-off: #ded3c3;
+  --color-scroll: #967b64;
+  --color-scrim: rgb(25 15 14 / 0.74);
+  --color-line: #795449;
+  --color-field: #fff7e7;
+  --radius-read: 0.25em;
+  --radius-control: 0.2em;
+  --ink-red: #54282d;
+  --paper: #fff7e7;
+}
+
+[data-stage] .line,
+[data-stage] [data-uzu-scroll] {
+  scrollbar-color: var(--color-scroll) transparent;
+}
+
+[data-stage]::before {
+  content: '';
+  position: absolute;
+  top: max(14%, calc(var(--uzu-safe-area-inset-top, 0px) + 0.5em));
+  right: max(12%, calc(var(--uzu-safe-area-inset-right, 0px) + 0.5em));
+  width: min(10vw, 20vh);
+  aspect-ratio: 1;
+  background: url('./art/chitose.webp') center / cover no-repeat;
+  border: 0.2em solid var(--color-line);
+  transform: rotate(2deg);
+  pointer-events: none;
+}
+
+[data-stage]:has([data-log])::before {
+  visibility: hidden;
+}
+
+[data-stage] .rows li[data-mine='true'] .who {
+  color: var(--ink-red);
+}
+
+[data-stage] .next button[data-variant='primary'] {
+  background: var(--ink-red);
+  color: var(--paper);
+}
