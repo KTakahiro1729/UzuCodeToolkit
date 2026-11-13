@@ -6,11 +6,12 @@ Last checked: 2026-11-13 01:40 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
+No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
 | [#15](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/15) Screen preview: numbered, both-orientation pages built from the harness (`tools/screen-preview`) | Review, merge | Ready. |
+| Right margin for items 4–6 | Decision | Options: current 0.8em, 1.5em, 2.5em, or align with the conversation's right edge (recommended). Compare in the [preview](https://claude.ai/artifact/WhDNGctDuAdyS8SdxtUj38). |
 
 ## Done
 
