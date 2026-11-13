@@ -1,11 +1,11 @@
 /**
  * Whether a main button's label and note fit its fixed width on one line each (docs/design/chrome.md,
- * Footer). The width holds about 7 full-width characters on a 390px phone. A work's own test
+ * Footer). The width holds about 8 full-width characters on a 390px phone. A work's own test
  * can call these on its labels and notes, so a long one fails there and not on the screen.
  */
 
 /** Characters of one line in the main button, in full-width characters. */
-export const MAX_BUTTON_TEXT = 7;
+export const MAX_BUTTON_TEXT = 8;
 
 /** Width in full-width characters: half-width letters and digits count half; `{name}` stands for a 4-character name, `{n}` for one digit. */
 export const textWidth = (text: string): number =>

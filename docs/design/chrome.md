@@ -57,7 +57,7 @@ Read this when you touch the top band, the footer, a button or a sheet. Rules ev
   band's counterpart, on every screen, as one row.
 - **The main button** is at the right edge, one fixed width; **it is
   always the one to press now** (the send button of a chat), in every phase. It is the
-  filled one, a fixed 7.4em wide in every state, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
+  filled one, a fixed 8.4em wide in every state, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
   screen) with room for a label and a note, so the footer keeps its height in every
   state. Screens put it there with `FooterActions`. Buttons beside it that could
   each be the main one are fused with it into one capsule (round at the outer ends, a thin

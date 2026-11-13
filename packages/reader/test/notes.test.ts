@@ -3,8 +3,8 @@ import { fitsButton, MAX_BUTTON_TEXT, textWidth } from '../src/fit';
 import defaults from '../src/strings.json';
 
 /**
- * The label and the note of a main button are one line each. The button has a fixed width (7.4em
- * of the footer text; about 7 full-width characters on a 390px phone), so a longer one wraps and
+ * The label and the note of a main button are one line each. The button has a fixed width (8.4em
+ * of the footer text; about 8 full-width characters on a 390px phone), so a longer one wraps and
  * the footer grows. Every `status.*` string is a note; the main buttons' labels are `button.*`
  * except the secondary ones listed here.
  */
