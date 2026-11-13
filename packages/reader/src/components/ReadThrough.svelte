@@ -48,13 +48,29 @@
   // Set by push(), which scrolls before it moves the lines; scrolling again mid-push would
   // follow the moving lines and cancel the motion.
   let pushed = false;
-  // Keep the newest line in view as lines are added.
+  // Where the newest line stood on screen just before the next one came in, so push() can move
+  // the earlier lines on from there.
+  let before: number | undefined;
   const count = $derived(shown.length);
+  $effect.pre(() => {
+    void count;
+    before = chat?.lastElementChild?.getBoundingClientRect().top;
+  });
+  // Keep the newest line in view as lines are added.
   $effect(() => {
     void count;
     if (pushed) pushed = false;
-    else chat?.scrollTo({ top: chat.scrollHeight });
+    else if (chat?.lastElementChild) follow(chat, chat.lastElementChild as HTMLElement);
   });
+
+  /**
+   * Scroll the list to its newest line: to the end, or, when the line is taller than the list,
+   * to the line's top, so its reader starts at its first words and sees whose line it is.
+   */
+  function follow(list: HTMLElement, line: HTMLElement): void {
+    const top = line.getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop;
+    list.scrollTo({ top: line.offsetHeight > list.clientHeight ? top : list.scrollHeight });
+  }
 
   const reduceMotion = (): boolean => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -64,15 +80,16 @@
    */
   function push(node: HTMLElement) {
     const list = node.parentElement;
-    if (!list || reduceMotion()) return {};
-    list.scrollTo({ top: list.scrollHeight });
+    const prev = node.previousElementSibling;
+    if (!list || !prev || before === undefined || reduceMotion()) return {};
     pushed = true;
-    const shift = node.offsetHeight + parseFloat(getComputedStyle(list).rowGap);
+    for (const li of list.children) li.getAnimations().forEach((a) => a.cancel());
+    follow(list, node);
+    // Every line moves by the same amount: from where the previous newest line stood (mid-push
+    // included) to where it stands now.
+    const shift = before - prev.getBoundingClientRect().top;
     for (const li of list.children) {
-      // If lines are still moving from the last push, start from where they are now.
-      const now = new DOMMatrix(getComputedStyle(li).transform).m42;
-      li.getAnimations().forEach((a) => a.cancel());
-      li.animate([{ transform: `translateY(${now + shift}px)` }, { transform: 'none' }], {
+      li.animate([{ transform: `translateY(${shift}px)` }, { transform: 'none' }], {
         duration: 200,
         easing: 'cubic-bezier(0, 0, 0.2, 1)',
       });
@@ -109,7 +126,7 @@
 
 <div class="read" in:sceneIn|global out:sceneOut|global>
   <ol class="chat" bind:this={chat}>
-    {#if scenario.script.notice}<li class="notice">{scenario.script.notice}</li>{/if}
+    {#if scenario.script.notice}<li class="notice"><span>{scenario.script.notice}</span></li>{/if}
     {#each shown as l, i}
       <li
         in:push
@@ -160,7 +177,9 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    /* Lines sit at the bottom. Once they overflow, `safe` starts them at the top instead, since
+       overflow past the top of a scroll box cannot be scrolled to. */
+    justify-content: safe flex-end;
     gap: 0.45em;
     /* Older lines scroll up; the list keeps the newest line in view. */
     overflow-y: auto;
@@ -205,8 +224,12 @@
      quieter colour, set apart from the lines by space. */
   .notice {
     display: block;
-    /* On the left edge of the stage directions' text; extra room below sets it apart. */
-    padding: 0 0.7em 0.35em;
+    /* On the left edge of the stage directions' text (their padding and side line, in the
+       line's em); extra room below sets it apart. */
+    padding: 0 0.9em 0.35em;
+  }
+  .notice span {
+    display: block;
     color: var(--color-text-quiet);
     font-family: var(--font-ui);
     font-size: max(16px, 0.75em);

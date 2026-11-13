@@ -38,6 +38,9 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it, in the footer.
+- A newest line taller than the chat shows from its top, its speaker's name
+  included, so its reader starts at its first words and scrolls on; earlier
+  lines can always be scrolled back to.
 - When you read, the line being read takes the button's blue, so line and
   button read as one cue. The other role's lines are always white.
 - Every player sees the button. It is filled for whoever reads now and greyed
@@ -104,7 +107,10 @@ on cards.
 Decoration is out of scope, but it must not break the rules above:
 
 - Colours are tokens in `packages/reader/src/theme.css`; screens use the
-  variables, never raw colours.
+  variables, never raw colours. Those values are neutral defaults for the
+  samples. A work's look (colours, art, effects) is the work's own: it sets the
+  tokens in its own stylesheet, and a colour only its screens use (such as a
+  chess board's) becomes a token there too.
 - Every text colour meets WCAG AA (4.5:1) on its background.
 - No gradients, edge fades, shadows or glows.
 - No colour, size or weight that competes with the focus.
@@ -120,6 +126,55 @@ Decoration is out of scope, but it must not break the rules above:
   at half the text size (owner's decision).
 
 ## Components
+
+### Guide
+
+- A phase's screen may open with what to do now, in a line or two of UI text
+  at the top (`guide`, the work's own words). It is not shown all the time
+  (owner's decision): it fades out after 8 seconds, keeping its room so
+  nothing moves, and needs no tap: no window to close. Only where players
+  would otherwise guess (why the game waits, what is secret), not to repeat
+  the band.
+
+### Introduction with the cast
+
+- The introduction shows, under its story text, whom you play (`cast.you`,
+  the part's name bold) and every part as a white block: icon, name and one
+  line on who they are (the manifest's description). Yours comes first and
+  takes your role's tint.
+- In the footer one ready button (`button.ready`), with no count of who is
+  ready (owner's decision). Once tapped it keeps its name, greyed with a tick,
+  the band checks your icon (`readyDone`), and a separate button
+  (`button.unready`, naming what it undoes) takes it back: a button says what
+  it does, so taking back is never the same button (owner's decision). The
+  phase moves on when everyone is ready.
+- On a landscape screen the story text and the cast stand side by side.
+
+### Buttons
+
+- One `Button` everywhere (`packages/reader`). `primary` is the next step,
+  filled; one screen has at most one primary at a time. `secondary` is any
+  other choice, white. A choice that stays selected (such as your vote) takes
+  the primary's fill while selected (`pressed`).
+- A button greys only while it cannot be tapped, never to look quieter.
+
+### Whose turn (games)
+
+- As in the read-through: on your turn your button for the next step is
+  filled; on another player's turn that player's block (name, hand) sits on
+  white, and your buttons grey. Nothing else marks the turn: no outlines, no
+  tints. A game without player blocks (chess) says whose turn it is in a short
+  line instead.
+
+### Time left
+
+- A timer shows the time left as m:ss (`TimeLeft`), from the game time the
+  state holds, so every player sees the same.
+
+### Watching a game
+
+- A seat that sits a game out watches it: it sees only what every player may
+  see, and no buttons of the game. The game's screen gets `watching`.
 
 ### Top band
 
@@ -272,17 +327,29 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Game select
 
-- The games this many players can play, as a list of white blocks (game
-  names from the work's data), and the next button under it. A game that
+- The games this many players can play, as a list of white blocks: the game's
+  name, and under it in the quieter colour how many play, who watches when the
+  spectator sits out, and the game's own line (`description`), joined by
+  `list.sep`. The next button may carry the work's own label (such as
+  暇つぶしを終える), since leaving the list ends the phase. A game that
   does not take this many players is left out, unless the work names a
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
+- A tap on the list only selects a game (filled, as a pressed choice); the
+  play button (`game.play`) in the footer starts it for everyone, and stays
+  greyed until a game is selected (owner's decision). One tap by any player
+  never starts a game nobody can leave.
+- Beside the play button, the next button (`button.next`) is white: leaving
+  the phase is not the next step on this screen, and it cannot be undone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result
-  stays and the back button appears under it.
-- On a landscape screen the list has two columns, so it fits above the next
-  button without scrolling.
+  stays and the back button appears in the footer.
+- A game taller than its space scrolls there; it never runs under the footer.
+- A seat that sits the game out sees `game.watching` in the footer, in the
+  quieter text colour, until the back button takes its place.
+- On a landscape screen the list has three columns, so it fits without
+  scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
 
 ### Phase list

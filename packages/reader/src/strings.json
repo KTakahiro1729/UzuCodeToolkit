@@ -20,5 +20,13 @@
   "handout.optional": "任意",
   "footer.flow": "ゲームの流れ",
   "footer.handout": "HO",
-  "sheet.close": "閉じる"
+  "sheet.close": "閉じる",
+  "game.play": "遊ぶ",
+  "game.watching": "観戦中",
+  "cast.you": "あなたは{name}を演じます",
+  "button.ready": "準備できた",
+  "gameSelect.players": "{n}人",
+  "gameSelect.watches": "{name}は観戦",
+  "list.sep": "・",
+  "button.unready": "準備できたを取り消す"
 }

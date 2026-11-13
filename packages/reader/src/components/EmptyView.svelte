@@ -1,33 +1,48 @@
 <!--
   The screen of a phase with no game of its own (emptyPhase()): optional story text, such as an
-  introduction, and the next button in the footer, which every player can tap. Without text it
-  is a placeholder for a phase not made yet. The band's label names the phase.
+  introduction, and the next button in the footer, which every player can tap. Without text it is
+  a placeholder for a phase not made yet. The band's label names the phase. An optional guide
+  (what to do now) sits at the top.
 -->
 <script lang="ts">
   import type { PhaseViewProps } from '../flow';
+  import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
-  let { send, text }: PhaseViewProps<{ next: boolean }> & { text?: string } = $props();
+  let { send, text, guide }: PhaseViewProps<{ next: boolean }> & { text?: string; guide?: string } = $props();
   // Paragraphs are separated by a blank line.
   const paragraphs = $derived(text ? text.split(/\n{2,}/) : []);
 </script>
 
-<div class="empty" in:sceneIn|global out:sceneOut|global>
-  {#if paragraphs.length}
-    <div class="text">
-      {#each paragraphs as p}<p>{p}</p>{/each}
-    </div>
-  {/if}
+<div class="screen" class:guided={guide} in:sceneIn|global out:sceneOut|global>
+  {#if guide}<Guide text={guide} />{/if}
+  <div class="empty">
+    {#if paragraphs.length}
+      <div class="text">
+        {#each paragraphs as p}<p>{p}</p>{/each}
+      </div>
+    {/if}
+  </div>
 </div>
 <FooterActions>
   <NextButton onclick={() => send('next')}>{STRINGS['button.next']}</NextButton>
 </FooterActions>
 
 <style>
+  /* The guide at the top; the rest centred in the room under it. */
+  .screen {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 1em;
+  }
+  .screen.guided {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
   /* The text, centred. */
   .empty {
     align-self: center;
