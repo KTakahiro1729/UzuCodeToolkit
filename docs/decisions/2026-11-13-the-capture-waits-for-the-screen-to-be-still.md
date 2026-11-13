@@ -1,0 +1,3 @@
+# The capture waits for the screen to be still, not for a fixed time; one pass makes every output
+
+Fixed sleeps (about 2.4 s per screen, 1.5 s per reload, 0.3-0.5 s per step) were nearly all of a catalogue run's time, and no step waited on a real game timer. A seat is ready when fonts are loaded, the DOM has been quiet for 120 ms and two frames are drawn; a reload is done when the old document's mark is gone. A `wait` that is given is still slept (for a game's timer). The overflow check, PNG and snapshot share one replay of the screens. Every run has a per-step and a whole-run limit that name the screen and step they stopped on, and trial runs use `--only` and a hard `timeout`. Output is unchanged: PNGs and the page matched the old script byte for byte on hundred-arms.

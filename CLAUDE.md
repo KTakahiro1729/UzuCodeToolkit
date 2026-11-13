@@ -86,9 +86,11 @@ npm run fonts                          # every sample
 scripts/subset-fonts.sh samples/<name> # one project; a work runs: sh toolkit/scripts/subset-fonts.sh .
 ```
 
-## Changelog
+## Decisions and history
 
-Add an entry to `CHANGELOG.md` for every change a work built on the toolkit could notice (a part's props, a string key, a data format, a command, the fonts), in the same pull request. End it with `Work action:` and `none` or the step the work must take. A test checks that every entry has one.
+There is no changelog; the merged pull requests are the history (GitHub's generated release notes can list them). Say in the pull request description what a work built on the toolkit has to do after taking the change (a part's props, a string key, a data format, a command, the fonts), or that it has to do nothing.
+
+Owner decisions are one file each in `docs/decisions/` (format in its `README.md`). Read them before working. A pull request that records a decision adds its own file there; it does not edit another file or an index.
 
 ## Licenses
 

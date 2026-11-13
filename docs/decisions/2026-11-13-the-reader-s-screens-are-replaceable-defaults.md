@@ -1,0 +1,3 @@
+# The reader's screens are replaceable defaults
+
+The screens stay in the toolkit as the default; a work replaces what it needs without a toolkit change: colours and sizes as tokens, any wording through `startFlow`'s `strings`, one phase's screen through its `view`, the whole frame (band, footer, sheets) through `shell`. The state, the sender, the footer's cells and the frame's parts are exported for this. (Screens kept in the toolkit with only the outer frame, wording and validation exits exposed, chosen over adding named props per request, headless-only parts, and copying the screens into each work.)
