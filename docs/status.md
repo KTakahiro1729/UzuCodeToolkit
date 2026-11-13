@@ -6,11 +6,7 @@ Last checked: 2026-11-13 03:20 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
-
-| What | Kind | Notes |
-|---|---|---|
-| [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Review, merge | Ready. [Screens](https://claude.ai/artifact/NuxrEgY4wxoZsAXyW8oKAZ) |
+Nothing right now. No open decisions. No CI checks are configured.
 
 ## Done
 
@@ -18,6 +14,7 @@ Word Wolf topic pairs (InterstellarBoardGame): checked by the owner and kept as 
 
 | PR | Result | Date |
 |---|---|---|
+| [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Merged | 2026-11-13 |
 | [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Merged | 2026-11-13 |
 | InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) Follow #20 | Merged (reported) | 2026-11-13 |
 | [#20](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/20) Move work-specific parts into the Toolkit (with the size-check test) | Merged | 2026-11-13 |
