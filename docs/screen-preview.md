@@ -43,12 +43,49 @@ sets one.
 | `player` | Whose screen to capture (harness player index) |
 | `next` | Selector tapped to move the game on, in whichever player's screen has it |
 | `scroll` | Selectors of lists to show scrolled to the end |
-| `screens` | In order: `key`, `label`, `taps` (taps of `next` since the previous screen; `Infinity` taps to the end), `wait` (ms to wait after them, default 800), `parts` |
-| `parts` | `[selector, label]` pairs; the number is the position, and parts not on a screen are left out of its list. The last match on screen is numbered |
+| `screens` | In order: `key`, `label`, `seat` (whose screen to capture, default `player`), `taps` (taps of `next` since the previous screen; `Infinity` taps to the end), `steps` (run after the taps, below), `wait` (ms to wait after them, default 800), `parts` |
+| `parts` | Optional: `[selector, label]` pairs; the number is the position, and parts not on a screen are left out of its list. The last match on screen is numbered |
 | `variants` | Optional pickers for trying layouts on the page: `{ name, options: [{ label, note, css }] }`. The `css` is added to both screens |
+
+### Steps
+
+A screen's `steps` get the game to it: open a tab or a sheet, type into a
+field, press a button in another player's screen, or set the state outright.
+Each step is an object with one action, in the seat given by `seat` (harness
+player index; default the screen's seat). Selectors are Playwright selectors,
+so `button:has-text("読み終えた")` works too.
+
+| Step | Does |
+|---|---|
+| `{ click: sel }` | Waits for `sel` to show, then clicks it |
+| `{ fill: sel, text }` | Types `text` into the field `sel` |
+| `{ waitFor: sel }` | Waits for `sel` to show |
+| `{ tap: n }` | Taps `next` n times, as `taps` does |
+| `{ state: s => newState }` | Sets the game state through the harness (`setRawState`); the function gets the current state. A plain object replaces it |
+| `{ wait: ms }` | Waits |
+
+Every step waits 300 ms after it (`wait` on any step changes that). A step
+waits up to 10 s for its element and looks the seat's screen up again each
+time, so a screen that reloads (after a reset or a resize) does not make it
+miss. Use `state` to start a screen deep in the game instead of playing up to
+it.
+
+A shot list for one piece of work can live in its own file next to the
+sample and be passed with `--config`, leaving the shared config alone. See
+[`samples/hundred-arms/shots.example.mjs`](../samples/hundred-arms/shots.example.mjs).
 
 Name parts the way the owner talks about them. Keep numbers stable between
 captures, so add new parts at the end.
+
+## PNG screenshots
+
+```bash
+node tools/screen-preview/capture.mjs --png tmp/shots --config samples/hundred-arms/shots.example.mjs samples/hundred-arms
+```
+
+writes `<key>-landscape.png` and `<key>-portrait.png` for each screen into
+`tmp/shots/` (git ignores `tmp/`), at twice the pixels, with the UZU HUD drawn over the screen as in
+the harness. `--config` works with every mode.
 
 ## Check for overflow
 
