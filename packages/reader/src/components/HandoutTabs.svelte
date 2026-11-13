@@ -46,7 +46,7 @@
       </button>
     {/each}
   </div>
-  <div class="panel" role="tabpanel" bind:this={scroller}>
+  <div class="panel" class:first={tab === tabs[0]?.id} role="tabpanel" bind:this={scroller}>
     {#if tab === 'common'}
       {#each handout.common as para}<p>{para}</p>{/each}
     {:else if tab === 'own' && own}
@@ -112,8 +112,12 @@
     flex-direction: column;
     gap: 0.8em;
     padding: 1em 1.2em;
-    border-radius: 0 0.8em 0.8em 0.8em;
+    border-radius: 0.8em;
     background: var(--color-bubble);
+  }
+  /* Square only where the chosen tab meets the area, so the two read as one piece. */
+  .panel.first {
+    border-start-start-radius: 0;
   }
   h2 {
     margin: 0;
