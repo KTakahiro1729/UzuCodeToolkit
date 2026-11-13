@@ -2,15 +2,16 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 03:31 UTC
+Last checked: 2026-11-13 03:16 UTC
 
 ## Waiting on the owner
 
-No open decisions. No CI checks are configured.
+No open decisions. No CI checks are configured. The two PRs are independent.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#23](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/23) Read-through: show a long line from its top, align the notice with stage directions | Review, merge | Ready. [Preview](https://claude.ai/artifact/T8ijFpSt74qLqLTVGkRiY2) |
+| [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Review, merge | Ready. |
+| [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Review, merge | Ready. [Screens](https://claude.ai/artifact/NuxrEgY4wxoZsAXyW8oKAZ) |
 
 ## Done
 
@@ -18,10 +19,6 @@ Word Wolf topic pairs (InterstellarBoardGame): checked by the owner and kept as 
 
 | PR | Result | Date |
 |---|---|---|
-| [#24](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/24) Design proposals G3–G5 | Merged | 2026-11-13 |
-| InterstellarBoardGame [#3](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/3) Follow #24 | Merged (reported) | 2026-11-13 |
-| [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Merged | 2026-11-13 |
-| [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Merged | 2026-11-13 |
 | InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) Follow #20 | Merged (reported) | 2026-11-13 |
 | [#20](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/20) Move work-specific parts into the Toolkit (with the size-check test) | Merged | 2026-11-13 |
 | [#19](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/19) Phases, handouts, game select and playing cards for InterstellarBG | Merged | 2026-11-13 |
