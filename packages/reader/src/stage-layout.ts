@@ -10,7 +10,7 @@
  */
 
 import { type DialogueLine, readerOf, speakersOf } from '@uzu-toolkit/kit';
-import { type Orientation, type Rect, rectOf, type ScreenLayout } from './layout';
+import { type Orientation, orientationsOf, type Rect, rectOf, type ScreenLayout } from './layout';
 import readThrough from './layouts/read-through.layout.json';
 
 export type { Orientation, Rect } from './layout';
@@ -96,6 +96,37 @@ export const NAME_WIDTH = {
 } as const;
 /** The space between the two nameplates. */
 export const NAME_GAP = plate2[0] - plate1[0] - plate1[2];
+
+/** The orientation a layout is drawn in: the screen's own when the layout has it, else the one it has (landscape first). */
+export function stageOrientation(layout: ScreenLayout, landscape: boolean): Orientation {
+  const supported = orientationsOf(layout);
+  const wanted: Orientation = landscape ? 'landscape' : 'portrait';
+  return supported.includes(wanted) ? wanted : (supported[0] ?? wanted);
+}
+
+/** Nameplate ①'s least widths and the space between the plates, from a layout's own boxes. */
+export function nameWidthsOf(layout: ScreenLayout, o: Orientation): { full: number; narration: number; gap: number } {
+  const [x1, , w1] = rectOf(layout, 'plate1', o);
+  return { full: w1, narration: rectOf(layout, 'plateNarration', o)[2], gap: rectOf(layout, 'plate2', o)[0] - x1 - w1 };
+}
+
+/** The image files a layout draws (not the characters', which are named by role), each once. */
+export function imageNames(layout: ScreenLayout): string[] {
+  const names = Object.values(layout.parts).flatMap((p) => (p.image && !p.image.includes('{') ? [p.image] : []));
+  return [...new Set(names)];
+}
+
+/** Where a work's image part lives, relative to the page. */
+export const imageUrl = (name: string): string => `./assets/${name}.webp`;
+
+/**
+ * A part's image as a CSS `url()`: only once that picture has loaded; a part without an image, or
+ * whose picture is missing, is drawn from the colour tokens instead.
+ */
+export function artOf(layout: ScreenLayout, part: string, ready: Readonly<Record<string, boolean>>): string | undefined {
+  const image = layout.parts[part]?.image;
+  return image && ready[image] ? `url("${imageUrl(image)}")` : undefined;
+}
 
 /** CSS for a part's place, in `--u` (a reference px in screen px, set on the stage). */
 export function place([x, y, w, h]: Rect): string {

@@ -5,12 +5,17 @@
   are the whole screen's: the next button and the log link sit in the frame instead of the footer.
   Your turn: the frame and nameplate ① take your colour and the next button shows. Another's
   turn: no button; when you read next, nameplate ② takes your colour and shows your next line.
+  The parts are laid out by a layout definition (docs/design/layout.md). A part whose image the
+  work ships (public/assets/<image>.webp) is drawn with it: the background, frame, button and log
+  panel stretched to their box, the nameplates by their ends (border-image). Without the image,
+  or while it loads, a part is drawn from the colour tokens. Text is always set by code.
 -->
 <script lang="ts">
   import { currentLine, type DialogueProgress, parseRuby, readerOf } from '@uzu-toolkit/kit';
   import { fade } from 'svelte/transition';
   import type { Line, Scenario } from '../script';
-  import { LAYOUT, NAME_GAP, NAME_WIDTH, place, REFERENCE, type Rect, stageScene } from '../stage-layout';
+  import { artOf, imageNames, imageUrl, nameWidthsOf, place, READ_THROUGH_LAYOUT, type Rect, stageLayoutOf, stageOrientation, stageScene } from '../stage-layout';
+  import type { ScreenLayout } from '../layout';
   import { sceneIn, sceneOut } from './motion';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
@@ -22,6 +27,7 @@
     myPart,
     onadvance,
     final = true,
+    layout = READ_THROUGH_LAYOUT,
   }: {
     scenario: Scenario;
     progress: DialogueProgress;
@@ -31,6 +37,8 @@
     onadvance: (index: number) => void;
     /** True when the last line ends the work; false when another scene follows. */
     final?: boolean;
+    /** The work's own layout definition; the toolkit's (UZU's guide) when none is given. */
+    layout?: ScreenLayout;
   } = $props();
 
   const LINES = $derived(scenario.script.lines);
@@ -39,11 +47,29 @@
   const scene = $derived(line ? stageScene(LINES, progress.index, myRoles, (l) => scenario.isDirection(l as Line)) : null);
   const last = $derived(progress.index === LINES.length - 1);
 
-  // The layout follows the screen's orientation; its size follows the screen (--u, in CSS).
+  // The layout follows the screen's orientation (a layout with one orientation keeps it); its size follows the screen (--u, in CSS).
   let landscape = $state(innerWidth >= innerHeight);
-  const orientation = $derived(landscape ? 'landscape' : 'portrait');
-  const L = $derived(LAYOUT[orientation]);
-  const ref = $derived(REFERENCE[orientation]);
+  const orientation = $derived(stageOrientation(layout, landscape));
+  const L = $derived(stageLayoutOf(layout, orientation));
+  const ref = $derived({ width: layout.reference[orientation]![0], height: layout.reference[orientation]![1] });
+  const names = $derived(nameWidthsOf(layout, orientation));
+
+  // The images the layout names that the work ships; a part draws its image only once it has loaded.
+  let ready = $state<Record<string, boolean>>({});
+  $effect(() => {
+    for (const name of imageNames(layout)) {
+      const probe = new Image();
+      probe.onload = () => (ready[name] = true);
+      probe.src = imageUrl(name);
+    }
+  });
+  const art = (part: string) => artOf(layout, part, ready);
+  const bg = $derived(art('bg'));
+  const frameArt = $derived(art('frame'));
+  const one = $derived(art(scene?.direction ? 'plateNarration' : 'plate1'));
+  const two = $derived(art('plate2'));
+  const buttonArt = $derived(art('next'));
+  const panelArt = $derived(art('panel'));
 
   const nameOf = (l: Line): string => (scenario.isDirection(l) ? STRINGS['stage.narration'] : scenario.nameOf(l, STRINGS['name.and']));
   const plain = (t: string): string => parseRuby(t).map((s) => s.text).join('');
@@ -52,7 +78,7 @@
   const next = $derived(scene?.next ? LINES[scene.next.index] : undefined);
 
   // Nameplate ①'s least width: yours holds the name and "your turn"; narration is a little wider than a bare name; another's name alone fits the name.
-  const w1 = $derived(scene?.mine ? NAME_WIDTH.full : scene?.direction ? NAME_WIDTH.narration : 0);
+  const w1 = $derived(scene?.mine ? names.full : scene?.direction ? names.narration : 0);
 
   // Your tap on the next button.
   function advance(): void {
@@ -90,8 +116,8 @@
 {#snippet text(t: string)}{#each parseRuby(t) as seg}{#if seg.ruby}<span class="rb">{seg.text}<span class="rt">{seg.ruby}</span></span>{:else}{seg.text}{/if}{/each}{/snippet}
 
 {#if scene && line}
-  <div class="stage" data-stage in:sceneIn|global out:sceneOut|global>
-    <div class="fit" class:mine={scene.mine} style:--w={ref.width} style:--ratio={ref.width / ref.height} style:--tag-x={L.tag[0]} data-scene={scene.id} data-orientation={orientation} data-log={logOpen || undefined}>
+  <div class="stage" data-stage style:--art-bg={bg} class:art={bg} in:sceneIn|global out:sceneOut|global>
+    <div class="fit" class:mine={scene.mine} class:art-frame={frameArt} style:--w={ref.width} style:--ratio={ref.width / ref.height} style:--tag-x={L.tag[0]} data-scene={scene.id} data-orientation={orientation} data-log={logOpen || undefined}>
       <div class="scene" inert={logOpen}>
         {#if heading}<div class="tag" style="top:calc({L.tag[1]} * var(--u));width:calc({L.tag[2]} * var(--u));height:calc({L.tag[3]} * var(--u))">{heading}</div>{/if}
 
@@ -102,17 +128,17 @@
           {#if scene.speaker}{@render figure(scene.speaker, L.c1, 'speaker')}{/if}
         {/if}
 
-        <div class="frame" style={place(L.frame)}></div>
+        <div class="frame" class:art={frameArt} style={place(L.frame)} style:--art={frameArt}></div>
         <p class="line" style={place(L.text)} aria-live="polite">{@render text(line.text)}</p>
 
-        <div class="names" style={place(L.names)} style:--gap="{NAME_GAP}">
-          <span class="plate one" class:mine={scene.mine} style:--min={w1}>
+        <div class="names" style={place(L.names)} style:--gap="{names.gap}">
+          <span class="plate one" class:mine={scene.mine} class:art={one} style:--art={one} style:--min={w1}>
             {#if !scene.direction}<img class="face" src={`./assets/icon-${readerOf(line)}.webp`} alt="" onerror={noPicture} />{/if}
             <span class="who">{nameOf(line)}</span>
             {#if scene.mine}<span class="turn">{STRINGS['stage.yourTurn']}</span>{/if}
           </span>
           {#if scene.plate2 && scene.next && next}
-            <span class="plate two" class:mine={scene.next.mine && !scene.mine} class:fixed={scene.plate2 === 'tag'} style:--fixed={L.nextTagWidth}>
+            <span class="plate two" class:mine={scene.next.mine && !scene.mine} class:art={two} style:--art={two} class:fixed={scene.plate2 === 'tag'} style:--fixed={L.nextTagWidth}>
               {#if !scenario.isDirection(next)}<img class="face" class:tight={scene.plate2 === 'tag'} src={`./assets/icon-${readerOf(next)}.webp`} alt="" onerror={noPicture} />{/if}
               {#if !scene.next.mine || scene.plate2 === 'tag'}<span class="who">{nameOf(next)}</span>{/if}
               <span class="mark">{STRINGS['stage.next']}</span>
@@ -125,7 +151,7 @@
         </div>
 
         {#if scene.mine}
-          <div class="next" data-uzu-actions="main" style="top:calc({L.next[1]} * var(--u));right:calc({ref.width - L.next[0] - L.next[2]} * var(--u));min-width:calc({L.next[2]} * var(--u));min-height:calc({L.next[3]} * var(--u))">
+          <div class="next" class:art={buttonArt} style:--art={buttonArt} data-uzu-actions="main" style="top:calc({L.next[1]} * var(--u));right:calc({ref.width - L.next[0] - L.next[2]} * var(--u));min-width:calc({L.next[2]} * var(--u));min-height:calc({L.next[3]} * var(--u))">
             <NextButton onclick={advance}>
               {STRINGS[last ? (final ? 'button.end' : 'button.nextPhase') : 'stage.nextLine']}
             </NextButton>
@@ -135,7 +161,7 @@
       </div>
 
       {#if logOpen}
-        <div class="panel" style={place(L.panel)} role="dialog" aria-modal="true" aria-labelledby="log-title" use:modal transition:fade|global={{ duration }}>
+        <div class="panel" class:art={panelArt} style:--art={panelArt} style={place(L.panel)} role="dialog" aria-modal="true" aria-labelledby="log-title" use:modal transition:fade|global={{ duration }}>
           <div class="head">
             <h2 id="log-title">{STRINGS['log.title']}</h2>
             <button type="button" class="close" aria-label={STRINGS['sheet.close']} onclick={() => (logOpen = false)}>
@@ -179,6 +205,14 @@
     color: var(--color-text);
     font-family: var(--font-body);
     user-select: none;
+  }
+  /* The work's background picture covers the whole screen, the bars of another shape included. */
+  .stage.art {
+    background: var(--art-bg) center / cover no-repeat var(--color-bg);
+  }
+  /* A work's own picture is a work's own look (no tokens): text on it takes the plain text colour. */
+  .fit.art-frame {
+    --frame-text: var(--color-text);
   }
   .fit {
     --fit: min(100cqw, calc(100cqh * var(--ratio)));
@@ -240,6 +274,10 @@
     border-radius: var(--radius-read);
     background: var(--frame-bg);
   }
+  .frame.art {
+    border-radius: 0;
+    background: var(--art) center / 100% 100% no-repeat;
+  }
   /* The line: two lines landscape, three portrait; a longer one scrolls. */
   .line {
     margin: 0;
@@ -283,6 +321,17 @@
   .plate.mine {
     background: var(--color-mine-current);
     color: var(--color-mine-text);
+  }
+  /* A nameplate picture keeps its two ends (half its height, 32px of the 64px picture) and stretches between them. */
+  .plate.art,
+  .plate.mine.art {
+    border: solid transparent;
+    border-width: 0 calc(16 * var(--u));
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    border-image: var(--art) 0 32 fill / 0 calc(16 * var(--u)) stretch;
+    color: var(--color-text);
   }
   .plate.one {
     flex: 0 1 auto;
@@ -355,6 +404,11 @@
     background: var(--color-text);
     color: var(--color-bubble);
   }
+  .next.art :global(button[data-variant]) {
+    border-color: transparent;
+    background: var(--art) center / 100% 100% no-repeat;
+    color: var(--color-text);
+  }
   .log-link {
     margin: 0;
     padding: 0;
@@ -385,6 +439,10 @@
     border-radius: var(--radius-read);
     background: var(--color-bubble);
     color: var(--color-text);
+  }
+  .panel.art {
+    border-radius: 0;
+    background: var(--art) center / 100% 100% no-repeat;
   }
   .head {
     display: flex;
