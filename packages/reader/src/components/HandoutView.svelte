@@ -1,6 +1,6 @@
 <!--
   Handout (HO) phase. The handout in tabs (./HandoutTabs.svelte), the last tab holding the
-  settings your part fills in. In the footer, always in view: the time left, the button asking for
+  settings your part fills in. In the footer, always in view: the time left (lower row), the button asking for
   more time, and the button that says you are done. That button stays greyed until every setting
   is filled in (optional ones may stay blank), and a dot on the settings tab shows where. Once
   tapped it keeps its name, greyed with a tick; your settings are locked, the band checks your
@@ -79,9 +79,10 @@
     {/snippet}
   </HandoutTabs>
 </div>
+<!-- The time left is state, so it sits in the footer's lower row; the buttons in the upper one. -->
+<FooterActions place="status"><span class="clock">{clock}</span></FooterActions>
 <FooterActions>
   <div class="actions">
-    <span class="clock">{clock}</span>
     {#if done}
       <button type="button" class="quiet" onclick={() => send('unready')}>{STRINGS['handout.unready']}</button>
     {:else}

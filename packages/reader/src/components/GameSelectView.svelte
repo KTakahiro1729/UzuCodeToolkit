@@ -115,7 +115,7 @@
     </div>
   </div>
   <FooterActions>
-    <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.next']}</Button>
+    <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.nextAll']}</Button>
     <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>
       {STRINGS['game.play']}
     </Button>

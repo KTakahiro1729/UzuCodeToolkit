@@ -152,7 +152,7 @@
 </div>
 <!-- In the footer, right under the newest line, for every player: active for the reader, greyed for the others. -->
 <FooterActions>
-  <NextButton disabled={!mine} onclick={advance}>
+  <NextButton disabled={!mine} label={STRINGS['button.nextLine']} onclick={advance}>
     {#if last}{STRINGS[final ? 'button.end' : 'button.next']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
   </NextButton>
 </FooterActions>

@@ -6,7 +6,12 @@
   import type { Snippet } from 'svelte';
   import Button from './Button.svelte';
 
-  let { disabled = false, onclick, children }: { disabled?: boolean; onclick: () => void; children: Snippet } = $props();
+  let {
+    disabled = false,
+    label = undefined,
+    onclick,
+    children,
+  }: { disabled?: boolean; label?: string; onclick: () => void; children: Snippet } = $props();
 </script>
 
-<Button {disabled} {onclick}>{@render children()}</Button>
+<Button {disabled} {label} {onclick}>{@render children()}</Button>

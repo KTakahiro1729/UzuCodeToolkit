@@ -22,6 +22,8 @@
     phase,
     nav,
     aside,
+    onphase,
+    phaseOpen = false,
     children,
   }: {
     /** Every seat's part, in the work's order. */
@@ -36,6 +38,10 @@
     nav?: Snippet;
     /** What stays in view beside the scene on a wide screen; hidden on narrower ones. */
     aside?: Snippet;
+    /** Opens the phase list from the band's phase; leave out for a one-phase work. */
+    onphase?: () => void;
+    /** Whether the phase list is showing. */
+    phaseOpen?: boolean;
     children: Snippet;
   } = $props();
 
@@ -45,14 +51,18 @@
 
 <div class="screen">
 <main class:aside={!!aside} style:--footer-height={`${footerHeight}px`}>
-  <TopBand {parts} {myPart} {done} {phase} />
+  <TopBand {parts} {myPart} {done} {phase} {onphase} {phaseOpen} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
   <footer bind:offsetHeight={footerHeight}>
     <div class="act">
       <div class="cell" bind:this={footerSlots.aside}></div>
       <div class="cell" bind:this={footerSlots.main}></div>
     </div>
-    {#if nav}<nav>{@render nav()}</nav>{/if}
+    <!-- The lower row: read-back buttons at the left, the state (the time left) at the right. -->
+    <div class="opts">
+      {#if nav}<nav>{@render nav()}</nav>{/if}
+      <div class="cell status" bind:this={footerSlots.status}></div>
+    </div>
   </footer>
   {#if aside}<aside>{@render aside()}</aside>{/if}
   {@render children()}
@@ -119,11 +129,6 @@
     }
     main.aside .act {
       grid-column: -2;
-      grid-row: 1;
-    }
-    main.aside nav {
-      grid-column: 1;
-      grid-row: 1;
     }
     main.aside nav :global([data-aside]) {
       display: none;
@@ -136,9 +141,10 @@
     }
   }
   /*
-   * The main action area, white and full width along the bottom edge as the band's counterpart.
-   * Landscape: one row, the read-back buttons at the left and the actions centred on the screen.
-   * Portrait: the actions in a row of their own, the read-back buttons under them.
+   * The footer, white and full width along the bottom edge as the band's counterpart, in two
+   * rows like a chat input. Upper: the screen's actions, quieter ones at the left and the one to
+   * tap now at the right edge. Lower: options and state, the read-back buttons at the left and the
+   * time left at the right.
    */
   footer {
     position: fixed;
@@ -147,39 +153,35 @@
     bottom: 0;
     box-sizing: border-box;
     min-height: calc(var(--safe-bottom, 0px) + var(--footer-h));
-    padding: 0.5em calc(var(--safe-right, 0px) + 0.8em) calc(var(--safe-bottom, 0px) + 0.5em)
+    padding: 0.6em calc(var(--safe-right, 0px) + 0.8em) calc(var(--safe-bottom, 0px) + 0.4em)
       calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: 0.6em;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.3em;
     background: var(--color-bubble);
   }
   .act {
-    grid-column: 2;
     grid-row: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.6em;
   }
+  .opts {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6em;
+    min-height: 2em;
+    font-family: var(--font-ui);
+    color: var(--color-text-quiet);
+  }
   nav {
-    grid-column: 1;
-    grid-row: 1;
     display: flex;
     gap: 0.2em;
-  }
-  @media (orientation: portrait) {
-    footer {
-      grid-template-columns: minmax(0, 1fr);
-      row-gap: 0.4em;
-    }
-    .act {
-      grid-column: 1;
-    }
-    nav {
-      grid-row: 2;
-    }
   }
   /* The old screen's actions and the new one's share the cell while one gives way to the other. */
   .cell {
