@@ -114,6 +114,7 @@
       </ul>
     </div>
   </div>
+  {#if selected === null}<FooterActions place="status"><span>{STRINGS['status.pickGame']}</span></FooterActions>{/if}
   <FooterActions>
     <Button variant="secondary" onclick={() => send('next')}>{finish ?? STRINGS['button.nextAll']}</Button>
     <Button disabled={selected === null} onclick={() => selected && send('pick', { id: selected })}>

@@ -26,5 +26,12 @@
   "gameSelect.players": "{n}人",
   "gameSelect.watches": "{name}は観戦",
   "list.sep": "・",
+  "status.waitOthers": "他の人を待っています",
+  "status.theirTurn": "相手の番です",
+  "status.fillSettings": "設定を埋めると押せます",
+  "status.allNext": "全員が押すと次へ進みます",
+  "status.anyoneNext": "誰かが押すと全員が次へ進みます",
+  "status.pickGame": "遊ぶゲームを選ぶと押せます",
+  "status.timeLeft": "残り{time}",
   "vote.waiting": "あと{n}人の投票を待っています"
 }
