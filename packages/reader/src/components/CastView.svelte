@@ -13,7 +13,7 @@
   import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let {
     state,

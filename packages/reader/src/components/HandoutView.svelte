@@ -18,7 +18,7 @@
   import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   // `state` is renamed: the name clashes with the $state rune.
   let {

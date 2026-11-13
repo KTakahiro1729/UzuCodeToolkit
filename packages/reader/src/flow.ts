@@ -2,6 +2,7 @@
 
 import type { Part } from '@uzu-toolkit/kit';
 import type { Component } from 'svelte';
+import type { StringKey } from './strings';
 
 /** The props every phase screen gets, plus the entry's own `props`. */
 export interface PhaseViewProps<P = any> {
@@ -52,9 +53,26 @@ export interface PhaseView {
   done?(state: any): string[];
 }
 
+/**
+ * The props of a shell, the component that frames the phases: the default is FlowApp. A work's own
+ * shell reads the state from `game`, sends with `sendAction(phaseAction(id, name), payload)`, and
+ * for each phase mounts `phases[game.state.at].view` with PhaseViewProps. To keep the dev harness
+ * and the screen preview working it marks its main actions `data-uzu-actions="main"`, the phase
+ * name `data-uzu-phase` and any scrolling list `data-uzu-scroll` (FooterActions and the default
+ * screens already do).
+ */
+export interface ShellProps {
+  parts: readonly Part[];
+  phases: readonly PhaseView[];
+}
+
 export interface FlowOptions {
   /** Every part, in the work's order: the band shows them, and their count is the player count. */
   parts: readonly Part[];
   phases: readonly PhaseView[];
   orientation: 'portrait' | 'landscape';
+  /** Replaces the frame around the phases; FlowApp (the band, the footer, the sheets) without it. */
+  shell?: Component<ShellProps>;
+  /** Replaces some of the UI strings (keys of the toolkit's strings.json). */
+  strings?: Partial<Record<StringKey, string>>;
 }

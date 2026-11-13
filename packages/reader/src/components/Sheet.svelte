@@ -8,7 +8,7 @@
   import { fade } from 'svelte/transition';
   import Button from './Button.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let { title, onclose, children }: { title: string; onclose: () => void; children: Snippet } = $props();
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150;

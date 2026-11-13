@@ -15,7 +15,7 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 | Path | Role |
 |---|---|
 | `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`), playing cards (`deck`, `deal`), timers (`secondsLeft`, `formatClock`), votes (a `Ballot` kept in state: `ballot`, `castVote`, `ballotClosed`; counting: `tally`, `soleTop`) and a phase that waits for everyone (`readyPhase`). Called from both server actions and the view |
-| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `CastView`, `HandoutView`, `HandoutReviewView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`, `Guide`, `Vote`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
+| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `CastView`, `HandoutView`, `HandoutReviewView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`, `Guide`, `Vote`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) the client entry (`startFlow`, `startReader`), the pieces a work's own shell is made of (`game`, `sendAction`, `FooterActions`, `Frame`, `TopBand`, `Sheet`; Replacing the screens below); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
 | `samples/hundred-arms` | Sample work 百本腕と勇者. Two players |
 | `samples/yubiwa` | Sample work 指環 (江戸川乱歩, Aozora Bunko). Two players |
 | `samples/mittsu-no-takara` | Sample work 三つの宝 (芥川龍之介, Aozora Bunko). Three players, two of them doubling roles |
@@ -32,6 +32,22 @@ A work is a fixed list of phases in order (opening read-through, handouts, a gam
 
 The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orientation })`, giving each phase, in the logic's order, a band label (the text itself), a screen and optional extra `props`. A phase screen gets `PhaseViewProps` (`packages/reader/src/flow.ts`). `readThroughPhase(script)` with `ReadThroughView` (`props: { script }`) is a read-through; `emptyPhase()` with `EmptyView` holds the place of a phase not made yet. A work of more than one phase gets a footer with the phase list; a phase view with `keep` (such as `handoutKeep` for `HandoutView`) adds a footer entry that reads that phase back once the game has left it. A sample is one read-through phase: `readThroughLogic(script)` and `startReader(script, logic, orientation)`.
 
+## Replacing the screens
+
+A work changes its look without a toolkit change. Find the smallest piece below that covers the request; each is a plain Svelte file or option in the work, never a toolkit prop.
+
+| The request | Change |
+|---|---|
+| Colours, fonts, radii, band and footer heights | The work's `theme.css` tokens (the toolkit's `theme.css` lists them) |
+| Wording of any toolkit button or label | `startFlow(..., { strings: { 'button.back': '...' } })`; keys are in `packages/reader/src/strings.json` |
+| One phase's screen | Its `view` in the work's `main.ts`: any Svelte component taking `PhaseViewProps`. Put its main actions in the footer with `FooterActions` |
+| The frame (band, footer, sheets) | `startFlow(..., { shell })`: a Svelte component taking `ShellProps`. Copy `FlowApp.svelte` and change it; it reads the state from `game`, sends with `sendAction(phaseAction(id, name), payload)` and may reuse `Frame`, `TopBand`, `Sheet`, `PhaseList` |
+| A feature of an existing phase (handout keep, ready checks) | `handoutScreen(handouts, props)` and `castScreen(props)` carry the wiring; spread them into the phase |
+
+The dev harness and the screen preview find the main action, the phase name and the scrolling list by three marks: `data-uzu-actions="main"` (set by `FooterActions`), `data-uzu-phase` and `data-uzu-scroll`. A custom shell or screen keeps them (docs/screen-preview.md). The logic tests, the work's flow test and the build-size test do not depend on the screens.
+
+Add to the toolkit only what the work cannot do with the pieces above.
+
 ## Commands (from the repo root)
 
 | Purpose | Command |
@@ -43,6 +59,7 @@ The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orient
 | Screen preview: both orientations with numbered parts, a page to publish as an Artifact (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs samples/<name> out.html` while that sample's harness runs |
 | Screenshots: PNGs in both orientations, after steps (click, type, set the state) in any player's screen (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs --png <dir> [--config <file>] samples/<name>` while that sample's harness runs |
 | Overflow check: what spills past the screen, the safe area, the HUD or its parent, in both orientations (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs --check samples/<name>` while that sample's harness runs |
+| Fonts | `npm run fonts` (needs fonttools; rebuilds every sample's subsets) |
 | Dev harness | `npm run harness` in a sample's folder (from the root: hundred-arms; `-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`packages/reader/dev-harness.js`, dev server only) |
 
 `npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Hot swap: vite swaps screen code and CSS in place; `npm run harness` (`packages/reader/harness.mjs`) restarts the harness when the server logic changes, and `/harness` puts the game state back.
@@ -59,13 +76,18 @@ The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orient
 Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of the characters that work shows, declared in its `src/fonts.css`. No CDN: certification forbids external network access.
 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
-- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (listed in `scripts/subset-fonts.sh`; a sample shows no other screen, and every string the subset holds adds weight).
+- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (a sample shows no other screen, and every string the subset holds adds weight).
 
-Rebuild a sample's subsets when those characters change, including after editing a read-through string in `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
+Which files and fields feed each font is the project's `fonts.config.json` (format in the header of `tools/fonts/fonts.mjs`; a work that takes the toolkit as a submodule has its own, and points at wherever the toolkit keeps `strings.json`; a work that overrides strings lists the file holding its overrides as a `ui` source too). A test in each project calls `missingGlyphs` and fails when a subset lacks a glyph. Rebuild when it fails, or when those characters change, including after editing a read-through string (every project, since `strings.json` is shared). Needs [fonttools](https://github.com/fonttools/fonttools) (`pip install fonttools brotli`):
 
 ```bash
-scripts/subset-fonts.sh samples/<name>
+npm run fonts                          # every sample
+scripts/subset-fonts.sh samples/<name> # one project; a work runs: sh toolkit/scripts/subset-fonts.sh .
 ```
+
+## Changelog
+
+Add an entry to `CHANGELOG.md` for every change a work built on the toolkit could notice (a part's props, a string key, a data format, a command, the fonts), in the same pull request. End it with `Work action:` and `none` or the step the work must take. A test checks that every entry has one.
 
 ## Licenses
 
