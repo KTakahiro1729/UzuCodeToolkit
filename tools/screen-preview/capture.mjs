@@ -1,5 +1,5 @@
 // Capture a sample's screens from a running UZU dev harness, both orientations. Usage (harness running):
-//   node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>]
+//   node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--times] [--config <file>]
 //     [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]
 // One pass over the screens does everything asked for. By default it writes one static HTML page with
 // numbered parts. --check lists what spills over on each screen (overflow.js), exiting 1 if anything
@@ -28,13 +28,14 @@ const flag = (name) => {
   return i < 0 ? undefined : args.splice(i, 2)[1];
 };
 const check = args.includes('--check');
+const showTimes = args.includes('--times');
 const pngDir = flag('--png');
 const configFile = flag('--config');
 const only = flag('--only')?.split(',').map((k) => k.trim()).filter(Boolean);
 const STEP_MS = Number(flag('--step-timeout') ?? 15) * 1000; // longest a step may take, and how long it waits for its element.
 const TOTAL_MS = Number(flag('--timeout') ?? 600) * 1000; // longest the whole run may take.
 const TIMEOUT = STEP_MS; // ms an element is waited for; a step as a whole may take half as long again.
-const [sample, outArg] = args.filter((a) => a !== '--check');
+const [sample, outArg] = args.filter((a) => a !== '--check' && a !== '--times');
 if (!sample) throw new Error('usage: node tools/screen-preview/capture.mjs [--check] [--png <dir>] [--only <keys>] [--config <file>] [--step-timeout <s>] [--timeout <s>] samples/<name> [out.html]');
 const out = outArg ?? join(tmpdir(), 'screen-preview.html');
 const wantPage = !!outArg || !(check || pngDir);
@@ -111,7 +112,14 @@ async function snapshot(frame, parts) {
   return { html, base: snap.base, found: snap.found };
 }
 
+// Time spent per kind of work, for --times (a step's time includes its settle and sync).
+const spent = {};
+const timed = (label, fn) => async (...a) => {
+  const t = performance.now();
+  try { return await fn(...a); } finally { spent[label] = (spent[label] ?? 0) + performance.now() - t; }
+};
 // Where the run is, for the message when something stops it.
+const t0 = performance.now();
 let where = 'start';
 let browser;
 let failed = false;
@@ -132,7 +140,7 @@ const within = (ms, what, fn) => {
   ]).finally(() => clearTimeout(timer));
 };
 
-browser = await chromium.launch();
+browser = await timed('browser launch', () => chromium.launch())();
 // PNGs are for people to look at: twice the pixels.
 const page = await browser.newPage({ viewport: { width: 1400, height: 900 }, reducedMotion: 'reduce', deviceScaleFactor: pngDir ? 2 : 1 });
 
@@ -165,7 +173,7 @@ async function onSeat(i, fn) {
  * Waits until a seat's screen has stopped changing: fonts loaded, no DOM change for `quiet` ms
  * (at most `max`), and two frames drawn. This is what a fixed sleep stood for.
  */
-const settle = (i, quiet = 120, max = 2000) => onSeat(i, (f) => f.evaluate(({ quiet, max }) => new Promise((resolve) => {
+const settle = timed('settle', (i, quiet = 120, max = 2000) => onSeat(i, (f) => f.evaluate(({ quiet, max }) => new Promise((resolve) => {
   let t;
   const done = () => { obs.disconnect(); clearTimeout(t); clearTimeout(cap); requestAnimationFrame(() => requestAnimationFrame(resolve)); };
   const arm = () => { clearTimeout(t); t = setTimeout(done, quiet); };
@@ -175,10 +183,10 @@ const settle = (i, quiet = 120, max = 2000) => onSeat(i, (f) => f.evaluate(({ qu
     obs.observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
     arm();
   });
-}), { quiet, max }));
+}), { quiet, max })));
 
 /** Size a seat's frame to a phone screen, at the page's top left so the whole screen is in view. */
-const resize = async (i, size) => {
+const resize = timed('resize', async (i, size) => {
   await page.evaluate(({ i, width, height }) => {
     // Put back any other seat sized before.
     document.querySelectorAll('iframe').forEach((f) => {
@@ -189,10 +197,14 @@ const resize = async (i, size) => {
     Object.assign(f.parentElement.style, { overflow: 'visible', zIndex: 99, position: 'fixed', left: 0, top: 0, width: width + 'px', height: height + 'px' });
     Object.assign(f.style, { width: width + 'px', height: height + 'px', right: 'auto', bottom: 'auto' });
   }, { i, ...size });
-  // The screen has the new size once the frame reports it; then let it lay out.
-  await onSeat(i, (f) => f.waitForFunction(({ width, height }) => innerWidth === width && innerHeight === height, size, { timeout: TIMEOUT }));
-  await settle(i);
-};
+  // The screen has the new size once the frame reports it; then two frames let it lay out.
+  await onSeat(i, (f) => f.evaluate(({ width, height }) => new Promise((resolve) => {
+    const ready = () => innerWidth === width && innerHeight === height;
+    const frames = (n) => requestAnimationFrame(() => (n ? frames(n - 1) : resolve()));
+    const poll = () => (ready() ? frames(1) : requestAnimationFrame(poll));
+    poll();
+  }), size));
+});
 
 /** One call to the harness admin channel (the one window.__uzu_dev uses). */
 function admin(method, args = []) {
@@ -209,7 +221,7 @@ function admin(method, args = []) {
   });
 }
 /** After an action, one round trip to the harness: what it sent has been handled before the next step. */
-const synced = () => admin('getRawState').catch(() => {});
+const synced = timed('harness sync', () => admin('getRawState').catch(() => {}));
 
 /** Tap the next control n times (Infinity: until it is gone), in whichever seat's screen has it. */
 async function tap(n) {
@@ -226,13 +238,13 @@ async function tap(n) {
     }
     if (tapped < 0) return;
     await synced();
-    await settle(tapped, n === Infinity ? 40 : 120);
+    await settle(tapped, 50);
   }
 }
 
 /** A screen's steps, each in its own seat's screen (default: the screen's seat). */
 async function run(steps, screenSeat, key) {
-  for (const step of steps) {
+  for (const [n, step] of steps.entries()) {
     const at = step.seat ?? screenSeat;
     where = `${key} step ${JSON.stringify(step, (_, v) => (typeof v === 'function' ? '[function]' : v === Infinity ? 'Infinity' : v))}`;
     await within(STEP_MS * 1.5, 'step', async () => {
@@ -260,8 +272,11 @@ async function run(steps, screenSeat, key) {
       else if (!('wait' in step)) throw new Error(`unknown step ${JSON.stringify(step)}`);
       // A step that gives a time waits that long (a real delay in the game); the others wait for
       // the screen to stop changing.
+      // A next step that waits for its own element (click, fill, waitFor) needs no settle here; the
+      // screen's last step is settled by the caller.
+      const next = steps[n + 1];
       if (step.wait !== undefined) await page.waitForTimeout(step.wait);
-      else await settle(at);
+      else if (next && !('click' in next || 'fill' in next || 'waitFor' in next)) await settle(at, 50);
     });
   }
 }
@@ -293,16 +308,18 @@ const reachable = (el) => {
 
 const picked = (s, i) => !only || only.some((k) => k === s.key || k === String(i + 1).padStart(2, '0') || s.key.startsWith(`${k}-`));
 const docs = {};
+const perScreen = [];
 try {
   for (const [n, s] of config.screens.entries()) {
     if (!picked(s, n)) continue;
     const at = s.seat ?? player;
+    const t1 = performance.now();
     where = `${s.key} taps`;
     await within(STEP_MS * 3, 'the taps', () => tap(s.taps ?? 0));
-    await run(s.steps ?? [], at, s.key);
+    await timed('steps', run)(s.steps ?? [], at, s.key);
     // `wait` on a screen is a real delay (a timer in the game); otherwise wait for the screen to be still.
     if (s.wait !== undefined) await page.waitForTimeout(s.wait);
-    else await settle(at);
+    else await settle(at, 80);
     docs[s.key] = {};
     // One pass: each orientation gives the overflow check, the PNG and the snapshot.
     for (const [o, size] of Object.entries(SIZES)) {
@@ -310,7 +327,7 @@ try {
       await within(STEP_MS * 3, `${s.key} ${o}`, async () => {
         await resize(at, size);
         if (check) {
-          const found = await onSeat(at, (f) => f.evaluate(overflow));
+          const found = await timed('check', onSeat)(at, (f) => f.evaluate(overflow));
           spills += found.length;
           console.log(`${s.key} ${o}: ${found.length ? '' : 'ok'}`);
           for (const f of found) console.log(`  ${f.kind} ${f.side} ${f.by}px  ${f.path}  ${f.text}`);
@@ -325,12 +342,13 @@ try {
         }
         if (pngDir) {
           const file = join(pngDir, `${s.key}-${o}.png`);
-          await page.screenshot({ path: file, clip: { x: 0, y: 0, ...size } });
+          await timed('png', page.screenshot.bind(page))({ path: file, clip: { x: 0, y: 0, ...size } });
           console.log(`wrote ${file}`);
         }
-        if (wantPage) docs[s.key][o] = await onSeat(at, (f) => snapshot(f, s.parts ?? []));
+        if (wantPage) docs[s.key][o] = await timed('snapshot', onSeat)(at, (f) => snapshot(f, s.parts ?? []));
       });
     }
+    perScreen.push(`${s.key.slice(0, 2)} ${Math.round(performance.now() - t1)}`);
     if (!wantPage) continue;
     // Numbers follow the config, so they stay put between captures; list only the parts on screen.
     const found = new Set(Object.keys(SIZES).flatMap((o) => docs[s.key][o].found));
@@ -341,6 +359,11 @@ try {
 }
 clearTimeout(watchdog);
 const name = wantPage ? await seatName(player) : '';
+const total = performance.now() - t0;
+if (showTimes) {
+  console.log(`per screen (ms): ${perScreen.join(', ')}`);
+  console.log(`times (ms; a step includes its settle and sync): ${Object.entries(spent).map(([k, v]) => `${k} ${Math.round(v)}`).join(', ')}, total ${Math.round(total)}`);
+}
 await browser.close();
 if (!wantPage) process.exit(check && spills ? 1 : 0);
 

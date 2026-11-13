@@ -71,7 +71,7 @@ so `button:has-text("読み終えた")` works too.
 
 After every step the capture waits until that seat's screen is still (fonts loaded, no DOM change
 for 120 ms, two frames drawn), after a click or a state change also one round trip to the harness; it
-sleeps only when a step or screen gives `wait`. A step waits up to 15 s for its element and looks the seat's screen up again each
+sleeps only when a step or screen gives `wait`. A step followed by one that waits for its own element (click, fill, waitFor) skips the wait. A step waits up to 15 s for its element and looks the seat's screen up again each
 time, so a screen that reloads (after a reset or a resize) does not make it
 miss. Use `state` to start a screen deep in the game instead of playing up to
 it.
@@ -131,6 +131,7 @@ trying something:
 - `--step-timeout <s>` (default 15) caps a step and the wait for its element; `--timeout <s>` (default
   600) caps the whole run. Either one stops the run, names the screen and step it was on, and exits
   non-zero (2 for the whole-run cap).
+- `--times` prints the time spent per screen and per kind of work (settling, steps, resize, PNG, snapshot, check).
 - Try 1 screen, then a few, then all, under `timeout 60` or the like.
 
 ## PNG screenshots
