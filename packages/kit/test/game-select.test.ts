@@ -109,4 +109,22 @@ describe('gameSelectPhase', () => {
     act('idle:duel.move', 'seat-a');
     expect(() => act('idle:duel.move', 'seat-b')).toThrow();
   });
+
+  it('lets only the facilitator pick, go back and move on', () => {
+    const quick: PhaseLogic<{ over: boolean }> = { setup: () => ({ over: true }), actions: { move() {} }, done: (s) => s.over };
+    const games = [{ id: 'quick', players: { min: 2, max: 2 }, logic: quick }];
+    const logic = flowLogic([{ id: 'idle', logic: gameSelectPhase(games, { facilitator: 'gm' }) }], ['x', 'gm']);
+    const state = logic.setup({ players, ctx });
+    const gm = Object.keys(state.parts).find((s) => state.parts[s] === 'gm')!;
+    const other = Object.keys(state.parts).find((s) => s !== gm)!;
+    const act = (name: string, playerId: string, payload = {}) => logic.actions[name]({ state, playerId, payload, ctx });
+    expect(() => act('idle:pick', other, { id: 'quick' })).toThrow('not the facilitator');
+    act('idle:pick', gm, { id: 'quick' });
+    act('idle:quick.move', other);
+    expect(() => act('idle:back', other)).toThrow('not the facilitator');
+    act('idle:back', gm);
+    expect(() => act('idle:next', other)).toThrow('not the facilitator');
+    act('idle:next', gm);
+    expect(state.ended).toBe(true);
+  });
 });

@@ -31,11 +31,17 @@
     last,
     games,
     spectator,
+    facilitator,
     guide,
+    memo,
     finish,
   }: PhaseViewProps<GameSelectState> & {
     games: readonly GameView[];
     spectator?: string;
+    /** The part that picks, goes back and moves on (gameSelectPhase's `facilitator`, passed here too). */
+    facilitator?: string;
+    /** A note for each part, at the top of the list under the guide (part ID -> text). */
+    memo?: Record<string, string>;
     /** What to do now, at the top of the list. */
     guide?: string;
     /** The label of the button that leaves the list for the next phase; `button.nextPhase` without one. */
@@ -58,6 +64,9 @@
   };
   const playing = $derived(games.find((g) => g.id === phase.game));
   const over = $derived(playing ? playing.logic.done(phase.play) : false);
+  /** Only the facilitator's part moves things along; the others wait and see who. */
+  const blocked = $derived(facilitator !== undefined && part !== facilitator);
+  const waitNote = $derived(blocked ? fill(STRINGS['status.facilitator'], { name: names[facilitator ?? ''] ?? '' }) : undefined);
   const watching = $derived(!(me in (phase.players ?? parts)));
 
   // The game this player has selected on the list; nothing starts until the play button.
@@ -90,7 +99,7 @@
     </div>
     <!-- In the footer: back once the game is done, before that whether you watch. -->
     {#if over}
-      <FooterActions><Button onclick={() => send('back')}>{STRINGS['button.back']}</Button></FooterActions>
+      <FooterActions><Button disabled={blocked} note={waitNote} onclick={() => send('back')}>{STRINGS['button.back']}</Button></FooterActions>
     {:else if watching}
       <FooterActions><p>{STRINGS['game.watching']}</p></FooterActions>
     {/if}
@@ -99,10 +108,11 @@
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
     <div class="scroll list" data-uzu-part="list">
       {#if guide}<Guide text={guide} />{/if}
+      {#if memo?.[part]}<Guide text={memo[part]} />{/if}
       <ul>
         {#each choices as { game: g, players } (g.id)}
           <li data-uzu-part="list-row">
-            <Button variant="secondary" pressed={selected === g.id} onclick={() => (selected = g.id)}>
+            <Button variant="secondary" disabled={blocked} pressed={selected === g.id} onclick={() => (selected = g.id)}>
               <span class="name" data-uzu-part="list-name"
                 >{#if selected === g.id}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"
                     ><path d="M1 5l3.5 3.5L11 1.5" /></svg
@@ -116,10 +126,10 @@
     </div>
   </div>
   <FooterActions place="aside">
-    <Slot icon="next" onclick={() => send('next')}>{finish ?? STRINGS['button.nextPhase']}</Slot>
+    <Slot icon="next" disabled={blocked} onclick={() => send('next')}>{finish ?? STRINGS['button.nextPhase']}</Slot>
   </FooterActions>
   <FooterActions>
-    <Button disabled={selected === null} note={selected === null ? STRINGS['status.pickGame'] : undefined} onclick={() => selected && send('pick', { id: selected })}>
+    <Button disabled={blocked || selected === null} note={waitNote ?? (selected === null ? STRINGS['status.pickGame'] : undefined)} onclick={() => selected && send('pick', { id: selected })}>
       {STRINGS['game.play']}
     </Button>
   </FooterActions>

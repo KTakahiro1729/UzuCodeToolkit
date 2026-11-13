@@ -10,9 +10,11 @@ For the agent that turns an author's plan into a work. The toolkit sets no forma
 | Lines written as "name line", with a reading in （） after a word | The script's lines; `parseRuby` for the readings (stored as Aozora ruby) |
 | A stage direction or a scene heading | A line of a cast entry with `direction: true`; a scene heading on the line that opens the scene |
 | A handout: shared text, text per part, impressions of others, settings to fill in | `handoutScreen(handouts, props)` with `HandoutView`; after the game `HandoutReviewView` |
+| "Discuss for 10 minutes" (text only, no handout) | `timedPhase({ minutes, rule })` with `TimedTextView` (`props: { text, guide }`); `rule` is null (time alone), `anyone`, `everyone`, `majority` or `{ only: part }` to end early |
+| Read-through, then a game, in one stretch | Two phases with the same band label: the footer merges them into one entry (no new part) |
 | "Read for 5 minutes", an extension, a pause | The handout phase's timer (`TimeLeft`, `secondsLeft`); extension and pause are part of it |
 | An introduction, the cast, "ready when everyone is ready" | `castScreen(props)` and `readyPhase` |
-| A list of games to choose from | `gameSelectPhase`, `GameSelectView`; cards `deck` / `deal`; a vote `Ballot` with `Vote` |
+| A list of games to choose from | `gameSelectPhase(games, { spectator, facilitator })`, `GameSelectView` (`facilitator` and a per-part `memo` are optional); cards `deck` / `deal`; a vote `Ballot` with `Vote` |
 | "Shown only to X", a secret | Hidden on screen only (docs/decisions: secrets-are-hidden-on-screen-only); a `Guide` line for the part that sees it |
 | "Who may move the game on" | `emptyPhase({ facilitator })`; the read-through's current reader moves its own phase |
 | A chapter left empty, or "placeholder" | `emptyPhase()` |
