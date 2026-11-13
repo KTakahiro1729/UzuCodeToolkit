@@ -2,11 +2,16 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 03:12 UTC
+Last checked: 2026-11-13 03:16 UTC
 
 ## Waiting on the owner
 
-Nothing right now. No open decisions. No CI checks are configured.
+No open decisions. No CI checks are configured. The two PRs are independent.
+
+| What | Kind | Notes |
+|---|---|---|
+| [#21](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/21) Playing cards: a corner index a third of the card wide, and AA red | Review, merge | Ready. |
+| [#22](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/22) Game select: start with Play after choosing, white Next, room for Back, show spectating | Review, merge | Ready. [Screens](https://claude.ai/artifact/NuxrEgY4wxoZsAXyW8oKAZ) |
 
 ## Done
 
