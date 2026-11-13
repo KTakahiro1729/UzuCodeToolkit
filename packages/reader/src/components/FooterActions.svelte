@@ -11,10 +11,14 @@
 
   let { place = 'main', children }: { place?: 'main' | 'aside'; children: Snippet } = $props();
 
+  // Svelte removes a block's nodes where it put them, so a node moved to the footer would outlive
+  // the screen that made it (the old screen's actions stayed after a phase change). Remove it
+  // ourselves once the screen is gone, after its fade-out.
   function portal(node: HTMLElement) {
     const move = () => footerSlots[place]?.append(node);
     if (footerSlots[place]) move();
     else tick().then(move);
+    return { destroy: () => node.remove() };
   }
 </script>
 
