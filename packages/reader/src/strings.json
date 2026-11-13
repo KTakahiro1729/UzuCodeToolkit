@@ -18,8 +18,8 @@
   "cast.you": "あなたは{name}を演じます",
   "button.ready": "準備できた",
   "ready.waiting": "ほかの人を待っています",
-  "count": "{n}/{total}",
   "gameSelect.players": "{n}人",
   "gameSelect.watches": "{name}は観戦",
-  "list.sep": "・"
+  "list.sep": "・",
+  "button.unready": "取り消す"
 }

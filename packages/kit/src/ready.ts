@@ -1,7 +1,6 @@
 /**
  * A phase that waits until every player says they are ready, such as the introduction where each
- * player sees whom they play. A seat's `ready` cannot be taken back; the phase ends once every
- * seat has sent it.
+ * player sees whom they play. `unready` takes it back; the phase ends once every seat is ready.
  */
 
 import type { PhaseLogic } from './flow';
@@ -20,6 +19,10 @@ export function readyPhase(): PhaseLogic<ReadyState> {
       ready({ state, playerId }) {
         if (state.ready.includes(playerId)) throw new Error('already ready');
         state.ready.push(playerId);
+      },
+      unready({ state, playerId }) {
+        if (!state.ready.includes(playerId)) throw new Error('not ready');
+        state.ready = state.ready.filter((s) => s !== playerId);
       },
     },
     done: (state) => state.seats.every((s) => state.ready.includes(s)),

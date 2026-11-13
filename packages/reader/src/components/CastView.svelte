@@ -1,13 +1,12 @@
 <!--
   The introduction with the cast (readyPhase()): optional story text, then whom you play and every
-  part (icon, name, one line on who they are), yours first and tinted. Under them the ready button
-  with how many are ready (n/total); once you tap it, it greys and says you are waiting. The phase
-  ends when everyone is ready. On a landscape screen the text and the cast stand side by side.
+  part (icon, name, one line on who they are), yours first and tinted. Under them the ready button;
+  once you tap it, it greys and says you are waiting, and a separate white button takes it back.
+  The phase ends when everyone is ready. On a landscape screen the text and the cast stand side by side.
 -->
 <script lang="ts">
   import type { Part, ReadyState } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
-  import { fill } from '../fill';
   import Button from './Button.svelte';
   import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
@@ -54,10 +53,10 @@
     </div>
   </div>
   <div class="go">
-    <Button disabled={ready} onclick={() => send('ready')}>
-      {STRINGS[ready ? 'ready.waiting' : 'button.ready']}
-      <span class="count">{fill(STRINGS.count, { n: state.ready.length, total: state.seats.length })}</span>
-    </Button>
+    {#if ready}
+      <Button variant="secondary" onclick={() => send('unready')}>{STRINGS['button.unready']}</Button>
+    {/if}
+    <Button disabled={ready} onclick={() => send('ready')}>{STRINGS[ready ? 'ready.waiting' : 'button.ready']}</Button>
   </div>
 </div>
 
@@ -136,8 +135,9 @@
   .about {
     color: var(--color-text-quiet);
   }
-  .count {
-    font-weight: normal;
+  .go {
+    display: flex;
+    gap: 0.8em;
   }
   @media (orientation: landscape) {
     .body {

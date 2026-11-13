@@ -127,9 +127,11 @@ Decoration is out of scope, but it must not break the rules above:
 ### Guide
 
 - A phase's screen may open with what to do now, in a line or two of UI text
-  at the top (`guide`, the work's own words). It stays while the screen does
-  and needs no tap: no window to close. Only where players would otherwise
-  guess (why the game waits, what is secret), not to repeat the band.
+  at the top (`guide`, the work's own words). It is not shown all the time
+  (owner's decision): it fades out after 8 seconds, keeping its room so
+  nothing moves, and needs no tap: no window to close. Only where players
+  would otherwise guess (why the game waits, what is secret), not to repeat
+  the band.
 
 ### Introduction with the cast
 
@@ -137,9 +139,11 @@ Decoration is out of scope, but it must not break the rules above:
   the part's name bold) and every part as a white block: icon, name and one
   line on who they are (the manifest's description). Yours comes first and
   takes your role's tint.
-- Under it one ready button (`button.ready`) with how many are ready
-  (`n/total`). Once tapped it greys and says `ready.waiting`; the phase moves
-  on when everyone is ready.
+- Under it one ready button (`button.ready`), with no count of who is ready
+  (owner's decision). Once tapped it greys and says `ready.waiting`, and a
+  separate white button (`button.unready`) takes it back: a button says what
+  it does, so taking back is never the same button (owner's decision). The
+  phase moves on when everyone is ready.
 - On a landscape screen the story text and the cast stand side by side.
 
 ### Buttons
