@@ -14,8 +14,8 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 
 | Path | Role |
 |---|---|
-| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`) and playing cards (`deck`, `deal`). Called from both server actions and the view |
-| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `HandoutView`, `GameSelectView`, `PlayingCard`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
+| `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`), playing cards (`deck`, `deal`), timers (`secondsLeft`, `formatClock`) and vote counting (`tally`, `soleTop`). Called from both server actions and the view |
+| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `HandoutView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
 | `samples/hundred-arms` | Sample work 百本腕と勇者. Two players |
 | `samples/yubiwa` | Sample work 指環 (江戸川乱歩, Aozora Bunko). Two players |
 | `samples/mittsu-no-takara` | Sample work 三つの宝 (芥川龍之介, Aozora Bunko). Three players, two of them doubling roles |
@@ -48,6 +48,7 @@ The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orient
 
 ## Writing code
 
+- What a work does not use must not reach its build. Keep a part that brings files with it (images, such as the playing cards) behind an entry of its own, so a work that never imports it ships none of them.
 - Actions run both in client prediction and on the server: keep them deterministic (no random or wall-clock values in state). Reject by throwing.
 - Sizes in em, based on the screen's short side. `packages/reader/src/index.ts` exposes the safe area and the UZU HUD as CSS variables (`--safe-*`, `--hud-x`, `--hud-y`).
 - Certification (https://docs.code.uzu-app.com/certification): call `firstFrameReady()`, use relative paths, file names only `[A-Za-z0-9_.-]`, no external network access.
