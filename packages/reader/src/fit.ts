@@ -1,5 +1,5 @@
 /**
- * Whether a main button's label and note fit its fixed width on one line each (docs/design.md,
+ * Whether a main button's label and note fit its fixed width on one line each (docs/design/chrome.md,
  * Footer). The width holds about 7 full-width characters on a 390px phone. A work's own test
  * can call these on its labels and notes, so a long one fails there and not on the screen.
  */

@@ -97,15 +97,15 @@ export const castScreen = (props: Record<string, unknown>): Omit<PhaseView, 'id'
  */
 const SHARED_ROW_MAX = 0.25;
 
-/** Expose the safe area, the UZU HUD (top-left buttons) and where the band starts as CSS variables. */
+/**
+ * The SDK already sets the safe area and the HUD as CSS variables (--uzu-safe-area-inset-*,
+ * --uzu-hud-inset-x/y), so the styles read those. Only what the SDK does not know is set here:
+ * where the band starts (--band-top) and which row layout it uses.
+ */
 function applyInsets({ safeArea, hud }: UzuInsets): void {
-  const s = document.documentElement.style;
-  for (const side of ['top', 'right', 'bottom', 'left'] as const) s.setProperty(`--safe-${side}`, `${safeArea[side]}px`);
-  s.setProperty('--hud-x', `${hud.x}px`);
-  s.setProperty('--hud-y', `${hud.y}px`);
   const width = innerWidth - safeArea.left - safeArea.right;
   const shared = hud.x <= width * SHARED_ROW_MAX;
-  s.setProperty('--band-top', `${shared ? 0 : hud.y}px`);
+  document.documentElement.style.setProperty('--band-top', `${shared ? 0 : hud.y}px`);
   // The band's CSS tells the two layouts apart by this (TopBand).
   document.documentElement.dataset.bandRow = shared ? 'shared' : 'own';
 }
@@ -143,6 +143,8 @@ export function startFlow(logic: GameLogic<FlowState>, { parts, phases, orientat
     },
     inputs(sendAction) {
       bindSend(sendAction);
+      // For tools/e2e/all-phases.mjs: lets a test send actions from this screen. Dev server only, not in the build.
+      if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV) (window as { __flow_dev?: unknown }).__flow_dev = { send: sendAction };
     },
   });
 }

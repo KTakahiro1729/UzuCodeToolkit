@@ -31,7 +31,7 @@
 </script>
 
 <div class="screen" in:sceneIn|global out:sceneOut|global>
-  <div class="empty">
+  <div class="empty" data-uzu-part="empty">
     <div class="scroll text">
       {#if guide}<Guide text={guide} />{/if}
       {#each paragraphs as p}<p>{p}</p>{/each}

@@ -63,13 +63,14 @@
 <div class="handout" in:sceneIn|global out:sceneOut|global>
   <HandoutTabs {handout} {part} {guide} partName={names[part] ?? ''} mark={!done && !filled}>
     {#snippet fields()}
-      <div class="fields">
+      <div class="fields" data-uzu-part="fields">
         {#each settings as f (f.id)}
-          <label>
-            <span>{f.label}{#if f.optional}<span class="optional">{STRINGS['handout.optional']}</span>{/if}</span>
+          <label data-uzu-part="field">
+            <span>{f.label}{#if f.optional}<span class="optional" data-uzu-part="field-optional">{STRINGS['handout.optional']}</span>{/if}</span>
             <!-- Grows with what is typed, so the example and long answers show whole. Once done it
                  is locked but stays a field; tapping it takes done back and lets you type. -->
             <textarea
+              data-uzu-part="field-input"
               rows="1"
               readonly={done}
               class:locked={done}

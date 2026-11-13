@@ -37,7 +37,7 @@
   --footer-h: 48px;
   /* The band's bottom edge: under the HUD, or level with it when they share a row (main.ts). */
   --band-bottom: calc(
-    var(--safe-top, 0px) + var(--band-top, 0px) + max(var(--band-h), var(--hud-y, 0px) - var(--band-top, 0px))
+    var(--uzu-safe-area-inset-top, 0px) + var(--band-top, 0px) + max(var(--band-h), var(--uzu-hud-inset-y, 0px) - var(--band-top, 0px))
   );
   color-scheme: light;
 }

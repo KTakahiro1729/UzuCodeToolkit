@@ -1,5 +1,5 @@
 <!--
-  The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design.md, Top band).
+  The band: its own row under the UZU HUD, or the HUD's row when the HUD is narrow (docs/design/chrome.md, Top band).
   Centre: the game's phase, in the quieter text colour; in a work of several phases a button that opens the phase list. Right: every player's part, name under
   icon, the others left and yours right as in the chat, yours marked with a double circle. A part
   that doubles roles shows its first role's icon; a check marks a player done with a phase
@@ -37,23 +37,23 @@
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
 
-<header style:--roles-w="{rolesWidth}px">
+<header data-uzu-part="header" style:--roles-w="{rolesWidth}px">
   <!-- With a way to open the phase list the phase is a pill with a down mark, so it reads as tappable. -->
   {#if onphase}
     <button type="button" class="phase" data-uzu-phase aria-expanded={phaseOpen} onclick={onphase}>
       {@render label()}
-      <svg class="more" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
+      <svg class="more" data-uzu-part="phase-more" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
     </button>
   {:else}
     <div class="phase" data-uzu-phase>{@render label()}</div>
   {/if}
-  <div class="roles" bind:clientWidth={rolesWidth}>
+  <div class="roles" data-uzu-part="roles" bind:clientWidth={rolesWidth}>
     {#each shown as part (part.id)}
-      <span class="who">
+      <span class="who" data-uzu-part={part.id === myPart ? 'role role-own' : 'role'}>
         <span class="icon">
-          <img src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />
+          <img data-uzu-part="role-icon" src={`./assets/icon-${part.roles[0]}.webp`} alt="" data-you={part.id === myPart} />
           {#if done.includes(part.id)}
-            <svg class="check" viewBox="0 0 16 16" aria-hidden="true" transition:fade={{ duration }}>
+            <svg class="check" data-uzu-part="role-check" viewBox="0 0 16 16" aria-hidden="true" transition:fade={{ duration }}>
               <circle cx="8" cy="8" r="8" />
               <path d="M4.5 8.2l2.3 2.3 4.7-4.8" />
             </svg>
@@ -94,8 +94,8 @@
     height: var(--band-bottom);
     box-sizing: border-box;
     /* More room at the right than the left, so the roles do not crowd the screen edge. */
-    padding: calc(var(--safe-top, 0px) + var(--band-top, 0px)) calc(var(--safe-right, 0px) + 1.5em) 0
-      calc(var(--safe-left, 0px) + 0.8em);
+    padding: calc(var(--uzu-safe-area-inset-top, 0px) + var(--band-top, 0px)) calc(var(--uzu-safe-area-inset-right, 0px) + 1.5em) 0
+      calc(var(--uzu-safe-area-inset-left, 0px) + 0.8em);
     display: grid;
     /* The phase is centred while the players fit in the right half; with more players it gives
        way to the left, keeping a gap, instead of running into them. */
@@ -234,8 +234,8 @@
    * too long for the room ends in an ellipsis).
    */
   :global(:root[data-band-row='own']) header {
-    padding-top: var(--safe-top, 0px);
-    grid-template-columns: var(--hud-x, 0px) minmax(0, 1fr);
+    padding-top: var(--uzu-safe-area-inset-top, 0px);
+    grid-template-columns: var(--uzu-hud-inset-x, 0px) minmax(0, 1fr);
     grid-template-rows: var(--band-top) minmax(0, 1fr);
     row-gap: 0;
     align-items: center;

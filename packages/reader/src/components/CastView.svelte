@@ -39,13 +39,13 @@
     {#if guide}<Guide text={guide} />{/if}
     <div class="side">
       {#if paragraphs.length}
-        <div class="text">
+        <div class="text" data-uzu-part="cast-text">
           {#each paragraphs as p}<p>{p}</p>{/each}
         </div>
       {/if}
       <div class="flow"><FlowStrip /></div>
     </div>
-    <div class="parts">
+    <div class="parts" data-uzu-part="cast-parts">
       {#if mine}
         <section class="mine">
           <img src={`./assets/icon-${mine.roles[0]}.webp`} alt="" />
@@ -59,10 +59,10 @@
           {#if mine}<h2>{STRINGS['cast.others']}</h2>{/if}
           <ul>
             {#each others as p (p.id)}
-              <li>
-                <img src={`./assets/icon-${p.roles[0]}.webp`} alt="" />
+              <li data-uzu-part="cast-row">
+                <img data-uzu-part="cast-icon" src={`./assets/icon-${p.roles[0]}.webp`} alt="" />
                 <span class="name">{p.name}</span>
-                {#if p.description}<span class="about">{p.description}</span>{/if}
+                {#if p.description}<span class="about" data-uzu-part="cast-about">{p.description}</span>{/if}
               </li>
             {/each}
           </ul>

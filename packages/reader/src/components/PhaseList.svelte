@@ -1,6 +1,6 @@
 <!--
   The work's phases in order, numbered, for a player to see where the game is and what comes next
-  (docs/design.md, Phase list). Phases in a row that share a label (such as the handouts and the
+  (docs/design/phases.md, Phase list). Phases in a row that share a label (such as the handouts and the
   pause after them) are one entry. Each entry is a card of its own. Content only: the footer's
   sheet gives it its title, background and close button. By default it fills the cell it sits in
   and scrolls itself, the current entry in view; `inline` leaves it at its full height inside a
@@ -44,13 +44,13 @@
   }
 </script>
 
-<ol class:scroll={!inline} class:inline>
+<ol data-uzu-part="flow-list" class:scroll={!inline} class:inline>
   {#each entries as e, n (e.first)}
     {@const state = stateOf(e)}
     {#if state === 'now'}
-      <li data-state={state} aria-current="step" use:intoView={!inline}><span class="num">{n + 1}</span>{e.label}</li>
+      <li data-uzu-part="flow-row" data-state={state} aria-current="step" use:intoView={!inline}><span class="num">{n + 1}</span>{e.label}</li>
     {:else}
-      <li data-state={state}><span class="num">{n + 1}</span>{e.label}</li>
+      <li data-uzu-part="flow-row" data-state={state}><span class="num">{n + 1}</span>{e.label}</li>
     {/if}
   {/each}
 </ol>

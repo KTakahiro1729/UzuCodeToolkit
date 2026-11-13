@@ -1,5 +1,5 @@
 <!--
-  What to do now, in a line or two at the top of a phase's screen (docs/design.md, Guide). It sits
+  What to do now, in a line or two at the top of a phase's screen (docs/design/phases.md, Guide). It sits
   in the screen's content, so it scrolls away with it; it never floats over the screen. It needs no
   tap. The text is the work's (PhaseView props `guide`).
 -->
@@ -7,7 +7,7 @@
   let { text }: { text: string } = $props();
 </script>
 
-<p class="guide">{text}</p>
+<p class="guide" data-uzu-part="guide">{text}</p>
 
 <style>
   p {

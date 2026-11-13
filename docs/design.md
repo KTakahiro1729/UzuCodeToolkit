@@ -1,5 +1,9 @@
 # Design policy
 
+How screens in this repository work for the players. This file holds the rules
+every screen follows. Each component's spec is in `docs/design/`: read the one
+you are changing (index at the end), not all of them.
+
 How screens in this repository work for the players. This policy covers the
 functional side of design only: helping players see what to do and keeping
 their cognitive load low. The decorative side (hues, typeface, icon art) is out
@@ -35,32 +39,6 @@ on cards.
 
 ## Rules
 
-### Focus and hierarchy
-
-- During the read-through the focus is the newest line, at the bottom, and the
-  advance button right under it, in the footer. The advance button reads
-  `▼ 次のせりふ` (`button.nextLine`) with the mark before it. On the last line of a
-  read-through that another phase follows it reads `button.nextPhase`.
-- A newest line taller than the chat shows from its top, its speaker's name
-  included, so its reader starts at its first words and scrolls on; earlier
-  lines can always be scrolled back to.
-- When you read, the line being read takes the button's blue, so line and
-  button read as one cue. The other role's lines are always white.
-- Every player sees the button. It is filled for whoever reads now and greyed
-  for the others, so each player knows at a glance whether to read or to wait.
-  Nothing else on screen signals the turn.
-- The button is always there during the read-through, so it never moves the
-  lines. It carries a short label from a key (read, then tap) until your first
-  line is read, then the next mark (a small down-pointing triangle) alone. On
-  the last line it carries an end label from a key instead of the mark, since
-  that tap ends the read-through rather than showing a next line.
-- Lines are told apart by side (yours right, as in chat apps), by the
-  speaker's icon and name, on one row above the bubble. Your role's
-  bubbles are tinted; the other role's are white. All lines keep full text
-  contrast.
-- A player may read several roles (a part). Every line of those roles counts
-  as yours: right side, tint, and the button when it is current.
-
 ### Text
 
 - Use text when going without it costs the player more than reading it, and
@@ -80,19 +58,12 @@ on cards.
   from 60em (full-HD monitors). Phones keep one column in both orientations;
   sideways they lack the height. Each column is then at least about 19em, near
   a phone held upright.
-- Once the handouts are over, they stay in view as columns beside the screen
-  (the handouts left, the screen in the last column) instead of opening as a
-  sheet, and their footer button is hidden. The footer's actions centre under
-  the screen's column, so the advance button stays under the lines. Screens
-  before the handouts keep their single reading column, centred.
-- Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
+- Respect the safe area and the UZU HUD (`--uzu-safe-area-inset-*`, `--uzu-hud-inset-x`, `--uzu-hud-inset-y`).
 - Group with spacing; a background only where it carries meaning, such as one
   line of dialogue. No dividers. Lines are edges of controls only (Look by
   role), plus the side lines on a stage direction you are reading.
-- The parent owns spacing: the gap between siblings is the parent's `gap`, the
-  room inside an element is its own `padding`. No element sets outer `margin`
-  (only `0` or `auto`), so DevTools shows every space in one of two places.
-  `npm run lint` enforces this.
+- The parent owns spacing (`gap`); an element owns only its `padding`. No outer
+  `margin`: `npm run lint` enforces it.
 
 ### Alignment
 
@@ -133,9 +104,8 @@ Decoration is out of scope, but it must not break the rules above:
 
 A player tells what something is, and whether to tap it, from its look alone,
 before reading it. Each role below has one look, and no other role borrows it
-(evidence in the research page: NN/g eyetracking found weak signifiers cost 22%
-more time; enclosed inputs beat underlined ones in Google's text-field study;
-WCAG 1.4.11 asks 3:1 for what shows a control is there).
+(weak signifiers cost time in NN/g eyetracking; WCAG 1.4.11 asks 3:1 for what
+shows a control is there).
 
 | Role | Shape | Fill | Edge |
 |---|---|---|---|
@@ -174,160 +144,6 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 - No text below 16px, except ruby: it gives the reading of the word under it
   at half the text size (owner's decision).
 
-## Components
-
-### Guide
-
-- A phase's screen may open with what to do now, in a line or two of UI text
-  at the top (`guide`, the work's own words). It is part of the screen's
-  content and scrolls away with it; it never floats over the screen or stays
-  pinned (owner's decision). It needs no tap: no window to close. Only where players
-  would otherwise guess (why the game waits, what is secret), not to repeat
-  the band.
-
-### Introduction with the cast
-
-- The introduction shows its story text, then the game's flow (`FlowStrip`),
-  then the cast. Your part has a block of its own (`cast.mine`; icon, the
-  part's name bold, one line on who they are) in your role's tint. The other
-  parts follow under `cast.others` as plain text on the page, with no block
-  (small icon, name, one line), so nothing in the list looks like a choice
-  that can be changed.
-- In the footer one ready button (`button.ready`), with no count of who is
-  ready (owner's decision). Once tapped it keeps its name, turns outlined in a
-  dark 2px edge with a tick (never red), and the band checks your icon (`readyDone`); tapping it again
-  takes it back (owner's decision, a toggle: `Button` `on`). The
-  phase moves on when everyone is ready.
-- On a landscape screen the story text over the flow stands beside the cast.
-
-### Buttons
-
-- One `Button` everywhere (`packages/reader`). `primary` is the next step,
-  filled; one screen has at most one primary at a time. `secondary` is any
-  other choice, outlined with no fill (Look by role). A choice that stays selected (such as your vote) takes
-  the primary's fill while selected (`pressed`).
-- A button greys only while it cannot be tapped, never to look quieter.
-
-### Whose turn (games)
-
-- As in the read-through: on your turn your button for the next step is
-  filled; on another player's turn that player's block (name, hand) sits on
-  white, and your buttons grey. Nothing else marks the turn: no outlines, no
-  tints. A game without player blocks (chess) says whose turn it is in a short
-  line instead.
-
-### Time left
-
-- A timer shows the time left as m:ss (`TimeLeft`), from the game time the
-  state holds, so every player sees the same.
-
-### Watching a game
-
-- A seat that sits a game out watches it: it sees only what every player may
-  see, and no buttons of the game. The game's screen gets `watching`.
-
-### Stage read-through (UZU's layout)
-
-- The read-through's second screen, on UZU's design guide (`StageReadThrough`; decisions: the-official-read-through-layout-is-a-second-screen, in-the-stage-layout-the-turn-rules-follow-the-guide). One dialogue frame shows the line being read, with the speaker's nameplate above its left edge and the next reader's beside it; the characters stand behind.
-- Your turn: the frame and nameplate ① take your colour, nameplate ① says whose turn it is, and the next button (dark, so it stands out from the frame) is at the frame's lower right. Another's turn: no button; nameplate ② shows the next line, in your colour when you read next. The log link is always at the lower left and opens the log over a dimmed screen, without characters.
-- It is the whole screen: no band, no footer. Sizes come from the guide's reference screen scaled to the screen, text 18px (never under 16px). The numbers are in `stage-layout.ts` and nowhere else.
-
-### Top band
-
-- A full-width row on a white background that reaches the top edge behind the
-  HUD, tall enough for icons with names under them (`--band-h`).
-- Whether it shares the HUD's row depends on how much of the screen width the
-  HUD takes. Over a quarter (phones held upright, about a third), the band is
-  its own row under the HUD, so the centred phase label keeps clear of the
-  HUD. A quarter or less (landscape and tablets, under a fifth), the band
-  shares the HUD's row with the HUD over its empty left part, so the chat
-  keeps the height. Nothing else shares a row with the HUD.
-- Under the HUD (an upright phone), the phase label goes up into the HUD's row,
-  centred in the room beside the HUD, and the players keep the band's own row
-  under it, at every width down to 320px; a name too long for its room ends in
-  an ellipsis.
-- Under 480px tall (a phone held sideways) each player's icon and name sit side
-  by side and the band is shorter, so the text under it keeps the height.
-- Shows every player as icon and part name, ordered like the chat: the other
-  players left (in the script's order), you right. A part that reads several
-  roles shows its first role's icon. Each name sits under its icon. Your role's icon has a
-  double circle (a ring around it), since order alone does not say which one
-  is yours. Band text is
-  bold.
-- The phase label changes when the screen below it does (for example when the
-  afterword appears), never before.
-- It does not signal the turn; the current line does. In a phase every player
-  finishes on their own (the handouts), a small check at the lower right of an
-  icon marks that player done, so you can see whom you are waiting for. No
-  count is shown.
-- Shows the current phase of the game (read-through, afterword, or other) as a
-  short label from a key, in every phase (owner's decision), centred on the
-  screen. In a work of more than one phase the label is a button (a pill with
-  a down mark) that opens the phase list as a sheet. When the players need more than the right half (several players on
-  an upright phone), the label gives way to the left, keeping a gap.
-
-### Footer
-
-- **Options on the footer** (a work chooses; the defaults are the plain forms):
-  - The note of a button that waits for others can say how many are left: a work sets
-    `status.waitCount` (such as `あと{n}人`); empty (the default) keeps the plain `status.waitOthers`.
-  - The time left (`TransitionFooter`) is the footer's leftmost item by default, or sits beside the
-    phase label in the band with `clockAt="band"`; pause and more time stay in the footer.
-  - The last 30 seconds of the clock are heavier and darker, with no edge: no red (red is for
-    danger), no motion.
-  - A phase that one part moves on (`emptyPhase({ facilitator })`, view prop `facilitator`) shows
-    the other seats a greyed button with `status.facilitator` (`{name}待ち`). The
-    read-through keeps `status.theirTurn`.
-- The main action area: a full-width white block along the bottom edge, the
-  band's counterpart, on every screen, as one row.
-- **The main button** is at the right edge, one fixed width; **it is
-  always the one to press now** (the send button of a chat), in every phase. It is the
-  filled one, a fixed 7.4em wide in every state, at least 3.5em high (about 9mm or more, for a thumb at the edge of the
-  screen) with room for a label and a note, so the footer keeps its height in every
-  state. Screens put it there with `FooterActions`. Buttons beside it that could
-  each be the main one are fused with it into one capsule (round at the outer ends, a thin
-  seam between), the one to press now last. A work chooses which; the toolkit does not.
-- **Items** are at the left: plain text in the quiet colour over a mark, no capsule,
-  so the one filled capsule stays the one to press now (`Slot`). They are the read-back
-  items (the handouts, once the game has left a phase whose content stays readable,
-  `PhaseView.keep`), more time, leaving the game select for the next phase, and the time
-  left (large and dark, the one number to watch). At most three, plus the main button.
-  The mark never stands alone (▤ ◷ ＋ »): the name is always written. Items go into
-  `FooterActions place="aside"`; the open read-back item is bold and underlined.
-- **The note.** A button whose state is not obvious says why in one short sentence under
-  its label, inside the button (`Button` `note`, `status.*` strings): "他の人待ち"
-  after you tap ready or done, "相手の番です" while another player reads, "設定が未記入"
-  while the handout's done button is greyed, "選ぶと押せます" on the play button,
-  "押すと全員進む" on a next-phase button any one player can tap for everyone. The label and the note are one line each: the main button has a fixed width, so each is at most 7 full-width
-  characters (`packages/reader/test/notes.test.ts` fails on a longer `status.*` or `button.*` string; a work's own test calls `fitsButton(label, note)` from `@uzu-toolkit/reader` on its labels). A button that
-  can be pressed and says what it does by its label alone has no note: text is read only
-  where its absence would leave the player guessing. It states a fact of the screen; it
-  never repeats the label or invents a rule. 16px, quiet colour.
-- **Labels say what moves.** The read-through's advance button is `▼ 次のせりふ`; a button
-  that moves the game to the next phase reads `次のフェーズへ` (`button.nextPhase`) without
-  the phase's name (a narrow button may say `次へ` with the longer sentence as its note);
-  the cast's is `準備OK`, the handout's `読み終えた`. `次へ` alone is not used for both.
-- **Red is for danger only.** A dangerous action (one that loses what a player
-  made) is a secondary button whose label and edge take `--color-danger`
-  (`Button variant="danger"`). Red means nothing else, and a danger button is
-  never the rightmost one of the main row, which is the button to press now: it
-  goes before it. A pressed toggle is not red.
-- A read-back item opens a sheet over the screen, for this player alone;
-  the screen keeps running under it and the footer's actions stay usable.
-  The sheet rises from the footer: a panel whose bottom edge is flush against it, its
-  sides at the screen's edge where the screen is narrow, only its top corners round,
-  a strip of the screen left above it, and the screen behind dimmed
-  (`--color-scrim`) rather than hidden, so the reader keeps their place. It slides up
-  and fades in (200 ms, transform and opacity). The
-  handouts' sheet is the one players open any time after the handout phase;
-  tapping the dimmed part closes it like the close button. The band and footer
-  are not dimmed. The sheet's title and a
-  close button share its top row; tapping the open item again also closes
-  it. A phase change closes the sheet. The phase list opens from the band's phase button.
-- Every button says what it does, and whether to press it shows at a glance:
-  filled for the step to take, greyed when it cannot be pressed now, outlined
-  for a side action (secondary).
-
 ### Scrollbars
 
 - One style everywhere a vertical area scrolls: thin, a quiet thumb
@@ -336,175 +152,15 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   edge, while its lines keep the reading width. Horizontal strips (tabs) keep
   none.
 
-### Dialogue line (read-through only)
+## Component specs (read the one you change)
 
-- The speaker's small icon and name on one row, the bubble under them. Your
-  role's lines on the right, the other role's on the left.
-- The bubble's top corner on the speaker's side is square, pointing up to the
-  speaker; the other corners are round.
-- Only the button advances; tapping elsewhere does nothing, so a stray tap
-  never skips a line.
-- A line spoken together shows the speakers' names joined (`name.and`) and the
-  first speaker's icon; that speaker reads it. A line marked as continuing the
-  previous speech shows no icon or name, and all its bubble's corners are
-  round.
-- A bubble is as wide as its longest line, so a wrapped line leaves no gap at
-  the right.
-- Ruby from the script (Aozora notation) shows above its word. It may run past
-  its word rather than spread the word's letters apart.
+| You touch | Read |
+|---|---|
+| The read-through: chat, dialogue line, stage layout, stage direction, notice, end screen | [design/read-through.md](design/read-through.md) |
+| Top band, footer, `Button`, sheets | [design/chrome.md](design/chrome.md) |
+| Handout screens, post-game handouts | [design/handout.md](design/handout.md) |
+| Guide, introduction, empty phase, phase list, phase changes | [design/phases.md](design/phases.md) |
+| Game select, turn marks in games, spectating, the clock | [design/games.md](design/games.md) |
 
-### Notice
-
-- A work may carry a note on itself (`notice` in `script.json`), such as one on
-  its wording. It sits above the first line for the whole read-through, as UI
-  text in the quieter colour with no background, left-aligned: an aside, not
-  story. It needs no tap.
-
-### Stage direction and scene heading
-
-- A stage direction is read aloud like a line, by the player whose part holds
-  it, but it is no one's speech: it spans the chat column as plain text, with
-  no icon, name or background (owner's decision). While you read one, a line
-  in the advance button's colour stands at each side of it instead of a
-  coloured background (owner's decision); this is the one place lines are
-  drawn. Other players see it plain.
-- A scene heading sits centred above the line that opens the scene, in the
-  quieter text colour, since it stands for what follows.
-
-### End screen
-
-- The title and the end mark (when the script has one), centred, nothing else.
-- After a moment the post-game screen replaces it: a centred greeting
-  (`review.heading`) and under it an area (a white block) labelled
-  `review.afterword` holding the author's afterword, when the script has one. The end screen fades out,
-  then the post-game screen fades in, so the two never show through each
-  other. The band's phase changes as the post-game screen comes in.
-
-### Phase changes
-
-- When the phase changes, the old screen fades out, then the new one fades in (200 ms each, one at a time, instant with reduced motion). The band's phase label changes with the screen: the old label fades out with the old screen, then the new one fades in with the new screen, so two labels never show at once.
-- The first screen, shown as the game loads, does not fade in.
-
-### Empty phase
-
-- A phase with no game of its own (an empty phase) shows the next button, centred, labelled `button.nextPhase` with the note `status.anyoneNext`, under optional story text (such as an introduction): left-aligned paragraphs in the story font, at the chat's reading width. Without text it holds the place of a phase not made yet. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
-- On the last line of a read-through that another phase follows, the advance button says `button.nextPhase` instead of `button.end`.
-
-### Handout
-
-- Where there is room (about 18em per column, 480px tall) the tabs spread over
-  up to 3 columns, counted on the width the handout itself has: each tab but
-  the last ones gets a column under a caption, and the last column keeps the
-  rest as tabs. Beside the screen (see Layout) the handout has fewer columns
-  by itself.
-- The handout is split into tabs, one text per tab, so a long handout does
-  not run as one scroll: the shared text (`handout.common`), your part's own
-  text (labelled with your part's name, its full heading at the top of the
-  tab), how your part sees the others (`handout.impressions`) and the
-  settings your part fills in (`handout.tabFields`). A tab with nothing in it
-  is left out. The tabs sit at the chat's reading width over one white area;
-  the chosen tab shares its white, as a folder tab, the others sit on the
-  page. The text scrolls under the tab bar and starts from the top when the
-  tab changes. Each reader's tab and scroll position are remembered on their
-  own device, so closing the handout sheet and opening it again resumes where
-  they left off.
-- A guide (`guide`, see Guide) opens the first tab and scrolls away with its
-  text; it is not repeated on the other tabs.
-- Each setting is a name with an input under it. A setting that may stay
-  blank says so after its name (`handout.optional`, in the quiet colour). The
-  example, when there is one, sits in the empty input. The input starts one
-  line tall and grows with its text, so a long example or answer shows whole.
-  The input is a white field with an edge (`--color-field`, `--color-line`,
-  `--radius-control`), so it reads as something to fill in, not as a greyed
-  control. Focus shows as a ring in the button's blue, not the browser's black.
-- While a setting that is not optional is still blank, the settings tab
-  carries a small dot, the familiar sign for "something here needs you", since
-  the done button stays greyed for a reason on another tab.
-- In the footer, always in view: the time left (leftmost, large and dark), then pause or
-  resume (any player, for everyone) and the extension (`handout.extend`,
-  one more minute for everyone) as items at the left (`Slot`, laid out by `TransitionFooter`), and the done button
-  (`button.done`) as the main button. The done button is the next step, so it is the filled
-  one; it stays greyed until every setting is filled in (a setting marked optional may stay
-  blank), and says so in its note. The extension is an item, not a capsule, since it is not the
-  next step.
-- Once you tap next, your settings lock but stay fields (on the page's grey,
-  `handout.blank` when left empty), and tapping one takes done back and lets
-  you type. The done button keeps its name, outlined in a dark 2px edge with a tick; tapping
-  it again takes done back too (a toggle). The extension greys while
-  you are done. Who is done is not shown while reading (the band has no
-  checks in this phase).
-- When time runs out, the game moves on. Until anyone acts on the next screen,
-  that screen shows the extension item in the footer beside its main
-  action, secondary (outlined, not filled); it brings everyone back to the handout with
-  more time. It fades in and out with the screen it sits on, so it never shows
-  next to the handout's own extension button.
-- After the phase, the footer's handout button opens the same tabs in a sheet,
-  read-only: each setting's name with what was filled in under it, or
-  `handout.blank` in the quiet colour when it was left empty.
-- Text typed into a setting is the one text the bundled subsets cannot hold,
-  so it may fall back to a system face.
-
-### Post-game handouts
-
-- When the post-game phase has handouts (`HandoutReviewView`), it shows every
-  part's handout and what its player filled in, so players can compare their
-  answers. A row of parts on top, yours chosen first and filled dark; under it
-  that part's handout in the same tabs as the handout sheet, read-only. The
-  part's own tab is labelled `handout.body`, since the part is already chosen
-  above. The tab stays when the part changes, so one setting can be read across
-  players. The footer holds the next-phase button (the end button in the last phase).
-
-### Game select
-
-- The games this many players can play, as a list of choices (Look by role:
-  an edge, no fill, filled when selected): the game's
-  name, and under it in the quieter colour how many play, who watches when the
-  spectator sits out, and the game's own line (`description`), joined by
-  `list.sep`. The item that leaves the list reads `button.nextPhase`, or the work's
-  own label (such as 暇つぶしを終える), since leaving the list ends the phase. A game that
-  does not take this many players is left out, unless the work names a
-  spectator part and the game takes everyone else: that part then watches
-  (owner's decision for InterstellarBG, where the half-GM part watches).
-- A tap on the list only selects a game (filled, as a pressed choice); the
-  play button (`game.play`) in the footer starts it for everyone, and stays
-  greyed until a game is selected (owner's decision). One tap by any player
-  never starts a game nobody can leave.
-- Beside the play button, leaving the phase is an item at the left, not a capsule:
-  it is not the next step on this screen, and it cannot be undone.
-- While a game is played, the game fills the screen and the band names it.
-  There is no way back while it runs (owner's decision: the only way back in
-  the work is the step after the handouts). Once the game is done, its result
-  stays and the back button appears in the footer.
-- A game taller than its space scrolls there; it never runs under the footer.
-- A seat that sits the game out sees `game.watching` in the footer, in the
-  quieter text colour, until the back button takes its place.
-- On a landscape screen the list has three columns, so it fits without
-  scrolling.
-- Playing cards are Kennard's deck, each face loaded the first time it shows.
-
-### Phase list
-
-- The work's phases in order, opened from the footer, so a player can see
-  where the game is and what comes next. One column at the chat's reading
-  width; it scrolls when the phases do not fit, starting with the current one
-  in view.
-- Each entry is a number and the phase's band label. Phases in a row that
-  share a label (such as the handouts and the pause after them) are one entry.
-- Each entry is a card of its own (a block of information: `--radius-read`,
-  `--color-bubble`), in text larger than body text since the list is read at a
-  glance. The current entry's card is tinted (`--color-bubble-mine`, not the
-  button's blue, which means tap) and bold. Entries already over keep the
-  white card with the quieter text colour; sitting above the current one
-  already says so. Once the game has ended, every entry is over.
-- The introduction and the empty phases (the screens that wait for everyone or
-  for a tap) show the same list under their content with the heading
-  `footer.flow`, in a work of more than one phase (`FlowStrip`); it scrolls
-  with the content and does not scroll itself.
-- Reading only: tapping an entry does nothing. No player moves the game from
-  here (owner's decision; the official sample's list that moves everyone
-  belongs to its game-master seat, which this toolkit does not have).
-
-### Other screens
-
-- Screens other than the read-through, such as the afterword, do not use the
-  chat style. They follow the same rules.
+Owner decisions that explain why are in `docs/decisions/` (see its README); look
+them up by word when you are about to change a rule, do not read them through.

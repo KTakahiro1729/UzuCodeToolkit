@@ -1,5 +1,5 @@
 <!--
-  An item of the footer's row beside the main button (docs/design.md, Footer): an icon over a short
+  An item of the footer's row beside the main button (docs/design/chrome.md, Footer): an icon over a short
   name, plain text in the quiet colour and no capsule, so the one capsule that is filled stays the
   button to press now. With `onclick` it is a button (the handouts to read back, more time, the
   next phase); without it, it only shows something (the time left). `active` marks the open one,
@@ -14,6 +14,7 @@
     disabled = false,
     active = false,
     class: extra = '',
+    part = undefined,
     aside = false,
     children,
   }: {
@@ -24,6 +25,8 @@
     /** The open one of several (the handouts' sheet). */
     active?: boolean;
     class?: string;
+    /** A mark for the screen preview and the checks (`data-uzu-part`), next to the slot's own. */
+    part?: string | undefined;
     /** Marks what a wide screen shows beside the screen instead (Frame hides it there). */
     aside?: boolean;
     children: Snippet;
@@ -42,11 +45,11 @@
 {/snippet}
 
 {#if onclick}
-  <button type="button" class="slot {extra}" aria-pressed={active || undefined} {disabled} data-aside={aside ? '' : undefined} {onclick}>
+  <button type="button" class="slot {extra}" data-uzu-part="slot {part ?? ''}" aria-pressed={active || undefined} {disabled} data-aside={aside ? '' : undefined} {onclick}>
     {@render mark()}<span class="name">{@render children()}</span>
   </button>
 {:else}
-  <span class="slot {extra}">{@render mark()}<span class="name">{@render children()}</span></span>
+  <span class="slot {extra}" data-uzu-part="slot {part ?? ''}">{@render mark()}<span class="name">{@render children()}</span></span>
 {/if}
 
 <style>
