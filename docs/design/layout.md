@@ -28,9 +28,10 @@ The toolkit's one layout so far is the read-through's: `packages/reader/src/layo
 | Field | Meaning |
 |---|---|
 | `reference` | The reference screen per orientation, `[width, height]` in px. An orientation left out is not supported. Landscape alone unless the spec asks for portrait |
-| `parts` | Keyed by part id (letters and digits; the id is how slides are read back, so it never changes). Each has a `label` for people, a box `[x, y, width, height]` per orientation, and optionally `image` and `stretch` |
+| `parts` | Keyed by part id (letters and digits; the id is how slides are read back, so it never changes). Each has a `label` for people, a box `[x, y, width, height]` per orientation, and optionally `image`, `stretch` and `align` |
 | `image` | The picture drawn in the box, `assets/<image>.webp` in the work. Parts naming the same image share it, so a work keeps one frame, one nameplate. `{role}` stands for the role shown (`stand-{role}`). A part that takes your colour in some scene (`mine`) also has `<image>-mine`, used on your turn, since the colour is what shows the turn. No `image`: the screen draws the part from colour tokens, as it also does while the image (or its `-mine` picture) is missing |
 | `stretch` | The image keeps its ends and stretches in width to the box (a nameplate fitting its name). Without it the image is drawn at the box's size |
+| `align` | How the part's text lines up across its box: `left` (when left out), `center` or `right`. The slides draw each box's text this way, and a change made there is read back |
 | `reserved` | What UZU draws over the screen (logo, indicator, toast). Shown on the slides, never used by a part |
 | `margin` | Edges that stay empty |
 | `scenes` | One per screen of the guide: `show` lists the parts it shows, back to front; `mine` the parts that take your colour |
@@ -41,6 +42,6 @@ Text (the line, names, labels) is never in an image: the screen sets it from the
 
 ## Slides
 
-One slide per scene, in the order of `scenes`, at the reference size. A pptx holds one slide size, so each orientation is its own file: `layout.pptx` when the layout has one orientation, `layout-landscape.pptx` and `layout-portrait.pptx` when it has both. Each part the scene shows is a box with its label and id written inside (`名札① plate1`; a box too small for both holds the id alone). Sizes are not written: the box itself is the size; the box's text is how it is read back, so slide tools that drop shape names (some do on export) lose nothing. Boxes are placeholders, not the work's art.
+One slide per scene, in the order of `scenes`, at the reference size. A pptx holds one slide size, so each orientation is its own file: `layout.pptx` when the layout has one orientation, `layout-landscape.pptx` and `layout-portrait.pptx` when it has both. Each part the scene shows is a box with its label written inside, lined up as the part's `align`. The part id is the box's alt text (`uzu:plate1`): slide tools keep alt text but some rename shapes (Google Slides does), so the alt text is how a box is read back; a box without it is matched by an id written in its text. Neither the id nor the size is written on the box: the box itself is the size. Boxes are placeholders, not the work's art.
 
-Reading back: a box whose text holds a known part id moves that part; a part moved to different places on two slides is reported as a conflict and not applied; a box with no known id is reported as a new part; a part missing from a slide that should show it is reported as removed. Moves go into the JSON; new parts (a new button) need code and are left to whoever implements them.
+Reading back: a box whose alt text (or text) holds a known part id moves that part, and a change of its text alignment changes the part's `align`; a part moved to different places, or aligned differently, on two slides is reported as a conflict and not applied; a box with no known id is reported as a new part; a part missing from a slide that should show it is reported as removed. Moves go into the JSON; new parts (a new button) need code and are left to whoever implements them.

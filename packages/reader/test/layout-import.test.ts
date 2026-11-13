@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 import PptxGenJS from 'pptxgenjs';
 import { describe, expect, it } from 'vitest';
 import { applyMoves, importSlides, reportOf, type ImportLayout } from '../../../tools/layout/slides/import.mjs';
@@ -37,6 +38,28 @@ async function deck(slides: Box[][], size: [number, number] = [4, 2]): Promise<B
     for (const [text, x, y, w, h] of boxes) slide.addText(text, { x: x / 100, y: y / 100, w: w / 100, h: h / 100 });
   }
   return (await pptx.write({ outputType: 'nodebuffer' })) as Buffer;
+}
+
+/** A box as the export writes it: the label as text, the id only in its alt text, and an alignment. */
+type AltBox = [text: string, id: string, align: 'left' | 'center' | 'right', x: number, y: number, w: number, h: number];
+const labelled = (aligns: Record<string, 'left' | 'center' | 'right'> = {}): AltBox[] =>
+  (['frame', 'next', 'plate'] as const).map((id) => [layout.parts[id]!.label as string, id, aligns[id] ?? 'left', ...(layout.parts[id]!.landscape as [number, number, number, number])]);
+
+async function altDeck(slides: AltBox[][]): Promise<Buffer> {
+  const pptx = new PptxGenJS();
+  pptx.defineLayout({ name: 'T', width: 4, height: 2 });
+  pptx.layout = 'T';
+  for (const boxes of slides) {
+    const slide = pptx.addSlide();
+    for (const [text, id, align, x, y, w, h] of boxes) slide.addText(text, { x: x / 100, y: y / 100, w: w / 100, h: h / 100, align, objectName: id });
+  }
+  const zip = await JSZip.loadAsync((await pptx.write({ outputType: 'nodebuffer' })) as Buffer);
+  // Slide tools rename shapes; the id survives only in the alt text, so the name is replaced here.
+  for (const name of Object.keys(zip.files).filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f))) {
+    const xml = await zip.file(name)!.async('string');
+    zip.file(name, xml.replace(/<p:cNvPr id="(\d+)" name="([A-Za-z0-9]+)"/g, '<p:cNvPr id="$1" name="Shape $1" descr="uzu:$2"'));
+  }
+  return (await zip.generateAsync({ type: 'nodebuffer' })) as Buffer;
 }
 
 const edit = (boxes: Box[], id: string, to: [number, number, number, number]): Box[] =>
@@ -119,5 +142,33 @@ describe('reading edited slides back into a layout', () => {
     const moved = [{ id: 'next', orientation: 'landscape', from: [300, 150, 80, 30], to: [260, 140, 100, 40] }];
     expect(applyMoves(text, moved, layout)).toBe(text.replace('[300, 150, 80, 30]', '[260, 140, 100, 40]'));
     expect(applyMoves('{"parts":{}}', moved, layout)).toBe(JSON.stringify(layout, null, 2) + '\n');
+  });
+
+  it('matches boxes by the id in their alt text when their text is only a label', async () => {
+    const moved = labelled().map((b) => (b[1] === 'next' ? ([b[0], b[1], b[2], 260, 140, 100, 40] as AltBox) : b));
+    const r = await importSlides(layout, await altDeck([moved, labelled()]));
+    expect(r.moved).toEqual([{ id: 'next', orientation: 'landscape', from: [300, 150, 80, 30], to: [260, 140, 100, 40] }]);
+    expect(r.added).toEqual([]);
+    expect(r.removed).toEqual([]);
+  });
+
+  it('applies a change of text alignment, and reports one made two ways', async () => {
+    const r = await importSlides(layout, await altDeck([labelled({ next: 'center' }), labelled({ next: 'center' })]));
+    expect(r.aligned).toEqual([{ id: 'next', from: 'left', to: 'center' }]);
+    expect(r.layout.parts.next!.align).toBe('center');
+    expect(reportOf(r)).toBe('aligned next left -> center');
+    const two = await importSlides(layout, await altDeck([labelled({ next: 'center' }), labelled({ next: 'right' })]));
+    expect(two.aligned).toEqual([]);
+    expect(two.layout.parts.next!.align).toBeUndefined();
+    expect(reportOf(two)).toContain('conflict next is aligned differently');
+  });
+
+  it('writes an alignment into the layout text, adding the field when the part has none', () => {
+    const text = '{\n  "parts": {\n    "next": { "label": "Next", "landscape": [300, 150, 80, 30] },\n    "plate": { "label": "P", "align": "left", "landscape": [1, 2, 3, 4] }\n  }\n}\n';
+    const aligned = [
+      { id: 'next', from: 'left', to: 'center' },
+      { id: 'plate', from: 'left', to: 'right' },
+    ] as const;
+    expect(applyMoves(text, [], layout, [...aligned])).toBe(text.replace('"Next",', '"Next", "align": "center",').replace('"align": "left"', '"align": "right"'));
   });
 });

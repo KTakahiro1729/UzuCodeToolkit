@@ -15,7 +15,7 @@
   import { fade } from 'svelte/transition';
   import type { Line, Scenario } from '../script';
   import { artOf, imageNames, imageUrl, nameWidthsOf, place, READ_THROUGH_LAYOUT, type Rect, stageLayoutOf, stageOrientation, stageScene } from '../stage-layout';
-  import type { ScreenLayout } from '../layout';
+  import { alignOf, type ScreenLayout } from '../layout';
   import { sceneIn, sceneOut } from './motion';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
@@ -64,6 +64,9 @@
     }
   });
   const art = (part: string, mine = false) => artOf(layout, part, ready, mine);
+  // How a part's text lines up in its box (the layout's `align`), as flex placement.
+  const JUSTIFY = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+  const justify = (part: string): string => JUSTIFY[alignOf(layout, part)];
   const bg = $derived(art('bg'));
   const frameArt = $derived(art('frame', !!scene?.mine));
   const one = $derived(art(scene?.direction ? 'plateNarration' : 'plate1', !!scene?.mine));
@@ -119,7 +122,7 @@
   <div class="stage" data-stage style:--art-bg={bg} class:art={bg} in:sceneIn|global out:sceneOut|global>
     <div class="fit" class:mine={scene.mine} class:art-frame={frameArt} style:--w={ref.width} style:--ratio={ref.width / ref.height} style:--tag-x={L.tag[0]} data-scene={scene.id} data-orientation={orientation} data-log={logOpen || undefined}>
       <div class="scene" inert={logOpen}>
-        {#if heading}<div class="tag" style="top:calc({L.tag[1]} * var(--u));width:calc({L.tag[2]} * var(--u));height:calc({L.tag[3]} * var(--u))">{heading}</div>{/if}
+        {#if heading}<div class="tag" style:--justify={justify('tag')} style:--align={alignOf(layout, 'tag')} style="top:calc({L.tag[1]} * var(--u));width:calc({L.tag[2]} * var(--u));height:calc({L.tag[3]} * var(--u))">{heading}</div>{/if}
 
         {#if scene.chars === 'solo' && scene.speaker}
           {@render figure(scene.speaker, L.solo, 'solo')}
@@ -129,16 +132,16 @@
         {/if}
 
         <div class="frame" class:art={frameArt} style={place(L.frame)} style:--art={frameArt}></div>
-        <p class="line" style={place(L.text)} aria-live="polite">{@render text(line.text)}</p>
+        <p class="line" style={place(L.text)} style:--align={alignOf(layout, 'text')} aria-live="polite">{@render text(line.text)}</p>
 
         <div class="names" style={place(L.names)} style:--gap="{names.gap}">
-          <span class="plate one" class:mine={scene.mine} class:art={one} style:--art={one} style:--min={w1}>
+          <span class="plate one" style:--justify={justify(scene.direction ? 'plateNarration' : 'plate1')} class:mine={scene.mine} class:art={one} style:--art={one} style:--min={w1}>
             {#if !scene.direction}<img class="face" src={`./assets/icon-${readerOf(line)}.webp`} alt="" onerror={noPicture} />{/if}
             <span class="who">{nameOf(line)}</span>
             {#if scene.mine}<span class="turn">{STRINGS['stage.yourTurn']}</span>{/if}
           </span>
           {#if scene.plate2 && scene.next && next}
-            <span class="plate two" class:mine={scene.next.mine && !scene.mine} class:art={two} style:--art={two} class:fixed={scene.plate2 === 'tag'} style:--fixed={L.nextTagWidth}>
+            <span class="plate two" style:--justify={justify('plate2')} class:mine={scene.next.mine && !scene.mine} class:art={two} style:--art={two} class:fixed={scene.plate2 === 'tag'} style:--fixed={L.nextTagWidth}>
               {#if !scenario.isDirection(next)}<img class="face" class:tight={scene.plate2 === 'tag'} src={`./assets/icon-${readerOf(next)}.webp`} alt="" onerror={noPicture} />{/if}
               {#if !scene.next.mine || scene.plate2 === 'tag'}<span class="who">{nameOf(next)}</span>{/if}
               <span class="mark">{STRINGS['stage.next']}</span>
@@ -151,13 +154,13 @@
         </div>
 
         {#if scene.mine}
-          <div class="next" class:art={buttonArt} style:--art={buttonArt} data-uzu-actions="main" style="top:calc({L.next[1]} * var(--u));right:calc({ref.width - L.next[0] - L.next[2]} * var(--u));min-width:calc({L.next[2]} * var(--u));min-height:calc({L.next[3]} * var(--u))">
+          <div class="next" class:art={buttonArt} style:--justify={justify('next')} style:--art={buttonArt} data-uzu-actions="main" style="top:calc({L.next[1]} * var(--u));right:calc({ref.width - L.next[0] - L.next[2]} * var(--u));min-width:calc({L.next[2]} * var(--u));min-height:calc({L.next[3]} * var(--u))">
             <NextButton onclick={advance}>
               {STRINGS[last ? (final ? 'button.end' : 'button.nextPhase') : 'stage.nextLine']}
             </NextButton>
           </div>
         {/if}
-        <button type="button" class="log-link" style={place(L.log)} onclick={() => (logOpen = true)}>{STRINGS['log.open']}</button>
+        <button type="button" class="log-link" style={place(L.log)} style:--justify={justify('log')} onclick={() => (logOpen = true)}>{STRINGS['log.open']}</button>
       </div>
 
       {#if logOpen}
@@ -249,6 +252,8 @@
   .tag {
     display: flex;
     align-items: center;
+    justify-content: var(--justify, flex-start);
+    text-align: var(--align, left);
     /* Clear of the UZU HUD where it is wider than the guide's logo. */
     left: max(calc(var(--tag-x) * var(--u)), calc(var(--uzu-safe-area-inset-left, 0px) + var(--uzu-hud-inset-x, 0px) + 0.4em));
     padding: 0 0.6em;
@@ -281,6 +286,7 @@
   /* The line: two lines landscape, three portrait; a longer one scrolls. */
   .line {
     margin: 0;
+    text-align: var(--align, left);
     overflow-y: auto;
     color: var(--frame-text);
     word-break: auto-phrase;
@@ -311,6 +317,7 @@
     min-width: 0;
     display: flex;
     align-items: center;
+    justify-content: var(--justify, flex-start);
     gap: 0.4em;
     padding: 0 0.5em;
     border-radius: var(--radius-control);
@@ -396,6 +403,7 @@
     --button-pad-x: 0.6em;
   }
   .next :global(button) {
+    justify-content: var(--justify, center);
     min-height: max(44px, calc(44 * var(--u)));
     white-space: nowrap;
   }
@@ -418,7 +426,7 @@
     background: none;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: var(--justify, flex-start);
     color: var(--frame-text);
     font: inherit;
     font-family: var(--font-ui);

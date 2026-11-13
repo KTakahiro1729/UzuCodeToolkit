@@ -9,6 +9,8 @@
  */
 
 export type Orientation = 'landscape' | 'portrait';
+export type Align = 'left' | 'center' | 'right';
+export const ALIGNS: readonly Align[] = ['left', 'center', 'right'];
 /** x, y, width, height from the screen's top left. */
 export type Rect = readonly [x: number, y: number, width: number, height: number];
 
@@ -22,6 +24,8 @@ export interface LayoutPart {
   image?: string;
   /** The image stretches to the box's width, keeping its ends (a nameplate). Else it is drawn at the box's size. */
   stretch?: boolean;
+  /** How the part's text lines up across its box. None: left. */
+  align?: Align;
   landscape?: Rect;
   portrait?: Rect;
 }
@@ -72,6 +76,11 @@ export function orientationsOf(layout: ScreenLayout): Orientation[] {
   return ORIENTATIONS.filter((o) => layout.reference[o]);
 }
 
+/** How a part's text lines up: its `align`, else left. */
+export function alignOf(layout: ScreenLayout, part: string): Align {
+  return layout.parts[part]?.align ?? 'left';
+}
+
 /** A part's box in one orientation. Throws when the layout lacks it. */
 export function rectOf(layout: ScreenLayout, part: string, o: Orientation): Rect {
   const r = layout.parts[part]?.[o];
@@ -88,6 +97,7 @@ export function layoutProblems(layout: ScreenLayout): string[] {
   for (const [id, part] of Object.entries(layout.parts)) {
     if (!/^[A-Za-z][A-Za-z0-9]*$/.test(id)) problems.push(`part id "${id}" is not letters and digits`);
     if (part.image !== undefined && !/^[A-Za-z0-9_.{}-]+$/.test(part.image)) problems.push(`part "${id}": image "${part.image}" is not a plain file name`);
+    if (part.align !== undefined && !ALIGNS.includes(part.align)) problems.push(`part "${id}": align "${part.align}" is not left, center or right`);
     for (const o of orientations) {
       if (!isRect(part[o])) problems.push(`part "${id}": no ${o} box`);
       else if (part[o]![2] <= 0 || part[o]![3] <= 0) problems.push(`part "${id}": empty ${o} box`);
