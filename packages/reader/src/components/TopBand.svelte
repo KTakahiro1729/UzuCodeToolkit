@@ -94,8 +94,8 @@
     height: var(--band-bottom);
     box-sizing: border-box;
     /* More room at the right than the left, so the roles do not crowd the screen edge. */
-    padding: calc(var(--safe-top, 0px) + var(--band-top, 0px)) calc(var(--safe-right, 0px) + 1.5em) 0
-      calc(var(--safe-left, 0px) + 0.8em);
+    padding: calc(var(--uzu-safe-area-inset-top, 0px) + var(--band-top, 0px)) calc(var(--uzu-safe-area-inset-right, 0px) + 1.5em) 0
+      calc(var(--uzu-safe-area-inset-left, 0px) + 0.8em);
     display: grid;
     /* The phase is centred while the players fit in the right half; with more players it gives
        way to the left, keeping a gap, instead of running into them. */
@@ -234,8 +234,8 @@
    * too long for the room ends in an ellipsis).
    */
   :global(:root[data-band-row='own']) header {
-    padding-top: var(--safe-top, 0px);
-    grid-template-columns: var(--hud-x, 0px) minmax(0, 1fr);
+    padding-top: var(--uzu-safe-area-inset-top, 0px);
+    grid-template-columns: var(--uzu-hud-inset-x, 0px) minmax(0, 1fr);
     grid-template-rows: var(--band-top) minmax(0, 1fr);
     row-gap: 0;
     align-items: center;
