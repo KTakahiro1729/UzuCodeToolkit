@@ -41,6 +41,6 @@ Text (the line, names, labels) is never in an image: the screen sets it from the
 
 ## Slides
 
-One slide per scene, in the order of `scenes`, at the reference size, for each orientation the layout has. Each part the scene shows is a box with its label, id and size written inside (`名札① plate1 190×32`); the box's text is how it is read back, so slide tools that drop shape names (some do on export) lose nothing. Boxes are placeholders, not the work's art.
+One slide per scene, in the order of `scenes`, at the reference size. A pptx holds one slide size, so each orientation is its own file: `layout.pptx` when the layout has one orientation, `layout-landscape.pptx` and `layout-portrait.pptx` when it has both. Each part the scene shows is a box with its label, id and size written inside (`名札① plate1 190×32`); the box's text is how it is read back, so slide tools that drop shape names (some do on export) lose nothing. Boxes are placeholders, not the work's art.
 
 Reading back: a box whose text holds a known part id moves that part; a part moved to different places on two slides is reported as a conflict and not applied; a box with no known id is reported as a new part; a part missing from a slide that should show it is reported as removed. Moves go into the JSON; new parts (a new button) need code and are left to whoever implements them.
