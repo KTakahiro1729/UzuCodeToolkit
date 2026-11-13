@@ -11,7 +11,7 @@
   import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let { send, text, guide, last }: PhaseViewProps<{ next: boolean }> & { text?: string; guide?: string } = $props();
   // Paragraphs are separated by a blank line.

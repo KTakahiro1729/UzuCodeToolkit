@@ -13,7 +13,7 @@
   import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let {
     scenario,
@@ -123,7 +123,7 @@
 {#snippet text(t: string)}{#each parseRuby(t) as seg}{#if seg.ruby}<span class="rb">{seg.text}<span class="rt">{seg.ruby}</span></span>{:else}{seg.text}{/if}{/each}{/snippet}
 
 <div class="read" in:sceneIn|global out:sceneOut|global>
-  <ol class="chat" bind:this={chat}>
+  <ol class="chat" data-uzu-scroll bind:this={chat}>
     {#if scenario.script.notice}<li class="notice"><span>{scenario.script.notice}</span></li>{/if}
     {#each shown as l, i}
       <li
