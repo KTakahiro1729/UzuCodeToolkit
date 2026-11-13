@@ -1,5 +1,6 @@
 <!--
-  Post-game screen for a work with handouts (emptyPhase()): every part's handout and what its
+  Post-game screen for a work with handouts (emptyPhase()): the same greeting as the read-through's
+  post-game screen (Ending.svelte), then every part's handout and what its
   player filled in, so players can compare their answers. A row of parts on top, yours chosen
   first; under it that part's handout in the same tabs as the handout sheet, read-only. The tab
   stays when the part changes, so one setting can be compared across players. The next button
@@ -34,6 +35,7 @@
 </script>
 
 <div class="review" in:sceneIn|global out:sceneOut|global>
+  <h1>{STRINGS['review.heading']}</h1>
   <div class="parts" role="tablist">
     {#each shown as p (p)}
       <button type="button" role="tab" aria-selected={p === who} onclick={() => (chosen = p)}>{names[p]}</button>
@@ -52,8 +54,16 @@
   .review {
     min-height: 0;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
     gap: 0.6em;
+  }
+  /* The greeting, centred, as on the read-through's post-game screen. */
+  h1 {
+    margin: 0;
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 1.2em;
+    font-weight: 700;
   }
   /* At the handout's reading width, its left edge shared with the tabs under it. */
   .parts {

@@ -64,5 +64,7 @@ for (const name of readdirSync(from).filter((n) => n.endsWith('.svg'))) {
     const scale = Math.min(1, Math.round((FREE / reach(others)) * 1000) / 1000);
     svg = `${head}${corner(top, scale)}${bottom.length ? `<g transform="rotate(180)">${corner(bottom, scale)}</g>` : ''}</svg>`;
   }
+  // Kennard outlines the court figure's panel in blue; at this size it reads as a stray frame.
+  svg = svg.replace(/<defs><path id="i"[^>]*\/><\/defs>/, '').replace(/<use xlink:href="#i"[^>]*\/>/, '');
   writeFileSync(join(to, name), svg.replaceAll('"red"', `"${RED}"`));
 }
