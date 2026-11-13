@@ -59,6 +59,7 @@ Add to the toolkit only what the work cannot do with the pieces above.
 | Screen preview: both orientations with numbered parts, a page to publish as an Artifact (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs samples/<name> out.html` while that sample's harness runs |
 | Screenshots: PNGs in both orientations, after steps (click, type, set the state) in any player's screen (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs --png <dir> [--config <file>] samples/<name>` while that sample's harness runs |
 | Overflow check: what spills past the screen, the safe area, the HUD or its parent, in both orientations (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs --check samples/<name>` while that sample's harness runs |
+| Fonts | `npm run fonts` (needs fonttools; rebuilds every sample's subsets) |
 | Dev harness | `npm run harness` in a sample's folder (from the root: hundred-arms; `-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`packages/reader/dev-harness.js`, dev server only) |
 
 `npm run dev` (vite only) does not connect to the SDK; check behaviour in the harness. Hot swap: vite swaps screen code and CSS in place; `npm run harness` (`packages/reader/harness.mjs`) restarts the harness when the server logic changes, and `/harness` puts the game state back.
@@ -75,13 +76,18 @@ Add to the toolkit only what the work cannot do with the pieces above.
 Each sample's `src/fonts/` holds two Google Fonts (OFL 1.1) as woff2 subsets of the characters that work shows, declared in its `src/fonts.css`. No CDN: certification forbids external network access.
 
 - Shippori Mincho Regular for story text: title, end mark, afterword, scene headings and lines, ruby included.
-- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (listed in `scripts/subset-fonts.sh`; a sample shows no other screen, and every string the subset holds adds weight).
+- BIZ UDPGothic Regular and Bold for UI text: cast and part names, names the lines use, the work's `notice`, and the read-through's strings in `packages/reader/src/strings.json` (a sample shows no other screen, and every string the subset holds adds weight).
 
-Rebuild a sample's subsets when those characters change, including after editing a read-through string in `strings.json` (rebuild every sample then). Needs [fonttools](https://github.com/fonttools/fonttools):
+Which files and fields feed each font is the project's `fonts.config.json` (format in the header of `tools/fonts/fonts.mjs`; a work that takes the toolkit as a submodule has its own, and points at wherever the toolkit keeps `strings.json`; a work that overrides strings lists the file holding its overrides as a `ui` source too). A test in each project calls `missingGlyphs` and fails when a subset lacks a glyph. Rebuild when it fails, or when those characters change, including after editing a read-through string (every project, since `strings.json` is shared). Needs [fonttools](https://github.com/fonttools/fonttools) (`pip install fonttools brotli`):
 
 ```bash
-scripts/subset-fonts.sh samples/<name>
+npm run fonts                          # every sample
+scripts/subset-fonts.sh samples/<name> # one project; a work runs: sh toolkit/scripts/subset-fonts.sh .
 ```
+
+## Changelog
+
+Add an entry to `CHANGELOG.md` for every change a work built on the toolkit could notice (a part's props, a string key, a data format, a command, the fonts), in the same pull request. End it with `Work action:` and `none` or the step the work must take. A test checks that every entry has one.
 
 ## Licenses
 
