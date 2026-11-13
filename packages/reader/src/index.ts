@@ -19,6 +19,7 @@ import STRINGS from './strings.json';
 export type { FlowOptions, PhaseView, PhaseViewProps } from './flow';
 export type { Script } from './script';
 export { default as EmptyView } from './components/EmptyView.svelte';
+export { default as HandoutView } from './components/HandoutView.svelte';
 export { default as ReadThroughView } from './components/ReadThroughView.svelte';
 export { STRINGS };
 
