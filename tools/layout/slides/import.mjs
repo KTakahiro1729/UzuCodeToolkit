@@ -11,7 +11,9 @@
 //   groups are not read.
 // - A box is placed on the reference screen: the slide is scaled to the reference size.
 //
-// CLI:  node import.mjs <slides.pptx> [layout.json]   (rewrites the layout file when parts moved)
+// CLI:  node import.mjs <slides.pptx>... [--layout layout.json]   (rewrites the layout file when parts moved)
+// A deck may hold one orientation (the export writes one file per orientation); an orientation
+// with no slides in a deck is left alone.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -106,6 +108,7 @@ export async function importSlides(layout, buffer) {
   for (const o of orientations) {
     const [refW, refH] = layout.reference[o];
     const mine = byOrientation.get(o);
+    if (mine.length === 0) continue; // this deck is for the other orientation
     if (mine.length !== layout.scenes.length) {
       result.problems.push(`${o}: ${mine.length} slides for ${layout.scenes.length} scenes; slides are read one per scene, so none of them is read`);
       continue;
@@ -184,12 +187,24 @@ export function reportOf(result) {
 }
 
 async function main(argv) {
-  const [deck, layoutFile = DEFAULT_LAYOUT] = argv;
-  if (!deck) throw new Error('usage: node import.mjs <slides.pptx> [layout.json]');
-  const text = readFileSync(layoutFile, 'utf8');
-  const result = await importSlides(JSON.parse(text), readFileSync(deck));
-  if (result.moved.length) writeFileSync(layoutFile, applyMoves(text, result.moved, result.layout));
-  console.log(reportOf(result));
+  const decks = [];
+  let layoutFile = DEFAULT_LAYOUT;
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--layout') layoutFile = argv[++i];
+    else decks.push(argv[i]);
+  }
+  if (decks.length === 0) throw new Error('usage: node import.mjs <slides.pptx>... [--layout layout.json]');
+  const original = readFileSync(layoutFile, 'utf8');
+  let text = original;
+  let layout = JSON.parse(text);
+  for (const deck of decks) {
+    const result = await importSlides(layout, readFileSync(deck));
+    if (decks.length > 1) console.log(`${deck}:`);
+    console.log(reportOf(result));
+    if (result.moved.length) text = applyMoves(text, result.moved, result.layout);
+    layout = result.layout;
+  }
+  if (text !== original) writeFileSync(layoutFile, text);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
