@@ -2,9 +2,10 @@
 
 How screens in this repository work for the players. This policy covers the
 functional side of design only: helping players see what to do and keeping
-their cognitive load low. The decorative side (hues, typeface, icon art, corner
-shapes) is out of scope here; this policy only sets the limits decoration must
-stay within.
+their cognitive load low. The decorative side (hues, typeface, icon art) is out
+of scope here; this policy only sets the limits decoration must stay within.
+Which kind of shape, fill and edge each role gets is function (Look by role);
+the exact colours and radii are the work's.
 
 ## What to avoid
 
@@ -73,8 +74,8 @@ on cards.
   landscape screen between lines.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
-  line of dialogue. No borders, dividers or cards, except the side lines on a
-  stage direction you are reading.
+  line of dialogue. No dividers. Lines are edges of controls only (Look by
+  role), plus the side lines on a stage direction you are reading.
 - The parent owns spacing: the gap between siblings is the parent's `gap`, the
   room inside an element is its own `padding`. No element sets outer `margin`
   (only `0` or `auto`), so DevTools shows every space in one of two places.
@@ -115,6 +116,41 @@ Decoration is out of scope, but it must not break the rules above:
 - No gradients, edge fades, shadows or glows.
 - No colour, size or weight that competes with the focus.
 
+### Look by role
+
+A player tells what something is, and whether to tap it, from its look alone,
+before reading it. Each role below has one look, and no other role borrows it
+(evidence in the research page: NN/g eyetracking found weak signifiers cost 22%
+more time; enclosed inputs beat underlined ones in Google's text-field study;
+WCAG 1.4.11 asks 3:1 for what shows a control is there).
+
+| Role | Shape | Fill | Edge |
+|---|---|---|---|
+| Ground: story text, guide, labels, notices, status | none | none (page) | none |
+| Bars: top band, footer | full width, square | `--color-bubble` | none |
+| Something to read: a bubble, the handout's area, the afterword, a block of information (a cast entry) | `--radius-read` | `--color-bubble` (yours: `--color-bubble-mine`) | none |
+| Primary button: the next step | capsule | `--color-mine-current` | none |
+| Secondary button: any other action, cancel and undo | capsule | none | 1px `--color-line` |
+| Button that cannot be tapped now | capsule | `--color-button-off`, quiet text | none |
+| Input | `--radius-control` | `--color-field` | 1px `--color-line`; focus: 2px `--color-mine-current` |
+| Choice in a list (one of several, stays selected) | `--radius-control` | none; selected: `--color-mine-current` | 1px `--color-line` |
+| Tab | text; chosen: shares the area's fill, bold | none | none |
+| Read-back link in the footer | text; open: bold, underlined | none | none |
+| Status (done, waiting) | a mark (tick) beside a name or icon | none | none |
+
+- A capsule always means a button, and only a button is a capsule.
+- Something to read has a fill and no edge; something to tap or fill in has an
+  edge (or the primary fill). So a block of information never looks like a
+  choice, and an input never looks greyed.
+- A greyed button has neither edge nor fill colour, so it never looks like a
+  secondary button. A button greys only while it cannot be tapped.
+- An input is never filled with the page or the greyed colour: grey reads as
+  disabled. Its value, once locked, is plain text with no edge or fill.
+- A destructive action (one that loses what a player made) is a secondary
+  button whose label and edge take a danger colour, never the primary. None is
+  built yet; add a token when the first one is.
+- Shadows stay out (Limits on decoration): fill and edge carry the roles.
+
 ### Type
 
 - Two roles, as CSS variables in `theme.css`: story text (script lines, title,
@@ -154,7 +190,7 @@ Decoration is out of scope, but it must not break the rules above:
 
 - One `Button` everywhere (`packages/reader`). `primary` is the next step,
   filled; one screen has at most one primary at a time. `secondary` is any
-  other choice, white. A choice that stays selected (such as your vote) takes
+  other choice, outlined with no fill (Look by role). A choice that stays selected (such as your vote) takes
   the primary's fill while selected (`pressed`).
 - A button greys only while it cannot be tapped, never to look quieter.
 
