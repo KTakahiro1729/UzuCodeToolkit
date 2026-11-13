@@ -1,18 +1,18 @@
-# The toolkit takes what prevents an error no eye can see, or what a second work uses
+# The toolkit takes what reads a plan, or prevents an error no eye can see
 
 Replaces `archive/2026-11-13-the-conditions-for-adding-to-the-toolkit-are-not.md`.
 
-A new addition goes into the toolkit only if it meets one of these:
+The toolkit's goal: an author hands over a plan and gets a work of enough quality, without checking every screen. A new addition goes into the toolkit only if it meets one of these:
 
-- It prevents a mistake that cannot be seen on the screen (a wrong deterministic state, a size that cannot be read, a contrast or a string that fails silently), so a work author cannot catch it by looking and a part or a check has to catch it for them.
-- A second work uses it.
+1. **It reads something a plan contains.** The numbered phases with their minutes, the cast list, the script as "name line" with readings in （）, a handout's common text, per-part text, impressions of others and settings, the list of games, "shown only to X", the part that may move the game on, and chapters left empty or as a placeholder.
+2. **It prevents a mistake that cannot be seen on the screen.** A wrong deterministic state, a label that does not fit, a contrast or a string that fails silently: a part or a check has to catch these, because the author cannot by looking.
 
-Anything else stays in the work that needs it, and moves up when a second work asks for it.
+Stays in the work: the rules of a game, the world, the colours and art.
 
-Why: the toolkit's job is to let an author concentrate on the story and the look without checking every screen by hand. Mistakes an author can see are cheap for them to fix; mistakes they cannot see are what a shared part or check is for. Everything else makes the toolkit larger for every reader, human or AI.
+Why: a plan is the one thing the author writes. Anything that turns it into a working work belongs in the toolkit; anything that expresses one work's taste does not. Mistakes an author can see are cheap for them to fix; the ones they cannot see are what a shared check is for. Everything else makes the toolkit larger for every reader, human or AI.
 
-Not taken: judging each addition when it is asked for (the earlier decision). It left the question open on every request and gave no way to say no.
+Not taken: judging each addition when it is asked for (the earlier decision), which left the question open every time; "a second work uses it" alone, which does not help the first work.
 
-Scope: this applies to additions from now on. The features built for InterstellarBG before it (handouts, game select, playing cards, the vote) stay as they are; they are not re-judged.
+Scope: new additions only. Handouts, game select, playing cards and the vote stay.
 
 Where: `CLAUDE.md` (Replacing the screens ends with this rule).
