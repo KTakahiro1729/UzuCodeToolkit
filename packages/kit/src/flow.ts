@@ -4,7 +4,7 @@
  * work's GameLogic. A phase's state is made when the game enters it and kept after it ends.
  */
 
-import type { Duration, GameLogic, GameTime, SeededRandom } from '@uzuhq/code-sdk';
+import type { Duration, GameLogic, GameTime, SeededRandom, VoicePlan } from '@uzuhq/code-sdk';
 import { assignParts } from './parts';
 
 export interface PhaseArgs<P, A = Record<string, unknown>> {
@@ -45,6 +45,13 @@ export interface PhaseLogic<P = any> {
     at(state: P): GameTime | null | undefined;
     handler(a: { state: P; parts: Record<string, string>; time: GameTime; random: SeededRandom }): void;
   };
+  /**
+   * The voice room and mic policy of one player while this phase is current (the SDK's
+   * `voicePlan`): players in the same room hear each other, others do not. Without it everyone
+   * is in the whole-game room with a free mic. Light and pure, from the state alone: it is called
+   * after every change.
+   */
+  voicePlan?(a: { state: P; seat: string; part: string; parts: Record<string, string> }): VoicePlan;
   /**
    * Lets players come back to this phase from the next one, until anyone acts there (the
    * `${phaseId}:reopen` action). Changes this phase's state so it is not done; throw to refuse.
@@ -163,6 +170,12 @@ export function flowLogic(
           moveOn(state, ctx.time);
         },
       },
+    },
+    // The current phase's voice rooms (see PhaseLogic.voicePlan); the whole-game room without one.
+    voicePlan({ state, playerId }) {
+      const { id, logic } = phases[state.at];
+      const plan = logic.voicePlan?.({ state: state.phases[id], seat: playerId, part: state.parts[playerId], parts: state.parts });
+      return plan ?? { room: null, mic: 'free' };
     },
     update() {},
   };
