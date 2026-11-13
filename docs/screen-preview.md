@@ -47,7 +47,7 @@ sets one.
 | `player` | Whose screen to capture (harness player index) |
 | `next` | Selector tapped to move the game on, in whichever player's screen has it |
 | `scroll` | Selectors of lists to show scrolled to the end |
-| `screens` | In order: `key`, `label`, `seat` (whose screen to capture, default `player`), `taps` (taps of `next` since the previous screen; `Infinity` taps to the end), `steps` (run after the taps, below), `wait` (ms to wait after them, default 800), `parts` |
+| `screens` | In order: `key`, `label`, `seat` (whose screen to capture, default `player`), `taps` (taps of `next` since the previous screen; `Infinity` taps to the end), `steps` (run after the taps, below), `wait` (ms to wait after them; by default the capture waits until the screen is still), `parts` |
 | `parts` | Optional: `[selector, label]` pairs; the number is the position, and parts not on a screen are left out of its list. The last match on screen is numbered |
 | `variants` | Optional pickers for trying layouts on the page: `{ name, options: [{ label, note, css }] }`. The `css` is added to both screens |
 
@@ -67,10 +67,11 @@ so `button:has-text("読み終えた")` works too.
 | `{ tap: n }` | Taps `next` n times, as `taps` does |
 | `{ state: s => newState }` | Sets the game state through the harness (`setRawState`); the function gets the current state. A plain object replaces it |
 | `{ reload: true }` | Reloads the seat's screen from the current state, as a player joining now sees it |
-| `{ wait: ms }` | Waits |
+| `{ wait: ms }` | Waits that long (for a real delay in the game, such as a timer; nothing else needs it) |
 
-Every step waits 300 ms after it (`wait` on any step changes that). A step
-waits up to 10 s for its element and looks the seat's screen up again each
+After every step the capture waits until that seat's screen is still (fonts loaded, no DOM change
+for 120 ms, two frames drawn), after a click or a state change also one round trip to the harness; it
+sleeps only when a step or screen gives `wait`. A step waits up to 15 s for its element and looks the seat's screen up again each
 time, so a screen that reloads (after a reset or a resize) does not make it
 miss. Use `state` to start a screen deep in the game instead of playing up to
 it.
@@ -117,6 +118,20 @@ cd toolkit && node tools/screen-preview/capture.mjs --config ../shots.mjs .. ../
   adds a `reload`, `patch(id, fn)` changes one phase's state.
 - Find parts by the marks the default screens carry (`PHASE`, `MAIN`, `SCROLL`: `data-uzu-*`), not by
   class names.
+
+## One pass, limits and trial runs
+
+`--check`, `--png <dir>` and the page are all made in one pass: each screen is played once, and in
+each orientation the overflow check, the PNG and the snapshot are taken one after the other.
+The page is written when no mode is given or when `out.html` is. Keep a run short while
+trying something:
+
+- `--only 01,05` (screen numbers or keys) plays just those screens, steps included, so a screen
+  that builds on the one before it must be listed with it, or set up by `state`.
+- `--step-timeout <s>` (default 15) caps a step and the wait for its element; `--timeout <s>` (default
+  600) caps the whole run. Either one stops the run, names the screen and step it was on, and exits
+  non-zero (2 for the whole-run cap).
+- Try 1 screen, then a few, then all, under `timeout 60` or the like.
 
 ## PNG screenshots
 

@@ -84,7 +84,6 @@ export function flowSteps({ ids, parts, past, fresh }) {
       phases[id] = own ?? fresh[id];
       return { parts, at: i, phases, ended: false, reopenable };
     },
-    wait: 1500,
   });
   return {
     at,
@@ -93,7 +92,6 @@ export function flowSteps({ ids, parts, past, fresh }) {
     /** Changes one phase's state: `fn` gets it and returns the new one. */
     patch: (id, fn) => ({
       state: (s) => ({ ...s, phases: { ...s.phases, [id]: fn(s.phases[id]) } }),
-      wait: 1200,
     }),
   };
 }
@@ -116,6 +114,6 @@ export function catalogue({ title, player = 0, parts = [], screens }) {
     player,
     next: NEXT,
     scroll: [SCROLL],
-    screens: screens.map(([key, label, seat, steps]) => ({ key, label, seat, steps: steps.flat(), parts: all })),
+    screens: screens.map(([key, label, seat, steps, reach]) => ({ key, label, seat, steps: steps.flat(), reach, parts: all })),
   };
 }
