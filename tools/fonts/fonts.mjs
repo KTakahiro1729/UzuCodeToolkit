@@ -87,9 +87,9 @@ function collectEntry(root, entry) {
   return parts;
 }
 
-/** Distinct characters, sorted, without control characters and the plain space (the ideographic space stays: it is drawn). */
+/** Distinct characters, sorted, without control characters (spaces stay: they are drawn). */
 const chars = (parts) =>
-  [...new Set([...parts.join('')].filter((c) => !/[\p{Cc} ]/u.test(c)))].sort().join('');
+  [...new Set([...parts.join('')].filter((c) => !/\p{Cc}/u.test(c)))].sort().join('');
 
 /** The characters each font needs: `{ story, ui }`, as strings. */
 export function collectGlyphs(projectDir) {
