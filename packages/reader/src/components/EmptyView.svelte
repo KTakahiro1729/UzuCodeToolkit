@@ -13,8 +13,19 @@
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings';
+  import { fill } from '../fill';
 
-  let { send, text, guide, last }: PhaseViewProps<{ next: boolean }> & { text?: string; guide?: string } = $props();
+  // `facilitator`: the part that moves the phase on (match it in emptyPhase({ facilitator })); the others see who can.
+  let {
+    send,
+    text,
+    guide,
+    last,
+    part,
+    names,
+    facilitator,
+  }: PhaseViewProps<{ next: boolean }> & { text?: string; guide?: string; facilitator?: string } = $props();
+  const blocked = $derived(facilitator !== undefined && part !== facilitator);
   // Paragraphs are separated by a blank line.
   const paragraphs = $derived(text ? text.split(/\n{2,}/) : []);
 </script>
@@ -29,7 +40,10 @@
   </div>
 </div>
 <FooterActions>
-  <NextButton note={last ? undefined : STRINGS['status.anyoneNext']} onclick={() => send('next')}>{STRINGS[last ? 'button.end' : 'button.nextPhase']}</NextButton>
+  <NextButton
+    disabled={blocked}
+    note={blocked ? fill(STRINGS['status.facilitator'], { name: names[facilitator ?? ''] ?? '' }) : last ? undefined : facilitator !== undefined ? undefined : STRINGS['status.anyoneNext']}
+    onclick={() => send('next')}>{STRINGS[last ? 'button.end' : 'button.nextPhase']}</NextButton>
 </FooterActions>
 
 <style>

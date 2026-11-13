@@ -262,6 +262,17 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Footer
 
+- **Options on the footer** (a work chooses; the defaults are the plain forms):
+  - The note of a button that waits for others can carry how many are left: set the string
+    `status.waitCount` (such as `あと{n}人を待っています`); empty (the default) keeps the plain
+    `status.waitOthers`.
+  - The time left (`TransitionFooter`) is the footer's leftmost item by default, or sits beside the
+    phase label in the band with `clockAt="band"`; pause and more time stay in the footer.
+  - The last 30 seconds of the clock are heavier and darker, with a 2px edge: no red (red is for
+    danger), no motion.
+  - A phase that one part moves on (`emptyPhase({ facilitator })`, view prop `facilitator`) shows
+    the other seats a greyed button with `status.facilitator` (`{name}が進めます`). The
+    read-through keeps `status.theirTurn`.
 - The main action area: a full-width white block along the bottom edge, the
   band's counterpart, on every screen, as one row.
 - **The main button** is at the right edge, one fixed width; **it is

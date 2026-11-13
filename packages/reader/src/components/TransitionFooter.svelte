@@ -10,12 +10,17 @@
   import Slot from './Slot.svelte';
   import STRINGS from '../strings';
   import { formatClock } from '@uzu-toolkit/kit';
+  import { band } from '../store.svelte';
+
+  /** From this many seconds left, the clock is shown heavier and darker, with an edge. */
+  const URGENT_SECONDS = 30;
 
   let {
     left,
     paused = false,
     onpause = undefined,
     onresume = undefined,
+    clockAt = 'footer',
     extras = undefined,
     children = undefined,
   }: {
@@ -25,14 +30,27 @@
     /** Given with `onresume`, the pause item shows. */
     onpause?: () => void;
     onresume?: () => void;
+    /** Where the time left sits: the footer's leftmost item, or beside the phase label in the band (pause and more time stay in the footer). */
+    clockAt?: 'footer' | 'band';
     extras?: Snippet;
     /** The main button (and any button fused with it). */
     children?: Snippet;
   } = $props();
+
+  const urgent = $derived(left <= URGENT_SECONDS && !paused);
+  $effect(() => {
+    if (clockAt !== 'band') return;
+    band.clock = { text: formatClock(left), urgent };
+    return () => {
+      band.clock = null;
+    };
+  });
 </script>
 
 <FooterActions place="aside">
-  <Slot icon="clock" class="time{paused ? ' paused' : ''}"><span>{STRINGS['time.left']}</span> <b class="clock">{formatClock(left)}</b></Slot>
+  {#if clockAt === 'footer'}
+    <Slot icon="clock" class="time{paused ? ' paused' : ''}"><span>{STRINGS['time.left']}</span> <b class="clock" class:urgent>{formatClock(left)}</b></Slot>
+  {/if}
   {#if onpause && onresume}
     {#if paused}
       <Slot icon="play" onclick={onresume}>{STRINGS['footer.resume']}</Slot>
@@ -61,6 +79,12 @@
   }
   :global(.slot.time svg) {
     display: none;
+  }
+  :global(.slot.time .clock.urgent) {
+    padding: 0 0.25em;
+    border: 2px solid var(--color-text);
+    border-radius: 0.4em;
+    font-weight: 800;
   }
   :global(.slot.time.paused .clock) {
     color: var(--color-text-quiet);

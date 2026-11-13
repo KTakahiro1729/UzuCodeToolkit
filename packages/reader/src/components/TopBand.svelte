@@ -11,6 +11,7 @@
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
   import STRINGS from '../strings';
+  import { band } from '../store.svelte';
 
   let {
     parts,
@@ -70,6 +71,8 @@
       <span in:sceneIn out:sceneOut>{phase}</span>
     {/key}
   </span>
+  <!-- The time left, when a screen puts it here (TransitionFooter clockAt="band"). -->
+  {#if band.clock}<span class="time" class:urgent={band.clock.urgent}>{band.clock.text}</span>{/if}
 {/snippet}
 
 <style>
@@ -140,6 +143,19 @@
   .label {
     display: grid;
     min-width: 0;
+  }
+  .time {
+    flex: none;
+    color: var(--color-text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  /* The last 30 seconds: heavier, darker, with an edge. No red (that is for danger), no motion. */
+  .urgent {
+    padding: 0 0.3em;
+    border: 2px solid var(--color-text);
+    border-radius: 0.4em;
+    font-weight: 800;
   }
   /* A long phase name ends in an ellipsis rather than running into the players. */
   .label > span {
