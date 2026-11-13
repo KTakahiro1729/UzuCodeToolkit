@@ -131,8 +131,35 @@ trying something:
 - `--step-timeout <s>` (default 15) caps a step and the wait for its element; `--timeout <s>` (default
   600) caps the whole run. Either one stops the run, names the screen and step it was on, and exits
   non-zero (2 for the whole-run cap).
+- `--jobs <n>` plays independent runs of screens at the same time (see "Parallel runs").
 - `--times` prints the time spent per screen and per kind of work (settling, steps, resize, PNG, snapshot, check).
 - Try 1 screen, then a few, then all, under `timeout 60` or the like.
+
+## Parallel runs
+
+`--jobs n` plays the screens on n workers, each a page on a harness of its own (the harness keeps
+one shared game, so workers cannot share one). Start n harnesses (each picks the next free port:
+10001, 10002, ...), a few seconds apart, then run with `--jobs n`. `HARNESS` may list their URLs,
+comma separated; missing ones are the last port + 1, + 2, ... The run stops at once, naming them,
+if one is not there.
+
+```bash
+for i in 1 2 3 4; do (npm run harness > /dev/null 2>&1 &); sleep 5; done
+node tools/screen-preview/capture.mjs --jobs 4 --png tmp/shots --config shots.mjs .
+```
+
+- The screens are split into runs. A screen whose steps include a `fresh` step starts a new run: a
+  state step that replaces the whole state (a catalogue's `at` and `jump` are marked; a `state` step
+  that is a plain object counts too). What came before it does not matter, so a run can be played on
+  any worker. Screens without one continue the screen before and stay in its run.
+- A run that starts fresh starts from the game's start: the harness is reset with a fixed numeric seed
+  (the harness ignores any other seed), so the cards dealt do not depend on which screens were
+  played before, and the seats' frames are back at their grid size. The steps and taps before the
+  `fresh` step are skipped. This is so in every run, `--jobs 1` included, so the result is the same
+  for any number of jobs (PNGs byte for byte, the page but for a running clock's digits).
+- Runs go to workers longest first. A work with few runs gains little; mark screens that are
+  independent by starting them with `jump` / `at`.
+- Workers share the machine's CPU: on 4 cores, 4 workers were barely faster than 2.
 
 ## PNG screenshots
 
