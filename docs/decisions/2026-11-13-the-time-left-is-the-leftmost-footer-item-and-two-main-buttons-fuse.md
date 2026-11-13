@@ -7,4 +7,6 @@
 
 - Pause is the toolkit timer's own feature: any player pauses and resumes it for everyone (`pause` / `resume` actions of the handout phase, `TransitionFooter` in the reader); the time left stands still while paused. `needed(rule, seatCount)` in the kit gives how many seats a people rule needs.
 
+- The time item shows no clock mark (the name 残り says what the number is), so the room goes to the digits; the pause item is named 停止 because 一時停止 plus the clock and the extension leave the main button too little room on a 390px screen. The row's gaps and the button's side padding are tighter for the same reason, on every screen.
+
 Not taken: a time that is not at a fixed place. Where it shows: `HandoutView`, `Slot`, `FooterActions`, `strings.json`, `docs/design.md` (Footer).
