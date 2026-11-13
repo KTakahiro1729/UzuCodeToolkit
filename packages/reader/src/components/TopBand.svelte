@@ -167,8 +167,8 @@
   /* Done with a phase everyone finishes on their own: a check at the icon's lower right. */
   .check {
     position: absolute;
-    right: -4px;
-    bottom: -4px;
+    right: 0;
+    bottom: 0;
     width: 16px;
     height: 16px;
   }
