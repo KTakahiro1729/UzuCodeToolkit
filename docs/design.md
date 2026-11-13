@@ -201,24 +201,36 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Handout
 
-- One reading column at the chat's reading width: an area (a white block, as
-  the afterword's) per text, each with its label on the text's left edge. The
-  shared text (`handout.common`), then your part's own text under its heading,
-  how your part sees the others (`handout.impressions`), and the settings your
-  part fills in (`handout.fields`), each a name with an input under it. The
-  example, when there is one, sits in the empty input.
-- The column scrolls; under it, always in view, one row: the time left, the
-  extension button (`handout.extend`), and the done button (`handout.done`).
-  The done button is the next step, so it is the filled one; it stays greyed
-  until every setting is filled in (a setting marked optional may stay blank).
-  The extension button is white, not filled,
-  since it is not the next step.
-- Once you tap done, your settings lock, the extension button goes and the
-  done button greys and says `handout.waiting`.
+- The handout is split into tabs, one text per tab, so a long handout does
+  not run as one scroll: the shared text (`handout.common`), your part's own
+  text (labelled with your part's name, its full heading at the top of the
+  tab), how your part sees the others (`handout.impressions`) and the
+  settings your part fills in (`handout.tabFields`). A tab with nothing in it
+  is left out. The tabs sit at the chat's reading width over one white area;
+  the chosen tab shares its white, as a folder tab, the others sit on the
+  page. The text scrolls under the tab bar and starts from the top when the
+  tab changes.
+- Each setting is a name with an input under it. The example, when there is
+  one, sits in the empty input.
+- While a setting that is not optional is still blank, the settings tab
+  carries a small dot, the familiar sign for "something here needs you", since
+  the done button stays greyed for a reason on another tab.
+- Under the area, always in view, one row: the time left, the extension
+  button (`handout.extend`), and the done button (`handout.done`). The done
+  button is the next step, so it is the filled one; it stays greyed until
+  every setting is filled in (a setting marked optional may stay blank). The
+  extension button is white, not filled, since it is not the next step.
+- Once you tap done, your settings lock, the done button greys and says
+  `handout.waiting`, and the extension button gives way to the undo button
+  (`handout.unready`), white like it. Undo brings back the settings and the
+  extension button, until the phase ends.
 - When time runs out, the game moves on. Until anyone acts on the next screen,
   that screen shows the extension button at its bottom left, white and small,
   away from that screen's focus; it brings everyone back to the handout with
   more time.
+- After the phase, the footer's handout button opens the same tabs in a sheet,
+  read-only: each setting's name with what was filled in under it, or
+  `handout.blank` in the quiet colour when it was left empty.
 - Text typed into a setting is the one text the bundled subsets cannot hold,
   so it may fall back to a system face.
 
