@@ -1,0 +1,26 @@
+{
+  "name": "sample-ikutoshi",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "harness": "node ../../packages/reader/harness.mjs",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run",
+    "publish": "uzu publish"
+  },
+  "dependencies": {
+    "@uzu-toolkit/kit": "^0.1.0",
+    "@uzu-toolkit/reader": "^0.1.0",
+    "@uzuhq/code-sdk": "^0.9.12"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@uzuhq/code-cli": "^0.7.14",
+    "svelte": "^5.57.0",
+    "svelte-check": "^4.7.0",
+    "vite": "^8.3.0"
+  }
+}
