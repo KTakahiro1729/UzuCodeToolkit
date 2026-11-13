@@ -1,5 +1,5 @@
 <!--
-  The read-through phase's screen. In the work's last phase, the end of the read-through gives way
+  The read-through phase's screen, as chat bubbles or, with `screen`, on UZU's stage layout. In the work's last phase, the end of the read-through gives way
   to the end screen and the post-game screen, and the band says the post-game label once that
   screen comes in.
 -->
@@ -13,7 +13,22 @@
   // UI strings by key.
   import STRINGS from '../strings';
 
-  let { state, part, send, last, script }: PhaseViewProps<DialogueProgress> & { script: Script } = $props();
+  let {
+    state,
+    part,
+    send,
+    last,
+    script,
+    screen = ReadThrough,
+  }: PhaseViewProps<DialogueProgress> & {
+    script: Script;
+    /**
+     * The screen that shows the lines: chat bubbles by default, or `StageReadThrough` from
+     * '@uzu-toolkit/reader/stage' (UZU's design guide layout). It lives behind an entry of its own so a
+     * work that never uses it does not ship it.
+     */
+    screen?: typeof ReadThrough;
+  } = $props();
 
   const scenario = $derived(scenarioOf(script));
   // Back to the phase's own label whenever the post-game screen is not up (also after a reset).
@@ -26,5 +41,6 @@
 {#if state.finished}
   <Ending {script} onreview={() => (band.label = STRINGS['phase.review'])} />
 {:else}
-  <ReadThrough {scenario} progress={state} myPart={part} final={last} onadvance={(index) => send('advance', { index })} />
+  {@const Screen = screen}
+  <Screen {scenario} progress={state} myPart={part} final={last} onadvance={(index) => send('advance', { index })} />
 {/if}

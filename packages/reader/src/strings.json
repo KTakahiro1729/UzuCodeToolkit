@@ -35,5 +35,10 @@
   "status.anyoneNext": "全員で進みます",
   "status.pickGame": "ゲームを選ぶと押せます",
   "time.left": "残り",
-  "vote.waiting": "あと{n}人の投票を待っています"
+  "vote.waiting": "あと{n}人の投票を待っています",
+  "stage.yourTurn": "あなたの番",
+  "stage.next": "次",
+  "stage.narration": "ナレーション",
+  "log.open": "ログ確認",
+  "log.title": "これまでのセリフ"
 }
