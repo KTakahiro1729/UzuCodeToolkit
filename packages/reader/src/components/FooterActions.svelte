@@ -22,7 +22,7 @@
   }
 </script>
 
-<div class="actions" use:portal in:sceneIn|global out:sceneOut|global>{@render children()}</div>
+<div class="actions" data-uzu-actions={place} use:portal in:sceneIn|global out:sceneOut|global>{@render children()}</div>
 
 <style>
   /* One row, centred in its cell; wraps on a narrow screen. */

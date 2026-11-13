@@ -11,7 +11,7 @@
   import Ending from './Ending.svelte';
   import ReadThrough from './ReadThrough.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let { state, part, send, last, script }: PhaseViewProps<DialogueProgress> & { script: Script } = $props();
 

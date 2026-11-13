@@ -10,7 +10,7 @@
   import { fade } from 'svelte/transition';
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let {
     parts,
@@ -31,20 +31,22 @@
   } = $props();
 
   const shown = $derived(myPart ? [...parts.filter((p) => p.id !== myPart), ...parts.filter((p) => p.id === myPart)] : parts);
+  // The players' width, for capping the phase name so it never pushes them off the screen.
+  let rolesWidth = $state(0);
   const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200;
 </script>
 
-<header>
+<header style:--roles-w="{rolesWidth}px">
   <!-- With a way to open the phase list the phase is a pill with a down mark, so it reads as tappable. -->
   {#if onphase}
-    <button type="button" class="phase" aria-expanded={phaseOpen} onclick={onphase}>
+    <button type="button" class="phase" data-uzu-phase aria-expanded={phaseOpen} onclick={onphase}>
       {@render label()}
       <svg class="more" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
     </button>
   {:else}
-    <div class="phase">{@render label()}</div>
+    <div class="phase" data-uzu-phase>{@render label()}</div>
   {/if}
-  <div class="roles">
+  <div class="roles" bind:clientWidth={rolesWidth}>
     {#each shown as part (part.id)}
       <span class="who">
         <span class="icon">
@@ -93,6 +95,8 @@
     column-gap: 1em;
     align-items: center;
     background: var(--color-bubble);
+    /* So the phase name can be capped by the band's own width (cqw). */
+    container-type: inline-size;
     white-space: nowrap;
     font-family: var(--font-ui);
     font-weight: 700;
@@ -113,6 +117,12 @@
     color: var(--color-text-quiet);
     font: inherit;
     font-size: 18px;
+    /*
+     * A name too long for the room left of the players ends in an ellipsis. The grid sizes the
+     * phase before the players, so without this cap a long name pushed them off the screen.
+     */
+    box-sizing: border-box;
+    max-width: calc(100cqw - var(--roles-w, 0px) - 32px);
   }
   button.phase {
     background: var(--color-bg);

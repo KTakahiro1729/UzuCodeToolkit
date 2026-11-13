@@ -7,7 +7,7 @@
 <script lang="ts">
   import type { Script } from '../script';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let { script, onreview }: { script: Script; onreview?: () => void } = $props();
 

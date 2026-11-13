@@ -9,7 +9,7 @@
   import { fill } from '../fill';
   import Button from './Button.svelte';
   // UI strings by key.
-  import STRINGS from '../strings.json';
+  import STRINGS from '../strings';
 
   let {
     ballot,

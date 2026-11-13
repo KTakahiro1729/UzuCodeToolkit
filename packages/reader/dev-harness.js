@@ -59,15 +59,17 @@ const PAGE = `<!DOCTYPE html>
     params.set('orientation', orientation === 'portrait' ? 'landscape' : 'portrait');
     location.search = params.toString();
   };
-  // Click the first enabled, visible action in the footer across the player
-  // screens (same origin): during the read-through that is the current reader's
-  // advance button. The footer's read-back buttons are left alone.
+  // Click the first enabled, visible main action across the player screens (same
+  // origin): during the read-through that is the current reader's advance button.
+  // Screens mark their main actions data-uzu-actions="main" (FooterActions does), so
+  // a work with its own shell works too if it keeps that mark.
   document.getElementById('dev-tap').onclick = () => {
     for (const frame of document.querySelectorAll('iframe')) {
       const doc = frame.contentDocument;
-      const next = [...(doc?.querySelectorAll('footer .act button') ?? [])].find((b) => !b.disabled && b.getClientRects().length > 0);
+      const next = [...(doc?.querySelectorAll('[data-uzu-actions="main"] button') ?? [])].find((b) => !b.disabled && b.getClientRects().length > 0);
       if (next) return next.click();
     }
+    console.warn('[harness] No enabled button in [data-uzu-actions="main"]. A custom shell must mark its main actions so.');
   };
   // Hot swap: harness.mjs restarts the harness when the server logic changes,
   // which empties its in-memory room. Keep the latest state, and when the

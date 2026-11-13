@@ -15,7 +15,7 @@ Write code, comments, docs, tests and error messages in English. UI strings come
 | Path | Role |
 |---|---|
 | `packages/kit` | UI-independent helpers: phases (`flowLogic`, `emptyPhase`), read-through (`advanceDialogue` etc.), casting (`partsOf`, `assignParts`), ruby (`parseRuby`), the game-select phase (`gameSelectPhase`), playing cards (`deck`, `deal`), timers (`secondsLeft`, `formatClock`), votes (a `Ballot` kept in state: `ballot`, `castVote`, `ballotClosed`; counting: `tally`, `soleTop`) and a phase that waits for everyone (`readyPhase`). Called from both server actions and the view |
-| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `CastView`, `HandoutView`, `HandoutReviewView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`, `Guide`, `Vote`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) and the client entry (`startFlow`, `startReader`); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
+| `packages/reader` | The screens (Svelte 5): the frame with the top band, phase screens (`ReadThroughView`, `EmptyView`, `CastView`, `HandoutView`, `HandoutReviewView`, `GameSelectView`), parts for any screen (`Button`, `TimeLeft`, `Guide`, `Vote`; playing cards as `PlayingCard` from `@uzu-toolkit/reader/cards`) the client entry (`startFlow`, `startReader`), the pieces a work's own shell is made of (`game`, `sendAction`, `FooterActions`, `Frame`, `TopBand`, `Sheet`; Replacing the screens below); the read-through phase (`readThroughPhase`), script format (`src/script.ts`), theme, UI strings and dev harness |
 | `samples/hundred-arms` | Sample work 百本腕と勇者. Two players |
 | `samples/yubiwa` | Sample work 指環 (江戸川乱歩, Aozora Bunko). Two players |
 | `samples/mittsu-no-takara` | Sample work 三つの宝 (芥川龍之介, Aozora Bunko). Three players, two of them doubling roles |
@@ -31,6 +31,22 @@ UZU documents no upper limit on players (`playerCount` is an integer of 1 or mor
 A work is a fixed list of phases in order (opening read-through, handouts, a game, the post-game screen). Each phase is a `PhaseLogic` (`packages/kit/src/flow.ts`): `setup` when the game enters it, `actions` (and `serverActions`), `done`, and an optional `deadline`. The work's logic (`src/logic.ts`, the manifest's `serverActionLogicPath`) is `flowLogic(phases, partIds)`; shared state is `FlowState`: seat parts, the current phase `at`, each entered phase's state, and `ended`. A phase's actions are sent as `${phaseId}:${name}`; an action of any phase but the current one is rejected. After each action or deadline, the game moves past phases that are done; when the last one is done, `ended` turns true and the client calls `gameEnded()`.
 
 The client entry (`src/main.ts`) calls `startFlow(logic, { parts, phases, orientation })`, giving each phase, in the logic's order, a band label (the text itself), a screen and optional extra `props`. A phase screen gets `PhaseViewProps` (`packages/reader/src/flow.ts`). `readThroughPhase(script)` with `ReadThroughView` (`props: { script }`) is a read-through; `emptyPhase()` with `EmptyView` holds the place of a phase not made yet. A work of more than one phase gets a footer with the phase list; a phase view with `keep` (such as `handoutKeep` for `HandoutView`) adds a footer entry that reads that phase back once the game has left it. A sample is one read-through phase: `readThroughLogic(script)` and `startReader(script, logic, orientation)`.
+
+## Replacing the screens
+
+A work changes its look without a toolkit change. Find the smallest piece below that covers the request; each is a plain Svelte file or option in the work, never a toolkit prop.
+
+| The request | Change |
+|---|---|
+| Colours, fonts, radii, band and footer heights | The work's `theme.css` tokens (the toolkit's `theme.css` lists them) |
+| Wording of any toolkit button or label | `startFlow(..., { strings: { 'button.back': '...' } })`; keys are in `packages/reader/src/strings.json` |
+| One phase's screen | Its `view` in the work's `main.ts`: any Svelte component taking `PhaseViewProps`. Put its main actions in the footer with `FooterActions` |
+| The frame (band, footer, sheets) | `startFlow(..., { shell })`: a Svelte component taking `ShellProps`. Copy `FlowApp.svelte` and change it; it reads the state from `game`, sends with `sendAction(phaseAction(id, name), payload)` and may reuse `Frame`, `TopBand`, `Sheet`, `PhaseList` |
+| A feature of an existing phase (handout keep, ready checks) | `handoutScreen(handouts, props)` and `castScreen(props)` carry the wiring; spread them into the phase |
+
+The dev harness and the screen preview find the main action, the phase name and the scrolling list by three marks: `data-uzu-actions="main"` (set by `FooterActions`), `data-uzu-phase` and `data-uzu-scroll`. A custom shell or screen keeps them (docs/screen-preview.md). The logic tests, the work's flow test and the build-size test do not depend on the screens.
+
+Add to the toolkit only what the work cannot do with the pieces above.
 
 ## Commands (from the repo root)
 
