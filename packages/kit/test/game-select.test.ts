@@ -60,7 +60,7 @@ describe('gameSelectPhase', () => {
     send(state, 'idle:cards.show', {}, 'seat-b');
     expect(phase(state).game).toBe('cards');
     send(state, 'idle:back');
-    expect(phase(state)).toEqual({ game: null, play: null, next: false });
+    expect(phase(state)).toEqual({ game: null, play: null, players: null, next: false });
     send(state, 'idle:next');
     expect(state.ended).toBe(true);
   });
@@ -84,5 +84,28 @@ describe('gameSelectPhase', () => {
     send(state, 'idle:pick', { id: 'timed' });
     serverSend(state, 'idle:timed.go');
     expect(phase(state).play).toEqual({ start: 0, end: 5000 });
+  });
+
+  it('lets the spectator part sit out a game that takes one fewer', () => {
+    const three = [...(players as unknown as object[]), { id: 'seat-c', nickname: 'C', iconUrl: '' }] as never;
+    const duel: PhaseLogic<string[]> = {
+      setup: (parts) => Object.keys(parts),
+      actions: { move() {} },
+      done: () => false,
+    };
+    const games = [{ id: 'duel', players: { min: 2, max: 2 }, logic: duel }];
+    const flow = (spectator?: string) =>
+      flowLogic([{ id: 'idle', logic: gameSelectPhase(games, { spectator }) }], ['x', 'gm', 'y']);
+    const without = flow();
+    const start = without.setup({ players: three, ctx });
+    expect(() => without.actions['idle:pick']({ state: start, playerId: 'seat-a', payload: { id: 'duel' }, ctx })).toThrow();
+
+    const logic = flow('gm');
+    const state = logic.setup({ players: three, ctx });
+    const act = (name: string, playerId: string, payload = {}) => logic.actions[name]({ state, playerId, payload, ctx });
+    act('idle:pick', 'seat-b', { id: 'duel' });
+    expect(phase(state).play).toEqual(['seat-a', 'seat-c']);
+    act('idle:duel.move', 'seat-a');
+    expect(() => act('idle:duel.move', 'seat-b')).toThrow();
   });
 });

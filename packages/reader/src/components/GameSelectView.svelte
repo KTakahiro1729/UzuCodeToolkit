@@ -5,7 +5,7 @@
   game is done, since going back is then the one thing left to do.
 -->
 <script lang="ts">
-  import { gameAction, type GameSelectState, playable } from '@uzu-toolkit/kit';
+  import { gameAction, type GameSelectState, playersFor } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
   import type { GameView } from '../games';
   import { band } from '../store.svelte';
@@ -14,10 +14,19 @@
   // UI strings by key.
   import STRINGS from '../strings.json';
 
-  let { state, me, part, parts, send, last, games }: PhaseViewProps<GameSelectState> & { games: readonly GameView[] } =
-    $props();
+  let {
+    state,
+    me,
+    part,
+    parts,
+    names,
+    send,
+    last,
+    games,
+    spectator,
+  }: PhaseViewProps<GameSelectState> & { games: readonly GameView[]; spectator?: string } = $props();
 
-  const choices = $derived(games.filter((g) => playable(g, Object.keys(parts).length)));
+  const choices = $derived(games.filter((g) => playersFor(g, parts, spectator)));
   const playing = $derived(games.find((g) => g.id === state.game));
   const over = $derived(playing ? playing.logic.done(state.play) : false);
 
@@ -35,7 +44,8 @@
           state={state.play}
           {me}
           {part}
-          {parts}
+          parts={state.players ?? parts}
+          {names}
           send={(name: string, payload?: Record<string, unknown>) => send(gameAction(playing.id, name), payload)}
           {last}
         />
