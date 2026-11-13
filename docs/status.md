@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 03:09 UTC
+Last checked: 2026-11-13 03:12 UTC
 
 ## Waiting on the owner
 
@@ -10,8 +10,7 @@ No open decisions. No CI checks are configured.
 
 | What | Kind | Notes |
 |---|---|---|
-| [#20](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/20) Move work-specific parts into the Toolkit (with the size-check test) | Review, merge | Ready. Merge first. [Screens](https://claude.ai/artifact/ETv6ExT5T1Y4dbrjwiSaFS) |
-| InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) | Review, merge | After #20: its submodule is moved to #20's merge commit, then it merges. Reviewed with #20. |
+| InterstellarBoardGame [#2](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/2) | Merge | Ready: submodule moved to #20's merge commit (reported by its thread; not visible from here). |
 
 ## Done
 
@@ -19,6 +18,7 @@ Word Wolf topic pairs (InterstellarBoardGame): checked by the owner and kept as 
 
 | PR | Result | Date |
 |---|---|---|
+| [#20](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/20) Move work-specific parts into the Toolkit (with the size-check test) | Merged | 2026-11-13 |
 | [#19](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/19) Phases, handouts, game select and playing cards for InterstellarBG | Merged | 2026-11-13 |
 | [#18](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/18) Run a work as a list of phases | Closed; folded into #19 | 2026-11-13 |
 | [#17](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/17) HO phase with reading timer | Closed; folded into #19 | 2026-11-13 |
