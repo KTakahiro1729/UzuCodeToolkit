@@ -25,13 +25,28 @@
 <div class="actions" use:portal in:sceneIn|global out:sceneOut|global>{@render children()}</div>
 
 <style>
-  /* One row, centred in its cell; wraps on a narrow screen. */
+  /*
+   * The main row: bigger buttons than elsewhere, and the last one (the one to press now) takes
+   * the room the others leave. Wraps on a narrow screen, the main button keeping its own row.
+   */
   .actions {
+    --button-pad-y: 0.7em;
+    --button-pad-x: 1.4em;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-end;
+    align-items: stretch;
     flex-wrap: wrap;
     gap: 0.6em;
     font-family: var(--font-ui);
+    font-size: 1.15em;
+  }
+  .actions > :global(button:last-child) {
+    flex: 1 1 8em;
+  }
+  /* A line of text alone in the row (such as the watching mark) stays centred. */
+  .actions > :global(p) {
+    flex: 1;
+    margin: 0;
+    text-align: center;
   }
 </style>

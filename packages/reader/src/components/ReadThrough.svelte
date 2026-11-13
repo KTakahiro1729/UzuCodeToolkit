@@ -38,8 +38,6 @@
   const isMine = (l: Line): boolean => myRoles.includes(readerOf(l));
   const line = $derived(currentLine(LINES, progress));
   const mine = $derived(!!line && isMine(line));
-  // The button says what it does until your first line is read; after that the mark alone.
-  const labelled = $derived(progress.index <= LINES.findIndex(isMine));
   // On the last line the button ends the read-through, so it says so instead of the next mark.
   const last = $derived(!!line && progress.index === LINES.length - 1);
   const shown = $derived(LINES.slice(0, progress.index + 1));
@@ -152,8 +150,8 @@
 </div>
 <!-- In the footer, right under the newest line, for every player: active for the reader, greyed for the others. -->
 <FooterActions>
-  <NextButton disabled={!mine} label={STRINGS['button.nextLine']} onclick={advance}>
-    {#if last}{STRINGS[final ? 'button.end' : 'button.next']}{:else}{#if labelled}{STRINGS['hint.readThenTap']}{/if}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{/if}
+  <NextButton disabled={!mine} onclick={advance}>
+    {#if last}{STRINGS[final ? 'button.end' : 'button.next']}{:else}<svg viewBox="0 0 10 8" aria-hidden="true"><path d="M0 0h10L5 8z" /></svg>{STRINGS['button.next']}{/if}
   </NextButton>
 </FooterActions>
 

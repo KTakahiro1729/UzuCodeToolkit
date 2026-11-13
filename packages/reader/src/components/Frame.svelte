@@ -54,14 +54,15 @@
   <TopBand {parts} {myPart} {done} {phase} {onphase} {phaseOpen} />
   <!-- Before the screen, so its cells are there when the screen puts its actions in. -->
   <footer bind:offsetHeight={footerHeight}>
-    <div class="act">
-      <div class="cell" bind:this={footerSlots.aside}></div>
-      <div class="cell" bind:this={footerSlots.main}></div>
-    </div>
-    <!-- The lower row: read-back buttons at the left, the state (the time left) at the right. -->
+    <!-- The upper row, slim: read-back buttons at the left, the state (the time left) at the right. -->
     <div class="opts">
       {#if nav}<nav>{@render nav()}</nav>{/if}
       <div class="cell status" bind:this={footerSlots.status}></div>
+    </div>
+    <!-- The lower row, the main one: the screen's actions, the one to press now at the right. -->
+    <div class="act">
+      <div class="cell" bind:this={footerSlots.aside}></div>
+      <div class="cell main" bind:this={footerSlots.main}></div>
     </div>
   </footer>
   {#if aside}<aside>{@render aside()}</aside>{/if}
@@ -142,9 +143,9 @@
   }
   /*
    * The footer, white and full width along the bottom edge as the band's counterpart, in two
-   * rows like a chat input. Upper: the screen's actions, quieter ones at the left and the one to
-   * tap now at the right edge. Lower: options and state, the read-back buttons at the left and the
-   * time left at the right.
+   * rows. Upper, slim: options and state, the read-back buttons at the left and the time left at
+   * the right. Lower, the main row: the screen's actions with big buttons, quieter ones at the left
+   * and the one to tap now at the right edge, where the thumb rests.
    */
   footer {
     position: fixed;
@@ -153,29 +154,32 @@
     bottom: 0;
     box-sizing: border-box;
     min-height: calc(var(--safe-bottom, 0px) + var(--footer-h));
-    padding: 0.6em calc(var(--safe-right, 0px) + 0.8em) calc(var(--safe-bottom, 0px) + 0.4em)
+    padding: 0.3em calc(var(--safe-right, 0px) + 0.8em) calc(var(--safe-bottom, 0px) + 0.5em)
       calc(var(--safe-left, 0px) + 0.8em);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0.3em;
+    row-gap: 0.2em;
     background: var(--color-bubble);
   }
   .act {
-    grid-row: 1;
+    grid-row: 2;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-wrap: wrap;
+    align-items: stretch;
     gap: 0.6em;
+  }
+  /* The main cell takes the room, so its last button can be wide. */
+  .act > .main {
+    flex: 1;
+    min-width: 0;
   }
   .opts {
     grid-column: 1 / -1;
-    grid-row: 2;
+    grid-row: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.6em;
-    min-height: 2em;
+    min-height: 1.6em;
     font-family: var(--font-ui);
     color: var(--color-text-quiet);
   }

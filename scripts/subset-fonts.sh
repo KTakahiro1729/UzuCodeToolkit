@@ -14,7 +14,7 @@ node -e '
 const [dir, out] = process.argv.slice(1);
 const s = require(`./${dir}/script/script.json`);
 const all = require("./packages/reader/src/strings.json");
-const READING = ["phase.reading", "phase.review", "hint.readThenTap", "review.heading", "review.afterword", "button.end", "name.and", "button.next"];
+const READING = ["phase.reading", "phase.review", "review.heading", "review.afterword", "button.end", "name.and", "button.next"];
 const ui = Object.fromEntries(READING.map((k) => [k, all[k]]));
 const set = (a) => [...new Set(a.filter(Boolean).join(""))].join("");
 const fs = require("fs");
