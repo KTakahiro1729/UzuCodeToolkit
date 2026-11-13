@@ -21,5 +21,6 @@ Owner decisions for this repository, newest last.
 
 ## 2026-11-13
 
+- **Overflow is checked on the drawn screens.** A CSS lint cannot tell whether something spills over, since that depends on the text and the screen size. `capture.mjs --check` walks the screen-preview screens in both orientations in Playwright and lists boxes past the screen or their parent, text and images under the safe area or the HUD, and cut-off content. Chosen over Galen (a layout spec per screen; unmaintained) and BackstopJS (pixel diffs show change, not overflow).
 - **Handout (HO) phase.** Every player reads the shared text and their own part's text, fills in the settings their part asks for, and taps done; the phase ends when everyone is done. Done needs every setting filled in and cannot be undone. Settings stay in the phase state by part and setting ID, so later phases can use them. Labels come from the work's data; the screen's own labels from `strings.json`.
 - **HO reading time.** A timer shows the time left (the work sets it; 5 minutes in InterstellarBG). When it runs out the phase ends, done or not; settings left blank stay empty. Before that, any player still reading can ask for more time, which adds 2 minutes for everyone. Time is the SDK's game time, so actions stay deterministic.
