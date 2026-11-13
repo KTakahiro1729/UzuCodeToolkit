@@ -55,7 +55,7 @@
               <path d="M4.5 8.2l2.3 2.3 4.7-4.8" />
             </svg>
           {/if}
-        </span>{part.name}
+        </span><span class="name">{part.name}</span>
       </span>
     {/each}
   </div>
@@ -89,7 +89,7 @@
     display: grid;
     /* The phase is centred while the players fit in the right half; with more players it gives
        way to the left, keeping a gap, instead of running into them. */
-    grid-template-columns: minmax(0, 1fr) auto minmax(max-content, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(max-content, 1fr);
     column-gap: 1em;
     align-items: center;
     background: var(--color-bubble);
@@ -104,6 +104,7 @@
     display: flex;
     align-items: center;
     gap: 0.5em;
+    min-width: 0;
     margin: 0;
     padding: 0.3em 0.8em;
     border: none;
@@ -122,9 +123,13 @@
   /* The old and new phase share the cell, one fading out before the other fades in. */
   .label {
     display: grid;
+    min-width: 0;
   }
+  /* A long phase name ends in an ellipsis rather than running into the players. */
   .label > span {
     grid-area: 1 / 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .more {
     flex: none;
@@ -152,6 +157,12 @@
     align-items: center;
     gap: 6px;
     line-height: 1;
+  }
+  /* A long part name is cut short instead of widening the row. */
+  .name {
+    max-width: 5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   img {
     width: 36px;
@@ -186,5 +197,42 @@
   img[data-you='true'] {
     outline: 2px solid var(--color-text);
     outline-offset: 2px;
+  }
+  /*
+   * Narrow: under 380px (down to 320px, the narrowest supported) three players and a phase name
+   * no longer fit one row, so the phase takes a row of its own above the players. The band is
+   * taller then (theme.css); a phase name too long for the width still ends in an ellipsis.
+   */
+  @media (max-width: 379px) {
+    header {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      row-gap: 4px;
+      align-content: center;
+      padding-right: calc(var(--safe-right, 0px) + 0.8em);
+    }
+    .phase {
+      grid-column: 1;
+      justify-self: center;
+      max-width: 100%;
+    }
+    .roles {
+      grid-column: 1;
+    }
+  }
+  /* Short: a phone held sideways. Icon and name side by side, so the band takes less of the height. */
+  @media (max-height: 479px) {
+    .who {
+      flex-direction: row;
+      gap: 6px;
+    }
+    img {
+      width: 28px;
+      height: 28px;
+    }
+    .check {
+      width: 12px;
+      height: 12px;
+    }
   }
 </style>

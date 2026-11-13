@@ -69,7 +69,8 @@ on cards.
 
 ### Layout
 
-- Phone first; sizes in em, based on the screen's short side.
+- Phone first; sizes in em, based on the screen's short side. The narrowest
+  screen supported is 320px wide.
 - The chat column has a reading width, so the eye does not cross a wide
   landscape screen between lines.
 - A screen with room for columns gets them, measured in the screen's own em:
@@ -232,6 +233,11 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   HUD. A quarter or less (landscape and tablets, under a fifth), the band
   shares the HUD's row with the HUD over its empty left part, so the chat
   keeps the height. Nothing else shares a row with the HUD.
+- Narrow and short screens: under 380px wide the phase takes a row of its own
+  above the players (the band is taller then), so three players and a phase
+  name fit down to 320px; a name too long for its room ends in an ellipsis.
+  Under 480px tall (a phone held sideways) each player's icon and name sit side
+  by side and the band is shorter, so the text under it keeps the height.
 - Shows every player as icon and part name, ordered like the chat: the other
   players left (in the script's order), you right. A part that reads several
   roles shows its first role's icon. Each name sits under its icon. Your role's icon has a
@@ -331,6 +337,11 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 
 ### Handout
 
+- Where there is room (about 18em per column, 480px tall) the tabs spread over
+  up to 3 columns, counted on the width the handout itself has: each tab but
+  the last ones gets a column under a caption, and the last column keeps the
+  rest as tabs. Beside the screen (see Layout) the handout has fewer columns
+  by itself.
 - The handout is split into tabs, one text per tab, so a long handout does
   not run as one scroll: the shared text (`handout.common`), your part's own
   text (labelled with your part's name, its full heading at the top of the
