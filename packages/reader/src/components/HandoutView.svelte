@@ -2,9 +2,10 @@
   Handout (HO) phase. One reading column: the shared text, your part's own text and how it sees
   the others, then the settings your part fills in. Under the column, always in view: the time
   left, the button asking for more time, and the button that says you are done. That button
-  stays greyed until every setting is filled in; once tapped it says you are waiting for the
+  stays greyed until every setting is filled in (optional ones may stay blank); once tapped it says you are waiting for the
   others, your settings are locked and the extension button goes. The phase ends when everyone
-  is done or the time runs out. Settings are sent as you type, so time running out loses none.
+  is done or the time runs out (the server's deadline). Settings are sent as you type, so time
+  running out loses none.
 -->
 <script lang="ts">
   import { type Handout, type HandoutState, HANDOUT_VALUE_MAX, settingsOf } from '@uzu-toolkit/kit';
@@ -24,16 +25,12 @@
   // What you are typing, ahead of the state; sent as you type.
   let typed = $state<Record<string, string>>({});
   const value = (id: string): string => typed[id] ?? phase.values[part]?.[id] ?? '';
-  const filled = $derived(fields.every((f) => value(f.id).trim() !== ''));
+  const filled = $derived(fields.every((f) => f.optional || value(f.id).trim() !== ''));
 
   // Seconds left, from the game clock (it freezes while the game is paused).
   let left = $state(0);
   $effect(() => {
-    const tick = () => {
-      left = Math.max(0, Math.ceil(minus(phase.endsAt, gameTime()) / 1000));
-      // Every client reports the end; the logic checks it against the game time.
-      if (left === 0 && !phase.timeUp) send('timeUp');
-    };
+    const tick = () => (left = Math.max(0, Math.ceil(minus(phase.endsAt, gameTime()) / 1000)));
     tick();
     const t = setInterval(tick, 500);
     return () => clearInterval(t);

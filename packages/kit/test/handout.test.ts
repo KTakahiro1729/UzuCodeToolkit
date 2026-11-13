@@ -5,7 +5,14 @@ import { EXTENSION_MS, type Handout, type HandoutState, handoutLogic } from '../
 const handout: Handout = {
   common: ['all'],
   parts: {
-    a: { heading: 'A', body: ['a'], settings: [{ id: 'ship', label: 'Ship' }] },
+    a: {
+      heading: 'A',
+      body: ['a'],
+      settings: [
+        { id: 'ship', label: 'Ship' },
+        { id: 'note', label: 'Note', optional: true },
+      ],
+    },
     b: { heading: 'B', body: ['b'] },
   },
 };
@@ -29,11 +36,11 @@ describe('handoutLogic', () => {
       endsAt: at(301_000),
       timeUp: false,
       ready: { s1: false, s2: false },
-      values: { a: { ship: '' }, b: {} },
+      values: { a: { ship: '', note: '' }, b: {} },
     });
     expect(logic.done(s)).toBe(false);
   });
-  it('needs every field filled before a player is done', () => {
+  it('needs every setting but the optional ones filled before a player is done', () => {
     const s = logic.setup(parts, at(1000));
     expect(() => act(s, 'ready', 's1')).toThrow();
     act(s, 'set', 's1', { id: 'ship', value: '  ' });
@@ -63,9 +70,22 @@ describe('handoutLogic', () => {
   });
   it('ends when the time is up, with settings left as they are', () => {
     const s = logic.setup(parts, at(0));
-    expect(() => act(s, 'timeUp', 's2', {}, at(299_999))).toThrow();
-    act(s, 'timeUp', 's2', {}, at(300_000));
+    expect(logic.deadline!.at(s)).toBe(at(300_000));
+    logic.deadline!.handler({ state: s, parts, time: at(300_000), random: null as never });
+    expect(logic.deadline!.at(s)).toBeNull();
     expect(logic.done(s)).toBe(true);
     expect(s.values.a.ship).toBe('');
+  });
+  it('reopens with more time only when time ran out', () => {
+    const s = logic.setup(parts, at(0));
+    logic.deadline!.handler({ state: s, parts, time: at(300_000), random: null as never });
+    logic.reopen!({ state: s, time: at(310_000) });
+    expect(logic.done(s)).toBe(false);
+    expect(s.endsAt).toBe(at(310_000 + EXTENSION_MS));
+    const all = logic.setup(parts, at(0));
+    act(all, 'set', 's1', { id: 'ship', value: 'x' });
+    act(all, 'ready', 's1');
+    act(all, 'ready', 's2');
+    expect(() => logic.reopen!({ state: all, time: at(1) })).toThrow();
   });
 });

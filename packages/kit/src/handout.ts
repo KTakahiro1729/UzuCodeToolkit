@@ -5,10 +5,12 @@
  *
  * A timer shows the reading time left. When it runs out the phase ends, whoever is done or not
  * and whatever is filled in (settings left blank stay empty strings). Before that, any player
- * still reading can ask for more time, which adds EXTENSION_MS for everyone.
+ * still reading can ask for more time, which adds EXTENSION_MS for everyone. After time runs out,
+ * the next screen keeps that request until anyone acts there: it brings everyone back here with
+ * EXTENSION_MS from now (reopen).
  */
 
-import { type GameTime, minus, plus } from '@uzuhq/code-sdk';
+import { type GameTime, plus } from '@uzuhq/code-sdk';
 import type { PhaseLogic } from './flow';
 
 /** A setting the player fills in, such as the ship's name. */
@@ -18,6 +20,8 @@ export interface HandoutSetting {
   label: string;
   /** Shown in the empty input, such as "ネオホライゾン". */
   example?: string;
+  /** May be left blank when the player taps done. */
+  optional?: boolean;
 }
 
 /** One part's own handout. */
@@ -41,7 +45,7 @@ export interface Handout {
 export interface HandoutState {
   /** Game time the reading time runs out. */
   endsAt: GameTime;
-  /** True once a player's client reported the time up (checked against the game time). */
+  /** True once the reading time ran out (set by the server's deadline). */
   timeUp: boolean;
   /** Seat ID -> whether that player has finished. */
   ready: Record<string, boolean>;
@@ -60,9 +64,9 @@ export function settingsOf(handout: Handout, part: string): readonly HandoutSett
   return handout.parts[part]?.settings ?? [];
 }
 
-/** Whether a part has filled in every setting (blank values do not count). */
+/** Whether a part has filled in every setting that is not optional (blank values do not count). */
 export function filledIn(handout: Handout, state: HandoutState, part: string): boolean {
-  return settingsOf(handout, part).every((f) => (state.values[part]?.[f.id] ?? '').trim() !== '');
+  return settingsOf(handout, part).every((f) => f.optional || (state.values[part]?.[f.id] ?? '').trim() !== '');
 }
 
 /** `minutes`: the reading time, such as 5. */
@@ -91,17 +95,24 @@ export function handoutLogic(handout: Handout, { minutes }: { minutes: number })
         if (state.ready[playerId] !== false) throw new Error('not reading');
         state.endsAt = plus(state.endsAt, EXTENSION_MS);
       },
-      /** Sent by every client once its clock reaches the end; rejected while time is left. */
-      timeUp({ state, time }) {
-        if (minus(state.endsAt, time) > 0) throw new Error('time left');
-        state.timeUp = true;
-      },
       /** Finish reading; needs every setting filled in. Cannot be undone. */
       ready({ state, playerId, part }) {
         if (!(playerId in state.ready)) throw new Error('not a player');
         if (!filledIn(handout, state, part)) throw new Error('settings left');
         state.ready[playerId] = true;
       },
+    },
+    // The server ends the phase when the reading time runs out.
+    deadline: {
+      at: (state) => (state.timeUp ? null : state.endsAt),
+      handler({ state }) {
+        state.timeUp = true;
+      },
+    },
+    reopen({ state, time }) {
+      if (!state.timeUp) throw new Error('everyone was done');
+      state.timeUp = false;
+      state.endsAt = plus(time, EXTENSION_MS);
     },
     done: (state) => state.timeUp || Object.values(state.ready).every(Boolean),
   };

@@ -189,6 +189,16 @@ Decoration is out of scope, but it must not break the rules above:
   then the post-game screen fades in, so the two never show through each
   other. The band's phase changes as the post-game screen comes in.
 
+### Phase changes
+
+- When the phase changes, the old screen fades out, then the new one fades in (200 ms each, one at a time, instant with reduced motion). The band's phase label changes with the screen.
+- The first screen, shown as the game loads, does not fade in.
+
+### Empty phase
+
+- A phase whose content is not made yet shows the next button alone, centred, labelled `button.next`. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
+- On the last line of a read-through that another phase follows, the advance button says `button.next` instead of `button.end`.
+
 ### Handout
 
 - One reading column at the chat's reading width: an area (a white block, as
@@ -200,21 +210,17 @@ Decoration is out of scope, but it must not break the rules above:
 - The column scrolls; under it, always in view, one row: the time left, the
   extension button (`handout.extend`), and the done button (`handout.done`).
   The done button is the next step, so it is the filled one; it stays greyed
-  until every setting is filled in. The extension button is white, not filled,
+  until every setting is filled in (a setting marked optional may stay blank).
+  The extension button is white, not filled,
   since it is not the next step.
 - Once you tap done, your settings lock, the extension button goes and the
   done button greys and says `handout.waiting`.
+- When time runs out, the game moves on. Until anyone acts on the next screen,
+  that screen shows the extension button at its bottom left, white and small,
+  away from that screen's focus; it brings everyone back to the handout with
+  more time.
 - Text typed into a setting is the one text the bundled subsets cannot hold,
   so it may fall back to a system face.
-### Phase changes
-
-- When the phase changes, the old screen fades out, then the new one fades in (200 ms each, one at a time, instant with reduced motion). The band's phase label changes with the screen.
-- The first screen, shown as the game loads, does not fade in.
-
-### Empty phase
-
-- A phase with no game of its own (an empty phase) shows the next button, centred, labelled `button.next`, under optional story text (such as an introduction): left-aligned paragraphs in the story font, at the chat's reading width. Without text it holds the place of a phase not made yet. Every player can tap it; the first tap moves everyone on. The band's phase label names the phase.
-- On the last line of a read-through that another phase follows, the advance button says `button.next` instead of `button.end`.
 
 ### Other screens
 
