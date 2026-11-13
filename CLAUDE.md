@@ -58,6 +58,7 @@ Add to the toolkit only what the work cannot do with the pieces above.
 | CSS lint (no outer `margin`; see docs/design.md Layout) | `npm run lint` |
 | Screen preview: both orientations with numbered parts, a page to publish as an Artifact (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs samples/<name> out.html` while that sample's harness runs |
 | Screenshots: PNGs in both orientations, after steps (click, type, set the state) in any player's screen (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs --png <dir> [--config <file>] samples/<name>` while that sample's harness runs |
+| Catalogue of a work: every screen numbered, in both orientations, from the work's `shots.mjs` built with `tools/screen-preview/catalogue.mjs` (docs/screen-preview.md) | `cd toolkit && node tools/screen-preview/capture.mjs --config ../shots.mjs .. ../screen-preview.html` in a work while its harness runs |
 | Overflow check: what spills past the screen, the safe area, the HUD or its parent, in both orientations (docs/screen-preview.md) | `node tools/screen-preview/capture.mjs --check samples/<name>` while that sample's harness runs |
 | Fonts | `npm run fonts` (needs fonttools; rebuilds every sample's subsets) |
 | Dev harness | `npm run harness` in a sample's folder (from the root: hundred-arms; `-- --orientation portrait` for portrait), then open `/harness` on the port in the log: the harness with reset, rotate and tap-next buttons (`packages/reader/dev-harness.js`, dev server only) |
