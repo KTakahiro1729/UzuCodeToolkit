@@ -115,13 +115,14 @@
     gap: 0.5em;
     min-width: 0;
     margin: 0;
-    padding: 0.3em 0.8em;
+    /* 16px with 0.5em at the sides: インディアン・ポーカー (11 characters) fits beside three players on a 390px phone. */
+    padding: 0.3em 0.5em;
     border: none;
     border-radius: 999px;
     background: none;
     color: var(--color-text-quiet);
     font: inherit;
-    font-size: 18px;
+    font-size: 16px;
     /*
      * A name too long for the room left of the players ends in an ellipsis. The grid sizes the
      * phase before the players, so without this cap a long name pushed them off the screen.
