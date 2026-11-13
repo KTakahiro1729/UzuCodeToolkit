@@ -37,7 +37,7 @@
   "time.left": "残り",
   "footer.pause": "停止",
   "footer.resume": "再開",
-  "status.waitCount": "あと{n}人",
+  "status.waitCount": "",
   "status.facilitator": "{name}が進めます",
   "status.needMore": "あと{n}人で進みます",
   "vote.waiting": "あと{n}人の投票を待っています"

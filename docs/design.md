@@ -263,8 +263,8 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
 ### Footer
 
 - **Options on the footer** (a work chooses; the defaults are the plain forms):
-  - The note of a button that waits for others says how many are left (`status.waitCount`,
-    `あと{n}人`); a work that empties that string gets the plain `status.waitOthers`.
+  - The note of a button that waits for others can say how many are left: a work sets
+    `status.waitCount` (such as `あと{n}人`); empty (the default) keeps the plain `status.waitOthers`.
   - The time left (`TransitionFooter`) is the footer's leftmost item by default, or sits beside the
     phase label in the band with `clockAt="band"`; pause and more time stay in the footer.
   - The last 30 seconds of the clock are heavier and darker, with no edge: no red (red is for
