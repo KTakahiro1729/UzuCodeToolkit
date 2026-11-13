@@ -1,6 +1,7 @@
 /**
  * Handout (HO) phase: every player reads the shared text and their own part's text, fills in
- * the settings their part asks for, and taps when done. The phase ends once every seat is done.
+ * the settings their part asks for, and taps when done (and may take it back while the phase
+ * lasts). The phase ends once every seat is done.
  * The settings stay in the state, by part, so later phases can read them.
  *
  * A timer shows the reading time left. When it runs out the phase ends, whoever is done or not
@@ -95,11 +96,16 @@ export function handoutLogic(handout: Handout, { minutes }: { minutes: number })
         if (state.ready[playerId] !== false) throw new Error('not reading');
         state.endsAt = plus(state.endsAt, EXTENSION_MS);
       },
-      /** Finish reading; needs every setting filled in. Cannot be undone. */
+      /** Finish reading; needs every setting filled in. Undone with `unready` while the phase lasts. */
       ready({ state, playerId, part }) {
         if (!(playerId in state.ready)) throw new Error('not a player');
         if (!filledIn(handout, state, part)) throw new Error('settings left');
         state.ready[playerId] = true;
+      },
+      /** Take back `ready`: read on, change settings and ask for more time again. */
+      unready({ state, playerId }) {
+        if (state.ready[playerId] !== true) throw new Error('not done');
+        state.ready[playerId] = false;
       },
     },
     // The server ends the phase when the reading time runs out.

@@ -11,6 +11,7 @@
     parts,
     myPart,
     phase,
+    footer,
     children,
   }: {
     /** Every seat's part, in the work's order. */
@@ -19,13 +20,18 @@
     myPart: string | undefined;
     /** The phase label in the band: the scene's name, from a key or the work's data. */
     phase: string;
+    /** The footer's buttons, in a white row along the bottom edge; none for a one-phase work. */
+    footer?: Snippet;
     children: Snippet;
   } = $props();
 </script>
 
-<main>
+<main class:footed={footer}>
   <TopBand {parts} {myPart} {phase} />
   {@render children()}
+  {#if footer}
+    <footer>{@render footer()}</footer>
+  {/if}
 </main>
 
 <style>
@@ -53,5 +59,28 @@
   }
   main > :global(*) {
     grid-area: 1 / 1;
+  }
+  /* Above the footer as well, with the same gap as under the band. */
+  main.footed {
+    padding-bottom: calc(var(--safe-bottom, 0px) + var(--footer-h) + 0.5em);
+  }
+  /*
+   * Like the band, white and full width, reaching the bottom edge; its buttons start at the
+   * content's left edge.
+   */
+  footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(var(--safe-bottom, 0px) + var(--footer-h));
+    box-sizing: border-box;
+    padding: 0 calc(var(--safe-right, 0px) + 0.8em) var(--safe-bottom, 0px) calc(var(--safe-left, 0px) + 0.8em);
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    background: var(--color-bubble);
+    font-family: var(--font-ui);
+    font-size: 16px;
   }
 </style>
