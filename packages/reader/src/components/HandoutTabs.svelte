@@ -103,7 +103,7 @@
     {#each lead as t (t.id)}
       <section class="column">
         <h3>{t.label}{#if t.id === 'fields' && mark}<span class="dot" aria-hidden="true"></span>{/if}</h3>
-        <div class="panel">{@render body(t.id)}</div>
+        <div class="scroll panel">{@render body(t.id)}</div>
       </section>
     {/each}
     <section class="column last">
@@ -118,7 +118,7 @@
       {:else if rest[0]}
         <h3>{rest[0].label}{#if rest[0].id === 'fields' && mark}<span class="dot" aria-hidden="true"></span>{/if}</h3>
       {/if}
-      <div class="panel" class:first={rest.length > 1 && current === rest[0]?.id} role="tabpanel" bind:this={scroller} onscroll={remember}>
+      <div class="scroll panel" class:first={rest.length > 1 && current === rest[0]?.id} role="tabpanel" bind:this={scroller} onscroll={remember}>
         {#if current}{@render body(current)}{/if}
       </div>
     </section>
@@ -213,7 +213,6 @@
   }
   .panel {
     overflow-y: auto;
-    scrollbar-width: none;
     display: flex;
     flex-direction: column;
     gap: 0.8em;

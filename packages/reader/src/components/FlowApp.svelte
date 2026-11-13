@@ -18,6 +18,7 @@
   import Frame from './Frame.svelte';
   import FooterActions from './FooterActions.svelte';
   import PhaseList from './PhaseList.svelte';
+  import { provideFlow } from '../flowContext';
   import Sheet from './Sheet.svelte';
   // UI strings by key.
   import STRINGS from '../strings';
@@ -25,6 +26,8 @@
   let { parts, phases }: Pick<FlowOptions, 'parts' | 'phases'> = $props();
 
   const at = $derived(game.state?.at ?? 0);
+  // Screens such as the introduction show the flow under their content.
+  provideFlow(() => ({ phases, at, ended: game.state?.ended ?? false }));
   const phase = $derived(phases[at]);
   const names = $derived(Object.fromEntries(parts.map((p) => [p.id, p.name])));
   const myPart = $derived(game.me ? game.state?.parts[game.me] : undefined);

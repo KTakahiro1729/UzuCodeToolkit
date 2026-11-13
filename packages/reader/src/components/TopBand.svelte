@@ -73,6 +73,11 @@
 {/snippet}
 
 <style>
+  /* The one scrollbar style: thin, a quiet thumb, no track. Every scrolling area takes the class. */
+  :global(.scroll) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scroll, #aab2bb) transparent;
+  }
   /*
    * Full width on its own background, under the HUD or beside it (--band-top, set in src/index.ts).
    * Three columns: empty (the HUD's side), the phase centred on the screen, the roles at the right.
@@ -228,6 +233,31 @@
     }
     .roles {
       grid-column: 1;
+    }
+  }
+  /*
+   * Under the HUD (an upright phone) the phase goes up into the HUD's row, in the room beside the
+   * HUD, and the players keep the band's own row under it. Under 380px there is not room for
+   * both beside the HUD, so the rule above stands: the phase sits above the players, below the HUD.
+   */
+  @media (min-width: 380px) {
+    :global(:root[data-band-row='own']) header {
+      padding-top: var(--safe-top, 0px);
+      grid-template-columns: var(--hud-x, 0px) minmax(0, 1fr);
+      grid-template-rows: var(--band-top) minmax(0, 1fr);
+      row-gap: 0;
+      align-items: center;
+    }
+    :global(:root[data-band-row='own']) .phase {
+      /* Clear of the HUD (the first column), centred in what is left of the row. */
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      max-width: 100%;
+    }
+    :global(:root[data-band-row='own']) .roles {
+      grid-column: 1 / -1;
+      grid-row: 2;
     }
   }
   /* Short: a phone held sideways. Icon and name side by side, so the band takes less of the height. */

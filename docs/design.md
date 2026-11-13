@@ -233,6 +233,10 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   HUD. A quarter or less (landscape and tablets, under a fifth), the band
   shares the HUD's row with the HUD over its empty left part, so the chat
   keeps the height. Nothing else shares a row with the HUD.
+- Under the HUD (an upright phone), the phase label goes up into the HUD's row,
+  centred in the room beside the HUD, and the players keep the band's own row
+  under it. Only under 380px, where there is not room beside the HUD, does the
+  phase take a row of its own above the players (below).
 - Narrow and short screens: under 380px wide the phase takes a row of its own
   above the players (the band is taller then), so three players and a phase
   name fit down to 320px; a name too long for its room ends in an ellipsis.
@@ -273,13 +277,27 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   footer does not change height between phases. The phase list is not here: it
   opens from the band's phase button.
 - A read-back button opens a sheet over the screen, for this player alone;
-  the screen keeps running under it and the footer's actions stay usable. The
+  the screen keeps running under it and the footer's actions stay usable.
+  The sheet floats: a panel with rounded corners, anchored to the bottom, a
+  strip of the screen left above it, and the screen behind dimmed
+  (`--color-scrim`) rather than hidden, so the reader keeps their place. The
+  handouts' sheet is the one players open any time after the handout phase;
+  tapping the dimmed part closes it like the close button. The band and footer
+  are not dimmed. The
   open one is bold and underlined, as a chosen tab. The sheet's title and a
   close button share its top row; tapping the open button again also closes
   it. A phase change closes the sheet.
 - Every button says what it does, and whether to press it shows at a glance:
   filled for the step to take, greyed when it cannot be pressed now, outlined
   for a side action (secondary).
+
+### Scrollbars
+
+- One style everywhere a vertical area scrolls: thin, a quiet thumb
+  (`--color-scroll`), no track, set by the `scroll` class. The read-through's
+  list spans the whole screen so its scrollbar sits at the screen's right
+  edge, while its lines keep the reading width. Horizontal strips (tabs) keep
+  none.
 
 ### Dialogue line (read-through only)
 
@@ -434,11 +452,16 @@ WCAG 1.4.11 asks 3:1 for what shows a control is there).
   in view.
 - Each entry is a number and the phase's band label. Phases in a row that
   share a label (such as the handouts and the pause after them) are one entry.
-- The current entry is bold with a small mark at its start, and no
-  background, so the read-only list never looks like choices. Entries
-  already over are in the quieter text colour, with no mark, since sitting
-  above the current one already says so. Once the game has ended, every entry
-  is over.
+- Each entry is a card of its own (a block of information: `--radius-read`,
+  `--color-bubble`), in text larger than body text since the list is read at a
+  glance. The current entry's card is tinted (`--color-bubble-mine`, not the
+  button's blue, which means tap) and bold. Entries already over keep the
+  white card with the quieter text colour; sitting above the current one
+  already says so. Once the game has ended, every entry is over.
+- The introduction and the empty phases (the screens that wait for everyone or
+  for a tap) show the same list under their content with the heading
+  `footer.flow`, in a work of more than one phase (`FlowStrip`); it scrolls
+  with the content and does not scroll itself.
 - Reading only: tapping an entry does nothing. No player moves the game from
   here (owner's decision; the official sample's list that moves everyone
   belongs to its game-master seat, which this toolkit does not have).

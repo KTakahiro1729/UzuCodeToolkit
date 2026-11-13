@@ -9,6 +9,7 @@
   import type { Part, ReadyState } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
   import FooterActions from './FooterActions.svelte';
+  import FlowStrip from './FlowStrip.svelte';
   import Guide from './Guide.svelte';
   import NextButton from './NextButton.svelte';
   import { sceneIn, sceneOut } from './motion';
@@ -34,7 +35,7 @@
 </script>
 
 <div class="cast" in:sceneIn|global out:sceneOut|global>
-  <div class="body">
+  <div class="scroll body">
     {#if guide}<Guide text={guide} />{/if}
     {#if paragraphs.length}
       <div class="text">
@@ -53,6 +54,7 @@
         {/each}
       </ul>
     </div>
+    <div class="flow"><FlowStrip /></div>
   </div>
 </div>
 <FooterActions>
@@ -75,7 +77,6 @@
     max-width: 30em;
     min-height: 0;
     overflow-y: auto;
-    scrollbar-width: none;
     display: flex;
     flex-direction: column;
     gap: 1.2em;
@@ -159,7 +160,8 @@
       gap: 2em;
     }
     /* The guide across both columns. */
-    .body > :global(.guide) {
+    .body > :global(.guide),
+    .flow {
       grid-column: 1 / -1;
     }
   }

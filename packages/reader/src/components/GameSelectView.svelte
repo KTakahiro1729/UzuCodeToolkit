@@ -74,7 +74,7 @@
 {#if playing}
   {#key playing.id}
     <div class="playing" in:sceneIn|global out:sceneOut|global>
-      <div class="game">
+      <div class="scroll game">
         <playing.view
           state={phase.play}
           {me}
@@ -96,7 +96,7 @@
   {/key}
 {:else}
   <div class="choosing" in:sceneIn|global out:sceneOut|global>
-    <div class="list">
+    <div class="scroll list">
       {#if guide}<Guide text={guide} />{/if}
       <ul>
         {#each choices as { game: g, players } (g.id)}
@@ -138,7 +138,6 @@
     gap: 1em;
     min-height: 0;
     overflow-y: auto;
-    scrollbar-width: none;
   }
   ul {
     display: flex;

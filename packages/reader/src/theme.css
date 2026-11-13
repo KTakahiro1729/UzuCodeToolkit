@@ -20,6 +20,8 @@
    * of --color-line, 3:1 or more on every surface it sits on (WCAG 1.4.11): 4.6:1 on white, 3.8:1
    * on bg, 3.5:1 on --color-bubble-mine. Something to read has a fill and no line.
    */
+  --color-scroll: #aab2bb; /* the scrollbar's thumb: there to be found, never to compete */
+  --color-scrim: rgb(36 41 47 / 0.45); /* dims the screen behind a sheet */
   --color-line: #6e7781; /* the edge of a secondary button, an input or a choice */
   --color-undo: #b42318; /* the edge of a toggle that is on: tapping it again takes it back; 6.5:1 on white */
   --color-field: #ffffff; /* inside an input, so it reads as empty space to fill, never as greyed */

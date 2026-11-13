@@ -6,6 +6,7 @@
 -->
 <script lang="ts">
   import type { PhaseViewProps } from '../flow';
+  import FlowStrip from './FlowStrip.svelte';
   import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   import FooterActions from './FooterActions.svelte';
@@ -20,12 +21,11 @@
 
 <div class="screen" in:sceneIn|global out:sceneOut|global>
   <div class="empty">
-    {#if guide || paragraphs.length}
-      <div class="text">
-        {#if guide}<Guide text={guide} />{/if}
-        {#each paragraphs as p}<p>{p}</p>{/each}
-      </div>
-    {/if}
+    <div class="scroll text">
+      {#if guide}<Guide text={guide} />{/if}
+      {#each paragraphs as p}<p>{p}</p>{/each}
+      <FlowStrip />
+    </div>
   </div>
 </div>
 <FooterActions>
@@ -54,7 +54,6 @@
   .text {
     min-height: 0;
     overflow-y: auto;
-    scrollbar-width: none;
     display: flex;
     flex-direction: column;
     gap: 0.8em;
