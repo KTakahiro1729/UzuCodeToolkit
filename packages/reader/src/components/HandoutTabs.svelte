@@ -30,6 +30,8 @@
     ].filter(Boolean) as { id: Tab; label: string }[],
   );
   let tab = $state<Tab>('common');
+  // The chosen tab, or the first when another part's handout has no such tab.
+  const current = $derived(tabs.some((t) => t.id === tab) ? tab : tabs[0]?.id);
   let scroller = $state<HTMLElement>();
 
   function choose(id: Tab): void {
@@ -41,20 +43,20 @@
 <div class="tabs-wrap">
   <div class="tabs" role="tablist">
     {#each tabs as t (t.id)}
-      <button type="button" role="tab" aria-selected={t.id === tab} onclick={() => choose(t.id)}>
+      <button type="button" role="tab" aria-selected={t.id === current} onclick={() => choose(t.id)}>
         {t.label}{#if t.id === 'fields' && mark}<span class="dot" aria-hidden="true"></span>{/if}
       </button>
     {/each}
   </div>
-  <div class="panel" class:first={tab === tabs[0]?.id} role="tabpanel" bind:this={scroller}>
-    {#if tab === 'common'}
+  <div class="panel" class:first={current === tabs[0]?.id} role="tabpanel" bind:this={scroller}>
+    {#if current === 'common'}
       {#each handout.common as para}<p>{para}</p>{/each}
-    {:else if tab === 'own' && own}
+    {:else if current === 'own' && own}
       <h2>{own.heading}</h2>
       {#each own.body as para}<p>{para}</p>{/each}
-    {:else if tab === 'impressions' && own?.impressions}
+    {:else if current === 'impressions' && own?.impressions}
       {#each own.impressions as imp}<p><span class="who">{imp.name}</span>{imp.text}</p>{/each}
-    {:else if tab === 'fields' && fields}
+    {:else if current === 'fields' && fields}
       {@render fields()}
     {/if}
   </div>
