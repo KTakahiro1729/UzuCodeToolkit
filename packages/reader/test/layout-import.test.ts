@@ -100,6 +100,12 @@ describe('reading edited slides back into a layout', () => {
     expect(reportOf(r)).toBe('no changes');
   });
 
+  it('leaves an orientation alone when the deck has no slides for it', async () => {
+    const two: ImportLayout = { ...layout, reference: { landscape: [400, 200], portrait: [200, 400] } };
+    const r = await importSlides(two, await deck([original(), original()]));
+    expect(reportOf(r)).toBe('no changes');
+  });
+
   it('reads nothing when the slide count does not fit the scenes, or the shape fits no screen', async () => {
     const few = await importSlides(layout, await deck([original()]));
     expect(few.problems).toHaveLength(1);
