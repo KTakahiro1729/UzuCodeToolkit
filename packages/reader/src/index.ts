@@ -143,6 +143,8 @@ export function startFlow(logic: GameLogic<FlowState>, { parts, phases, orientat
     },
     inputs(sendAction) {
       bindSend(sendAction);
+      // For tools/e2e/all-phases.mjs: lets a test send actions from this screen. Dev server only, not in the build.
+      if ((import.meta as { env?: { DEV?: boolean } }).env?.DEV) (window as { __flow_dev?: unknown }).__flow_dev = { send: sendAction };
     },
   });
 }
