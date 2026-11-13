@@ -20,6 +20,8 @@
   --font-ui: 'BIZ UDPGothic', sans-serif;
   /* The top band's height: icon, ring and name with room around them. */
   --band-h: 76px;
+  /* The footer's height above the safe area: one row of buttons, a comfortable tap. */
+  --footer-h: 48px;
   /* The band's bottom edge: under the HUD, or level with it when they share a row (main.ts). */
   --band-bottom: calc(
     var(--safe-top, 0px) + var(--band-top, 0px) + max(var(--band-h), var(--hud-y, 0px) - var(--band-top, 0px))

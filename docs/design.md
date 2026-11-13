@@ -37,7 +37,7 @@ on cards.
 ### Focus and hierarchy
 
 - During the read-through the focus is the newest line, at the bottom, and the
-  advance button right under it.
+  advance button right under it, in the footer.
 - A newest line taller than the chat shows from its top, its speaker's name
   included, so its reader starts at its first words and scrolls on; earlier
   lines can always be scrolled back to.
@@ -142,9 +142,10 @@ Decoration is out of scope, but it must not break the rules above:
   the part's name bold) and every part as a white block: icon, name and one
   line on who they are (the manifest's description). Yours comes first and
   takes your role's tint.
-- Under it one ready button (`button.ready`), with no count of who is ready
-  (owner's decision). Once tapped it greys and says `ready.waiting`, and a
-  separate white button (`button.unready`) takes it back: a button says what
+- In the footer one ready button (`button.ready`), with no count of who is
+  ready (owner's decision). Once tapped it keeps its name, greyed with a tick,
+  the band checks your icon (`readyDone`), and a separate button
+  (`button.unready`, naming what it undoes) takes it back: a button says what
   it does, so taking back is never the same button (owner's decision). The
   phase moves on when everyone is ready.
 - On a landscape screen the story text and the cast stand side by side.
@@ -193,11 +194,38 @@ Decoration is out of scope, but it must not break the rules above:
   bold.
 - The phase label changes when the screen below it does (for example when the
   afterword appears), never before.
-- It does not signal the turn; the current line does.
+- It does not signal the turn; the current line does. In a phase every player
+  finishes on their own (the handouts), a small check at the lower right of an
+  icon marks that player done, so you can see whom you are waiting for. No
+  count is shown.
 - Shows the current phase of the game (read-through, afterword, or other) as a
   short label from a key, in every phase (owner's decision), centred on the
   screen. When the players need more than the right half (several players on
   an upright phone), the label gives way to the left, keeping a gap.
+
+### Footer
+
+- The main action area: a full-width white row along the bottom edge, the
+  band's counterpart, on every screen. Every screen's main action sits in it,
+  centred: the advance button, the next button, the handout's time, extension
+  and done buttons, back to the list after a game, and the way back to the
+  handouts beside the next button. So the thing to press is in the same place
+  in every phase. Screens put them there with `FooterActions`.
+- In a work of more than one phase it also has read-back buttons, quieter
+  than the actions (plain text in the quiet colour): the phase list (always)
+  and, once the game has left a phase whose content stays readable
+  (`PhaseView.keep`, the handouts), that content. Landscape: one row, the
+  read-back buttons at the left, the actions centred on the screen, so the
+  short screen keeps its height. Portrait: the actions in a row of their own,
+  the read-back buttons under them.
+- A read-back button opens a sheet over the screen, for this player alone;
+  the screen keeps running under it and the footer's actions stay usable. The
+  open one is bold and underlined, as a chosen tab. The sheet's title and a
+  close button share its top row; tapping the open button again also closes
+  it. A phase change closes the sheet.
+- Every button says what it does, and whether to press it shows at a glance:
+  filled for the step to take, greyed when it cannot be pressed now, on the
+  page colour for a side action.
 
 ### Dialogue line (read-through only)
 
@@ -255,24 +283,45 @@ Decoration is out of scope, but it must not break the rules above:
 
 ### Handout
 
-- One reading column at the chat's reading width: an area (a white block, as
-  the afterword's) per text, each with its label on the text's left edge. The
-  shared text (`handout.common`), then your part's own text under its heading,
-  how your part sees the others (`handout.impressions`), and the settings your
-  part fills in (`handout.fields`), each a name with an input under it. The
-  example, when there is one, sits in the empty input.
-- The column scrolls; under it, always in view, one row: the time left, the
-  extension button (`handout.extend`), and the done button (`handout.done`).
-  The done button is the next step, so it is the filled one; it stays greyed
-  until every setting is filled in (a setting marked optional may stay blank).
-  The extension button is white, not filled,
-  since it is not the next step.
-- Once you tap done, your settings lock, the extension button goes and the
-  done button greys and says `handout.waiting`.
+- The handout is split into tabs, one text per tab, so a long handout does
+  not run as one scroll: the shared text (`handout.common`), your part's own
+  text (labelled with your part's name, its full heading at the top of the
+  tab), how your part sees the others (`handout.impressions`) and the
+  settings your part fills in (`handout.tabFields`). A tab with nothing in it
+  is left out. The tabs sit at the chat's reading width over one white area;
+  the chosen tab shares its white, as a folder tab, the others sit on the
+  page. The text scrolls under the tab bar and starts from the top when the
+  tab changes.
+- Each setting is a name with an input under it. A setting that may stay
+  blank says so after its name (`handout.optional`, in the quiet colour). The
+  example, when there is one, sits in the empty input. The input starts one
+  line tall and grows with its text, so a long example or answer shows whole.
+  Focus shows as a ring in the button's blue, not the browser's black.
+- While a setting that is not optional is still blank, the settings tab
+  carries a small dot, the familiar sign for "something here needs you", since
+  the done button stays greyed for a reason on another tab.
+- In the footer, always in view, one row: the time left, the extension
+  button (`handout.extend`), and the done button (`handout.done`). The done
+  button is the next step, so it is the filled one; it stays greyed until
+  every setting is filled in (a setting marked optional may stay blank). The
+  extension button sits on the page colour, not filled, since it is not the
+  next step.
+- Once you tap done, your settings lock: each value shows as plain text
+  without the input's background (`handout.blank` when left empty), so nothing
+  looks writable. The done button keeps its
+  name, greyed with a tick, so it reads as pressed rather than changed into
+  something else; the band checks your icon, so everyone sees who is done
+  (no count). The extension button gives way to a separate undo button that
+  names what it undoes (`handout.unready`), styled like it. Undo brings back the settings and the
+  extension button, until the phase ends.
 - When time runs out, the game moves on. Until anyone acts on the next screen,
-  that screen shows the extension button at its bottom left, white and small,
-  away from that screen's focus; it brings everyone back to the handout with
-  more time.
+  that screen shows the extension button in the footer beside its main
+  action, on the page colour, not filled; it brings everyone back to the handout with
+  more time. It fades in and out with the screen it sits on, so it never shows
+  next to the handout's own extension button.
+- After the phase, the footer's handout button opens the same tabs in a sheet,
+  read-only: each setting's name with what was filled in under it, or
+  `handout.blank` in the quiet colour when it was left empty.
 - Text typed into a setting is the one text the bundled subsets cannot hold,
   so it may fall back to a system face.
 
@@ -287,7 +336,7 @@ Decoration is out of scope, but it must not break the rules above:
   spectator part and the game takes everyone else: that part then watches
   (owner's decision for InterstellarBG, where the half-GM part watches).
 - A tap on the list only selects a game (filled, as a pressed choice); the
-  play button (`game.play`) under the list starts it for everyone, and stays
+  play button (`game.play`) in the footer starts it for everyone, and stays
   greyed until a game is selected (owner's decision). One tap by any player
   never starts a game nobody can leave.
 - Beside the play button, the next button (`button.next`) is white: leaving
@@ -295,15 +344,29 @@ Decoration is out of scope, but it must not break the rules above:
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
   the work is the step after the handouts). Once the game is done, its result
-  stays and the back button appears under it.
-- The row under the game is kept from the start, so the game never shrinks or
-  jumps when the back button appears. A game taller than its space scrolls
-  there; it never runs under the row.
-- A seat that sits the game out sees `game.watching` in that row, in the
+  stays and the back button appears in the footer.
+- A game taller than its space scrolls there; it never runs under the footer.
+- A seat that sits the game out sees `game.watching` in the footer, in the
   quieter text colour, until the back button takes its place.
-- On a landscape screen the list has three columns, so it fits above the
-  buttons without scrolling.
+- On a landscape screen the list has three columns, so it fits without
+  scrolling.
 - Playing cards are Kennard's deck, each face loaded the first time it shows.
+
+### Phase list
+
+- The work's phases in order, opened from the footer, so a player can see
+  where the game is and what comes next. One column at the chat's reading
+  width; it scrolls when the phases do not fit, starting with the current one
+  in view.
+- Each entry is a number and the phase's band label. Phases in a row that
+  share a label (such as the handouts and the pause after them) are one entry.
+- The current entry is the one with a background (white), in bold. Entries
+  already over are in the quieter text colour, with no mark, since sitting
+  above the current one already says so. Once the game has ended, every entry
+  is over.
+- Reading only: tapping an entry does nothing. No player moves the game from
+  here (owner's decision; the official sample's list that moves everyone
+  belongs to its game-master seat, which this toolkit does not have).
 
 ### Other screens
 

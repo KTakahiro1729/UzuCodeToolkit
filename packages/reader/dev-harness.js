@@ -59,12 +59,13 @@ const PAGE = `<!DOCTYPE html>
     params.set('orientation', orientation === 'portrait' ? 'landscape' : 'portrait');
     location.search = params.toString();
   };
-  // Click the first enabled, visible button across the player screens (same
-  // origin): during the read-through that is the current reader's advance button.
+  // Click the first enabled, visible action in the footer across the player
+  // screens (same origin): during the read-through that is the current reader's
+  // advance button. The footer's read-back buttons are left alone.
   document.getElementById('dev-tap').onclick = () => {
     for (const frame of document.querySelectorAll('iframe')) {
       const doc = frame.contentDocument;
-      const next = [...(doc?.querySelectorAll('button') ?? [])].find((b) => !b.disabled && b.getClientRects().length > 0);
+      const next = [...(doc?.querySelectorAll('footer .act button') ?? [])].find((b) => !b.disabled && b.getClientRects().length > 0);
       if (next) return next.click();
     }
   };

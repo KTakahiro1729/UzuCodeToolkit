@@ -2,7 +2,7 @@
 // A sample can keep its own preview.config.mjs instead. Labels are what the owner calls each part.
 export default {
   player: 0,
-  next: '.read > button:not([disabled])',
+  next: 'footer .act button:not([disabled])',
   scroll: ['.chat'],
   screens: [
     {
@@ -23,7 +23,7 @@ export default {
         ['.chat li img', '話者アイコン'],
         ['.chat li .name', '話者名'],
         ['.chat li p', '吹き出し'],
-        ['.read > button', '進むボタン'],
+        ['footer .act button', '進むボタン'],
         ['.notice', '作品の注記'],
         ['.chat h3', '場面の見出し'],
         ['.chat li[data-direction=true] p', 'ト書き'],

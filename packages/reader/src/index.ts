@@ -8,6 +8,7 @@ import { firstFrameReady, gameEnded, gameReady, getInsets, onInsetsChange, run, 
 import { mount } from 'svelte';
 import './theme.css';
 import FlowApp from './components/FlowApp.svelte';
+import HandoutSheet from './components/HandoutSheet.svelte';
 import ReadThroughView from './components/ReadThroughView.svelte';
 import type { FlowOptions } from './flow';
 import { READING } from './logic';
@@ -31,6 +32,16 @@ export { STRINGS };
 
 /** PhaseView.reopen for a handout phase: after time ran out, the next screen offers more time. */
 export const handoutReopen = { label: STRINGS['handout.extend'], when: (s: { timeUp: boolean }) => s.timeUp };
+
+/** PhaseView.done for a ready phase (CastView): the seats that are ready. */
+export const readyDone = (s: { ready: string[] }): string[] => s.ready;
+
+/** PhaseView.done for a handout phase: the seats that tapped done. */
+export const handoutDone = (s: { ready: Record<string, boolean> }): string[] =>
+  Object.keys(s.ready).filter((seat) => s.ready[seat]);
+
+/** PhaseView.keep for a handout phase: from the footer, the handouts can be read again. */
+export const handoutKeep = { label: STRINGS['footer.handout'], view: HandoutSheet };
 
 /**
  * The top band shares the HUD's row when the HUD takes at most this share of the width. Upright

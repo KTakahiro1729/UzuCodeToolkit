@@ -60,6 +60,16 @@ describe('handoutLogic', () => {
     act(s, 'ready', 's1');
     expect(() => act(s, 'set', 's1', { id: 'ship', value: 'y' })).toThrow();
   });
+  it('takes back done while the phase lasts', () => {
+    const s = logic.setup(parts, at(0));
+    expect(() => act(s, 'unready', 's1')).toThrow();
+    act(s, 'set', 's1', { id: 'ship', value: 'x' });
+    act(s, 'ready', 's1');
+    act(s, 'unready', 's1');
+    expect(s.ready.s1).toBe(false);
+    act(s, 'set', 's1', { id: 'ship', value: 'y' });
+    act(s, 'extend', 's1');
+  });
   it('adds time for everyone while someone reads', () => {
     const s = logic.setup(parts, at(0));
     act(s, 'extend', 's1', {}, at(60_000));

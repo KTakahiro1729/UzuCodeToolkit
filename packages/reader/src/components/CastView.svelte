@@ -1,13 +1,15 @@
 <!--
   The introduction with the cast (readyPhase()): optional story text, then whom you play and every
-  part (icon, name, one line on who they are), yours first and tinted. Under them the ready button;
-  once you tap it, it greys and says you are waiting, and a separate white button takes it back.
+  part (icon, name, one line on who they are), yours first and tinted. The ready button sits in the footer;
+  once you tap it, it keeps its name, greyed with a tick, the band checks your icon, and a separate
+  button that names what it undoes takes it back.
   The phase ends when everyone is ready. On a landscape screen the text and the cast stand side by side.
 -->
 <script lang="ts">
   import type { Part, ReadyState } from '@uzu-toolkit/kit';
   import type { PhaseViewProps } from '../flow';
   import Button from './Button.svelte';
+  import FooterActions from './FooterActions.svelte';
   import Guide from './Guide.svelte';
   import { sceneIn, sceneOut } from './motion';
   // UI strings by key.
@@ -52,25 +54,27 @@
       </ul>
     </div>
   </div>
-  <div class="go">
-    {#if ready}
-      <Button variant="secondary" onclick={() => send('unready')}>{STRINGS['button.unready']}</Button>
-    {/if}
-    <Button disabled={ready} onclick={() => send('ready')}>{STRINGS[ready ? 'ready.waiting' : 'button.ready']}</Button>
-  </div>
 </div>
+<FooterActions>
+  {#if ready}
+    <Button variant="secondary" onclick={() => send('unready')}>{STRINGS['button.unready']}</Button>
+  {/if}
+  <Button disabled={ready} onclick={() => send('ready')}>
+    {#if ready}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['button.ready']}
+  </Button>
+</FooterActions>
 
 <style>
-  /* Guide, then the text and the cast, then the button; the middle scrolls if it runs long. */
+  /* Guide, then the text and the cast; the cast scrolls if it runs long. */
   .cast {
     min-height: 0;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
     gap: 1em;
     justify-items: center;
   }
   .cast.guided {
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
   }
   .body {
     width: 100%;
@@ -135,9 +139,15 @@
   .about {
     color: var(--color-text-quiet);
   }
-  .go {
-    display: flex;
-    gap: 0.8em;
+  /* Ready: the button keeps its name, greyed with a tick, so it reads as pressed. */
+  .tick {
+    width: 0.8em;
+    height: 0.7em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
   @media (orientation: landscape) {
     /* Low screens: tighter blocks, so the three parts fit beside the text. */
