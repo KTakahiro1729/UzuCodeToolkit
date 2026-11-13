@@ -38,6 +38,9 @@ on cards.
 
 - During the read-through the focus is the newest line, at the bottom, and the
   advance button right under it.
+- A newest line taller than the chat shows from its top, its speaker's name
+  included, so its reader starts at its first words and scrolls on; earlier
+  lines can always be scrolled back to.
 - When you read, the line being read takes the button's blue, so line and
   button read as one cue. The other role's lines are always white.
 - Every player sees the button. It is filled for whoever reads now and greyed
