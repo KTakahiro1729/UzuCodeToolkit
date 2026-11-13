@@ -4,15 +4,14 @@
  * footer can say "N more to go".
  */
 
-/** Anyone (one seat), everyone, a majority (more than half), or one designated seat. */
-export type TransitionRule = 'anyone' | 'everyone' | 'majority' | { only: string };
+/** Anyone (one seat), everyone, or one designated seat. */
+export type TransitionRule = 'anyone' | 'everyone' | { only: string };
 
 /** How many of `seatCount` seats must act under `rule`. */
 export function needed(rule: TransitionRule, seatCount: number): number {
   if (typeof rule === 'object') return 1;
   if (rule === 'anyone') return Math.min(1, seatCount);
-  if (rule === 'everyone') return seatCount;
-  return Math.floor(seatCount / 2) + 1;
+  return seatCount;
 }
 
 /** How many more seats must act, never below 0. */

@@ -1,5 +1,7 @@
 # A phase moves on by time or by people, and the footer shows which
 
+In part superseded by 2026-11-13-the-toolkit-drops-options-no-work-uses.md (no `majority` rule).
+
 Why: transition conditions differ per work, so the toolkit fixes only how a condition looks in the footer and keeps its API small (`done` and `deadline` already express every case). Replaces nothing; builds on "The footer is one row: items at the left, the main button at the right, its note inside it".
 
 ## The two triggers

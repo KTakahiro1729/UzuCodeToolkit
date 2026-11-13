@@ -47,10 +47,7 @@ Read this when you touch the top band, the footer, a button or a sheet. Rules ev
 ## Footer
 
 - **Options on the footer** (a work chooses; the defaults are the plain forms):
-  - The note of a button that waits for others can say how many are left: a work sets
-    `status.waitCount` (such as `あと{n}人`); empty (the default) keeps the plain `status.waitOthers`.
-  - The time left (`TransitionFooter`) is the footer's leftmost item by default, or sits beside the
-    phase label in the band with `clockAt="band"`; pause and more time stay in the footer.
+  - The time left (`TransitionFooter`) is the footer's leftmost item; pause and more time follow it.
   - The last 30 seconds of the clock are heavier and darker, with no edge: no red (red is for
     danger), no motion.
   - A phase that one part moves on (`emptyPhase({ facilitator })`, view prop `facilitator`) shows

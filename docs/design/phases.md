@@ -21,7 +21,7 @@ Read this when you touch the introduction, an empty phase, the phase list or a p
   that can be changed.
 - In the footer one ready button (`button.ready`), with no count of who is
   ready (owner's decision). Once tapped it keeps its name, turns outlined in a
-  dark 2px edge with a tick (never red), and the band checks your icon (`readyDone`); tapping it again
+  dark 2px edge with a tick (never red), and the band checks your icon; tapping it again
   takes it back (owner's decision, a toggle: `Button` `on`). The
   phase moves on when everyone is ready.
 - On a landscape screen the story text over the flow stands beside the cast.

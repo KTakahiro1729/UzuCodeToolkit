@@ -49,7 +49,7 @@ export { provideFlow, type FlowInfo } from './flowContext';
 export { default as Sheet } from './components/Sheet.svelte';
 
 /** PhaseView.reopen for a handout phase: after time ran out, the next screen offers more time. */
-export const handoutReopen = {
+const handoutReopen = {
   get label() {
     return STRINGS['handout.extend'];
   },
@@ -57,13 +57,13 @@ export const handoutReopen = {
 };
 
 /** PhaseView.done for a ready phase (CastView): the seats that are ready. */
-export const readyDone = (s: { ready: string[] }): string[] => s.ready;
+const readyDone = (s: { ready: string[] }): string[] => s.ready;
 
 /** PhaseView.done for a handout phase. Who is done is not shown while reading (owner's decision), so none. */
-export const handoutDone = (): string[] => [];
+const handoutDone = (): string[] => [];
 
 /** PhaseView.keep for a handout phase: from the footer, the handouts can be read again. */
-export const handoutKeep = {
+const handoutKeep = {
   get label() {
     return STRINGS['footer.handout'];
   },

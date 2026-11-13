@@ -7,9 +7,8 @@ export const game = $state<{ state: FlowState | null; me: string | null }>({ sta
 /**
  * A label the current phase's view puts in the band in place of the phase's own, such as the
  * post-game label once the post-game screen comes in. Null for the phase's own label.
- * `clock`: the time left, when a screen puts it beside the phase label (TransitionFooter `clockAt="band"`).
  */
-export const band = $state<{ label: string | null; clock: { text: string; urgent: boolean } | null }>({ label: null, clock: null });
+export const band = $state<{ label: string | null }>({ label: null });
 
 let send: (type: string, payload: Record<string, unknown>) => void = () => {};
 
