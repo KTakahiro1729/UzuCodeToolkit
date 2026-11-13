@@ -2,9 +2,10 @@
 
 How screens in this repository work for the players. This policy covers the
 functional side of design only: helping players see what to do and keeping
-their cognitive load low. The decorative side (hues, typeface, icon art, corner
-shapes) is out of scope here; this policy only sets the limits decoration must
-stay within.
+their cognitive load low. The decorative side (hues, typeface, icon art) is out
+of scope here; this policy only sets the limits decoration must stay within.
+Which kind of shape, fill and edge each role gets is function (Look by role);
+the exact colours and radii are the work's.
 
 ## What to avoid
 
@@ -83,8 +84,8 @@ on cards.
   before the handouts keep their single reading column, centred.
 - Respect the safe area and the UZU HUD (`--safe-*`, `--hud-x`, `--hud-y`).
 - Group with spacing; a background only where it carries meaning, such as one
-  line of dialogue. No borders, dividers or cards, except the side lines on a
-  stage direction you are reading.
+  line of dialogue. No dividers. Lines are edges of controls only (Look by
+  role), plus the side lines on a stage direction you are reading.
 - The parent owns spacing: the gap between siblings is the parent's `gap`, the
   room inside an element is its own `padding`. No element sets outer `margin`
   (only `0` or `auto`), so DevTools shows every space in one of two places.
@@ -125,6 +126,41 @@ Decoration is out of scope, but it must not break the rules above:
 - No gradients, edge fades, shadows or glows.
 - No colour, size or weight that competes with the focus.
 
+### Look by role
+
+A player tells what something is, and whether to tap it, from its look alone,
+before reading it. Each role below has one look, and no other role borrows it
+(evidence in the research page: NN/g eyetracking found weak signifiers cost 22%
+more time; enclosed inputs beat underlined ones in Google's text-field study;
+WCAG 1.4.11 asks 3:1 for what shows a control is there).
+
+| Role | Shape | Fill | Edge |
+|---|---|---|---|
+| Ground: story text, guide, labels, notices, status | none | none (page) | none |
+| Bars: top band, footer | full width, square | `--color-bubble` | none |
+| Something to read: a bubble, the handout's area, the afterword, a block of information (a cast entry) | `--radius-read` | `--color-bubble` (yours: `--color-bubble-mine`) | none |
+| Primary button: the next step | capsule | `--color-mine-current` | none |
+| Secondary button: any other action, cancel and undo | capsule | none | 1px `--color-line` |
+| Button that cannot be tapped now | capsule | `--color-button-off`, quiet text | none |
+| Input | `--radius-control` | `--color-field` | 1px `--color-line`; focus: 2px `--color-mine-current` |
+| Choice in a list (one of several, stays selected) | `--radius-control` | none; selected: `--color-mine-current` | 1px `--color-line` |
+| Tab | text; chosen: shares the area's fill, bold | none | none |
+| Read-back link in the footer | text; open: bold, underlined | none | none |
+| Status (done, waiting) | a mark (tick) beside a name or icon | none | none |
+
+- A capsule always means a button, and only a button is a capsule.
+- Something to read has a fill and no edge; something to tap or fill in has an
+  edge (or the primary fill). So a block of information never looks like a
+  choice, and an input never looks greyed.
+- A greyed button has neither edge nor fill colour, so it never looks like a
+  secondary button. A button greys only while it cannot be tapped.
+- An input is never filled with the page or the greyed colour: grey reads as
+  disabled. Its value, once locked, is plain text with no edge or fill.
+- A destructive action (one that loses what a player made) is a secondary
+  button whose label and edge take a danger colour, never the primary. None is
+  built yet; add a token when the first one is.
+- Shadows stay out (Limits on decoration): fill and edge carry the roles.
+
 ### Type
 
 - Two roles, as CSS variables in `theme.css`: story text (script lines, title,
@@ -164,7 +200,7 @@ Decoration is out of scope, but it must not break the rules above:
 
 - One `Button` everywhere (`packages/reader`). `primary` is the next step,
   filled; one screen has at most one primary at a time. `secondary` is any
-  other choice, white. A choice that stays selected (such as your vote) takes
+  other choice, outlined with no fill (Look by role). A choice that stays selected (such as your vote) takes
   the primary's fill while selected (`pressed`).
 - A button greys only while it cannot be tapped, never to look quieter.
 
@@ -210,32 +246,34 @@ Decoration is out of scope, but it must not break the rules above:
   count is shown.
 - Shows the current phase of the game (read-through, afterword, or other) as a
   short label from a key, in every phase (owner's decision), centred on the
-  screen. When the players need more than the right half (several players on
+  screen. In a work of more than one phase the label is a button (a pill with
+  a down mark) that opens the phase list as a sheet. When the players need more than the right half (several players on
   an upright phone), the label gives way to the left, keeping a gap.
 
 ### Footer
 
-- The main action area: a full-width white row along the bottom edge, the
-  band's counterpart, on every screen. Every screen's main action sits in it,
-  centred: the advance button, the next button, the handout's time, extension
-  and done buttons, back to the list after a game, and the way back to the
-  handouts beside the next button. So the thing to press is in the same place
-  in every phase. Screens put them there with `FooterActions`.
-- In a work of more than one phase it also has read-back buttons, quieter
-  than the actions (plain text in the quiet colour): the phase list (always)
-  and, once the game has left a phase whose content stays readable
-  (`PhaseView.keep`, the handouts), that content. Landscape: one row, the
-  read-back buttons at the left, the actions centred on the screen, so the
-  short screen keeps its height. Portrait: the actions in a row of their own,
-  the read-back buttons under them.
+- The main action area: a full-width white block along the bottom edge, the
+  band's counterpart, on every screen, in two rows like a chat input.
+- Upper row, the screen's actions: the advance button, the next button, the
+  handout's extension and done buttons, back to the list after a game, and the
+  way back to the handouts. Quieter actions sit at the left; **the rightmost
+  button is always the one to press now** (the send button of a chat), in
+  every phase. Screens put them there with `FooterActions`.
+- Lower row, options and state: the read-back buttons at the left, quieter
+  than the actions (plain text in the quiet colour): once the game has left a
+  phase whose content stays readable (`PhaseView.keep`, the handouts), that
+  content; the state at the right, such as the handout's time left
+  (`FooterActions place="status"`). The row is there on every screen so the
+  footer does not change height between phases. The phase list is not here: it
+  opens from the band's phase button.
 - A read-back button opens a sheet over the screen, for this player alone;
   the screen keeps running under it and the footer's actions stay usable. The
   open one is bold and underlined, as a chosen tab. The sheet's title and a
   close button share its top row; tapping the open button again also closes
   it. A phase change closes the sheet.
 - Every button says what it does, and whether to press it shows at a glance:
-  filled for the step to take, greyed when it cannot be pressed now, on the
-  page colour for a side action.
+  filled for the step to take, greyed when it cannot be pressed now, outlined
+  for a side action (secondary).
 
 ### Dialogue line (read-through only)
 
@@ -301,12 +339,18 @@ Decoration is out of scope, but it must not break the rules above:
   is left out. The tabs sit at the chat's reading width over one white area;
   the chosen tab shares its white, as a folder tab, the others sit on the
   page. The text scrolls under the tab bar and starts from the top when the
-  tab changes.
+  tab changes. Each reader's tab and scroll position are remembered on their
+  own device, so closing the handout sheet and opening it again resumes where
+  they left off.
+- A guide (`guide`, see Guide) opens the first tab and scrolls away with its
+  text; it is not repeated on the other tabs.
 - Each setting is a name with an input under it. A setting that may stay
   blank says so after its name (`handout.optional`, in the quiet colour). The
   example, when there is one, sits in the empty input. The input starts one
   line tall and grows with its text, so a long example or answer shows whole.
-  Focus shows as a ring in the button's blue, not the browser's black.
+  The input is a white field with an edge (`--color-field`, `--color-line`,
+  `--radius-control`), so it reads as something to fill in, not as a greyed
+  control. Focus shows as a ring in the button's blue, not the browser's black.
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
@@ -314,11 +358,11 @@ Decoration is out of scope, but it must not break the rules above:
   button (`handout.extend`), and the done button (`handout.done`). The done
   button is the next step, so it is the filled one; it stays greyed until
   every setting is filled in (a setting marked optional may stay blank). The
-  extension button sits on the page colour, not filled, since it is not the
+  extension button is secondary (outlined, not filled), since it is not the
   next step.
 - Once you tap done, your settings lock: each value shows as plain text
-  without the input's background (`handout.blank` when left empty), so nothing
-  looks writable. The done button keeps its
+  without the input's edge or fill (`handout.blank` when left empty), so
+  nothing looks writable. The done button keeps its
   name, greyed with a tick, so it reads as pressed rather than changed into
   something else; the band checks your icon, so everyone sees who is done
   (no count). The extension button gives way to a separate undo button that
@@ -326,7 +370,7 @@ Decoration is out of scope, but it must not break the rules above:
   extension button, until the phase ends.
 - When time runs out, the game moves on. Until anyone acts on the next screen,
   that screen shows the extension button in the footer beside its main
-  action, on the page colour, not filled; it brings everyone back to the handout with
+  action, secondary (outlined, not filled); it brings everyone back to the handout with
   more time. It fades in and out with the screen it sits on, so it never shows
   next to the handout's own extension button.
 - After the phase, the footer's handout button opens the same tabs in a sheet,
@@ -335,9 +379,20 @@ Decoration is out of scope, but it must not break the rules above:
 - Text typed into a setting is the one text the bundled subsets cannot hold,
   so it may fall back to a system face.
 
+### Post-game handouts
+
+- When the post-game phase has handouts (`HandoutReviewView`), it shows every
+  part's handout and what its player filled in, so players can compare their
+  answers. A row of parts on top, yours chosen first and filled dark; under it
+  that part's handout in the same tabs as the handout sheet, read-only. The
+  part's own tab is labelled `handout.body`, since the part is already chosen
+  above. The tab stays when the part changes, so one setting can be read across
+  players. The footer holds the next button (the end button in the last phase).
+
 ### Game select
 
-- The games this many players can play, as a list of white blocks: the game's
+- The games this many players can play, as a list of choices (Look by role:
+  an edge, no fill, filled when selected): the game's
   name, and under it in the quieter colour how many play, who watches when the
   spectator sits out, and the game's own line (`description`), joined by
   `list.sep`. The next button may carry the work's own label (such as
@@ -349,7 +404,7 @@ Decoration is out of scope, but it must not break the rules above:
   play button (`game.play`) in the footer starts it for everyone, and stays
   greyed until a game is selected (owner's decision). One tap by any player
   never starts a game nobody can leave.
-- Beside the play button, the next button (`button.next`) is white: leaving
+- Beside the play button, the next button (`button.next`) is secondary: leaving
   the phase is not the next step on this screen, and it cannot be undone.
 - While a game is played, the game fills the screen and the band names it.
   There is no way back while it runs (owner's decision: the only way back in
@@ -370,7 +425,8 @@ Decoration is out of scope, but it must not break the rules above:
   in view.
 - Each entry is a number and the phase's band label. Phases in a row that
   share a label (such as the handouts and the pause after them) are one entry.
-- The current entry is the one with a background (white), in bold. Entries
+- The current entry is bold with a small mark at its start, and no
+  background, so the read-only list never looks like choices. Entries
   already over are in the quieter text colour, with no mark, since sitting
   above the current one already says so. Once the game has ended, every entry
   is over.

@@ -1,6 +1,6 @@
 <!--
   Handout (HO) phase. The handout in tabs (./HandoutTabs.svelte), the last tab holding the
-  settings your part fills in. In the footer, always in view: the time left, the button asking for
+  settings your part fills in. In the footer, always in view: the time left (lower row), the button asking for
   more time, and the button that says you are done. That button stays greyed until every setting
   is filled in (optional ones may stay blank), and a dot on the settings tab shows where. Once
   tapped it keeps its name, greyed with a tick; your settings are locked, the band checks your
@@ -14,13 +14,22 @@
   import type { PhaseViewProps } from '../flow';
   import { sceneIn, sceneOut } from './motion';
   import HandoutTabs from './HandoutTabs.svelte';
+  import Button from './Button.svelte';
   import FooterActions from './FooterActions.svelte';
   import NextButton from './NextButton.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
   // `state` is renamed: the name clashes with the $state rune.
-  let { state: phase, me, part, names, send, handout }: PhaseViewProps<HandoutState> & { handout: Handout } = $props();
+  let {
+    state: phase,
+    me,
+    part,
+    names,
+    send,
+    handout,
+    guide,
+  }: PhaseViewProps<HandoutState> & { handout: Handout; guide?: string } = $props();
 
   const settings = $derived(settingsOf(handout, part));
   const done = $derived(phase.ready[me] === true);
@@ -50,7 +59,7 @@
 </script>
 
 <div class="handout" in:sceneIn|global out:sceneOut|global>
-  <HandoutTabs {handout} {part} partName={names[part] ?? ''} mark={!done && !filled}>
+  <HandoutTabs {handout} {part} {guide} partName={names[part] ?? ''} mark={!done && !filled}>
     {#snippet fields()}
       <div class="fields">
         {#each settings as f (f.id)}
@@ -79,13 +88,14 @@
     {/snippet}
   </HandoutTabs>
 </div>
+<!-- The time left is state, so it sits in the footer's lower row; the buttons in the upper one. -->
+<FooterActions place="status"><span class="clock">{clock}</span></FooterActions>
 <FooterActions>
   <div class="actions">
-    <span class="clock">{clock}</span>
     {#if done}
-      <button type="button" class="quiet" onclick={() => send('unready')}>{STRINGS['handout.unready']}</button>
+      <Button variant="secondary" onclick={() => send('unready')}>{STRINGS['handout.unready']}</Button>
     {:else}
-      <button type="button" class="quiet" onclick={() => send('extend')}>{STRINGS['handout.extend']}</button>
+      <Button variant="secondary" onclick={() => send('extend')}>{STRINGS['handout.extend']}</Button>
     {/if}
     <NextButton disabled={done || !filled} onclick={finish}>
       {#if done}<svg class="tick" viewBox="0 0 12 10" aria-hidden="true"><path d="M1 5l3.5 3.5L11 1.5" /></svg>{/if}{STRINGS['handout.done']}
@@ -116,9 +126,9 @@
     width: 100%;
     margin: 0;
     padding: 0.45em 0.7em;
-    border: none;
-    border-radius: 0.5em;
-    background: var(--color-bg);
+    border-radius: var(--radius-control, 0.4em);
+    background: var(--color-field, #ffffff);
+    border: 1px solid var(--color-line, #6e7781);
     color: var(--color-text);
     font: inherit;
     /* No smaller than 16px, which also keeps phones from zooming in on focus. */
@@ -155,7 +165,6 @@
     color: var(--color-text-quiet);
     font-variant-numeric: tabular-nums;
   }
-  /* Asking for more time, or taking back done, is not the next step: on the page colour, not filled. */
   /* Done: the button keeps its name, greyed with a tick, so it reads as pressed. */
   .tick {
     width: 0.8em;
@@ -165,15 +174,5 @@
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-  }
-  .quiet {
-    margin: 0;
-    padding: 0.45em 0.8em;
-    border: none;
-    border-radius: 999px;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font: inherit;
-    cursor: pointer;
   }
 </style>

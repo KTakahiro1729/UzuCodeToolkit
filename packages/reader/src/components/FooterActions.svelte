@@ -9,7 +9,7 @@
   import { footerSlots } from '../store.svelte';
   import { sceneIn, sceneOut } from './motion';
 
-  let { place = 'main', children }: { place?: 'main' | 'aside'; children: Snippet } = $props();
+  let { place = 'main', children }: { place?: 'main' | 'aside' | 'status'; children: Snippet } = $props();
 
   // Svelte removes a block's nodes where it put them, so a node moved to the footer would outlive
   // the screen that made it (the old screen's actions stayed after a phase change). Remove it

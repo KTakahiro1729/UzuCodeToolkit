@@ -32,7 +32,7 @@
   const reopen = $derived(
     back?.reopen && game.state?.reopenable && back.reopen.when(game.state.phases[back.id]) ? back : undefined,
   );
-  // The footer's entries: the phase list, then each kept phase the game has left.
+  // The footer's read-back entries: each kept phase the game has left. The phase list opens from the band.
   const kept = $derived(phases.slice(0, at).filter((p) => p.keep && game.state?.phases[p.id]));
   // What stays beside the screen on a wide screen: the last kept phase.
   const side = $derived(kept.at(-1));
@@ -64,7 +64,7 @@
 </script>
 
 {#if game.state && game.me && phase}
-  <Frame {parts} {myPart} done={doneParts} phase={band.label ?? phase.label} nav={phases.length > 1 ? nav : undefined} aside={side?.keep ? aside : undefined}>
+  <Frame {parts} {myPart} done={doneParts} phase={band.label ?? phase.label} nav={kept.length ? nav : undefined} onphase={phases.length > 1 ? () => toggle(FLOW) : undefined} phaseOpen={open === FLOW} aside={side?.keep ? aside : undefined}>
     {#key phase.id}
       <phase.view
         {...phase.props}
@@ -101,7 +101,6 @@
 {/snippet}
 
 {#snippet nav()}
-  <button type="button" class="tab" aria-pressed={open === FLOW} onclick={() => toggle(FLOW)}>{STRINGS['footer.flow']}</button>
   {#each kept as p (p.id)}
     <button type="button" class="tab" data-aside={p === side ? '' : undefined} aria-pressed={open === p.id} onclick={() => toggle(p.id)}>{p.keep?.label}</button>
   {/each}
