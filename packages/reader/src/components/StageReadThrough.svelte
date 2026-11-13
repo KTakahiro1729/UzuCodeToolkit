@@ -107,16 +107,16 @@
 
         <div class="names" style={place(L.names)} style:--gap="{NAME_GAP}">
           <span class="plate one" class:mine={scene.mine} style:--min={w1}>
+            {#if !scene.direction}<img class="face" src={`./assets/icon-${readerOf(line)}.webp`} alt="" onerror={noPicture} />{/if}
             <span class="who">{nameOf(line)}</span>
             {#if scene.mine}<span class="turn">{STRINGS['stage.yourTurn']}</span>{/if}
           </span>
           {#if scene.plate2 && scene.next && next}
             <span class="plate two" class:mine={scene.next.mine && !scene.mine} class:fixed={scene.plate2 === 'tag'} style:--fixed={L.nextTagWidth}>
+              {#if !scenario.isDirection(next)}<img class="face" src={`./assets/icon-${readerOf(next)}.webp`} alt="" onerror={noPicture} />{/if}
+              {#if !scene.next.mine || scene.plate2 === 'tag'}<span class="who">{nameOf(next)}</span>{/if}
               <span class="mark">{STRINGS['stage.next']}</span>
-              {#if scene.plate2 === 'tag'}
-                <span class="who">{nameOf(next)}</span>
-              {:else}
-                {#if !scene.next.mine}<span class="who">{nameOf(next)}</span>{/if}
+              {#if scene.plate2 !== 'tag'}
                 <!-- Cut short with an ellipsis on purpose: the guide shows the next line on one line. -->
                 <span class="preview" data-overflow-ok>{plain(next.text)}</span>
               {/if}
@@ -302,11 +302,29 @@
     text-overflow: ellipsis;
   }
   .turn,
-  .mark {
+  .mark,
+  .face {
     flex: none;
   }
-  .turn {
+  .face {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  /* The guide's badge ("your turn") and box ("next") inside a nameplate. */
+  .turn,
+  .mark {
+    padding: 0.15em 0.5em;
+    border-radius: var(--radius-control);
     font-weight: 400;
+  }
+  .turn {
+    background: var(--color-mine-text);
+    color: var(--color-mine-current);
+  }
+  .mark {
+    border: 1px solid currentColor;
   }
   /* The next line, one line, cut short with an ellipsis. */
   .preview {
@@ -368,7 +386,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid var(--color-text-quiet);
     font-family: var(--font-ui);
+  }
+  /* The title is centred over the list; the close button takes its own corner. */
+  .head::before {
+    content: '';
+    width: max(44px, calc(44 * var(--u)));
   }
   h2 {
     margin: 0;
@@ -413,8 +438,6 @@
   }
   .rows .who {
     justify-self: start;
-    padding: 0 0.4em;
-    border-radius: var(--radius-control);
     color: var(--color-text-quiet);
     font-family: var(--font-ui);
     font-size: max(16px, calc(16 * var(--u)));
@@ -423,8 +446,7 @@
   }
   /* Only your own lines' names take your colour. */
   .rows li[data-mine='true'] .who {
-    background: var(--color-mine-current);
-    color: var(--color-mine-text);
+    color: var(--color-mine-current);
   }
   .rows .notice {
     display: block;
