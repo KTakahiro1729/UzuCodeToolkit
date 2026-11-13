@@ -2,7 +2,7 @@
 
 What is waiting on the owner. Updated by the PR-watch thread when a thread reports a PR opened, merged, or closed.
 
-Last checked: 2026-11-13 03:28 UTC
+Last checked: 2026-11-13 03:29 UTC
 
 ## Waiting on the owner
 
@@ -11,6 +11,8 @@ No open decisions. No CI checks are configured.
 | What | Kind | Notes |
 |---|---|---|
 | [#23](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/23) Read-through: show a long line from its top, align the notice with stage directions | Review, merge | Ready. [Preview](https://claude.ai/artifact/T8ijFpSt74qLqLTVGkRiY2) |
+| [#24](https://github.com/KTakahiro1729/UzuCodeToolkit/pull/24) Design proposals G3–G5 | Review, merge; check text | Ready. Also check the text Claude drafted: three guidance lines, four one-line game descriptions, and the label for ending the free-time games. Merge before IBG #3. [Screens](https://claude.ai/artifact/7fBziwPvV54dpxfTbSt186) |
+| InterstellarBoardGame [#3](https://github.com/KTakahiro1729/InterstellarBoardGame/pull/3) | Review, merge | After #24: its submodule moves to #24's merge commit, then it merges. Reviewed with #24. |
 
 ## Done
 
