@@ -5,13 +5,14 @@
  * The settings stay in the state, by part, so later phases can read them.
  *
  * A timer shows the reading time left. When it runs out the phase ends, whoever is done or not
- * and whatever is filled in (settings left blank stay empty strings). Before that, any player
+ * and whatever is filled in (settings left blank stay empty strings). Any player can pause the
+ * timer for everyone and resume it. Before that, any player
  * still reading can ask for more time, which adds EXTENSION_MS for everyone. After time runs out,
  * the next screen keeps that request until anyone acts there: it brings everyone back here with
  * EXTENSION_MS from now (reopen).
  */
 
-import { type GameTime, plus } from '@uzuhq/code-sdk';
+import { type GameTime, minus, plus } from '@uzuhq/code-sdk';
 import type { PhaseLogic } from './flow';
 
 /** A setting the player fills in, such as the ship's name. */
@@ -46,6 +47,8 @@ export interface Handout {
 export interface HandoutState {
   /** Game time the reading time runs out. */
   endsAt: GameTime;
+  /** When the timer was paused (game time), or null while it runs. Resuming moves `endsAt` by the paused span. */
+  pausedAt: GameTime | null;
   /** True once the reading time ran out (set by the server's deadline). */
   timeUp: boolean;
   /** Seat ID -> whether that player has finished. */
@@ -80,7 +83,7 @@ export function handoutLogic(handout: Handout, { minutes }: { minutes: number })
         ready[seat] = false;
         values[part] = Object.fromEntries(settingsOf(handout, part).map((f) => [f.id, '']));
       }
-      return { endsAt: plus(time, minutes * 60_000), timeUp: false, ready, values };
+      return { endsAt: plus(time, minutes * 60_000), pausedAt: null, timeUp: false, ready, values };
     },
     actions: {
       /** Set one of your part's settings. */
@@ -90,6 +93,19 @@ export function handoutLogic(handout: Handout, { minutes }: { minutes: number })
         if (!settingsOf(handout, part).some((f) => f.id === id)) throw new Error('no such setting');
         if (typeof value !== 'string' || value.length > HANDOUT_VALUE_MAX) throw new Error('bad value');
         state.values[part][id] = value;
+      },
+      /** Pause the timer for everyone; the time left stays as it is until `resume`. */
+      pause({ state, playerId, time }) {
+        if (!(playerId in state.ready)) throw new Error('not a player');
+        if (state.timeUp || state.pausedAt) throw new Error('cannot pause');
+        state.pausedAt = time;
+      },
+      /** Resume a paused timer: the end moves by the time it stood still. */
+      resume({ state, playerId, time }) {
+        if (!(playerId in state.ready)) throw new Error('not a player');
+        if (!state.pausedAt) throw new Error('not paused');
+        state.endsAt = plus(state.endsAt, Math.max(0, minus(time, state.pausedAt)));
+        state.pausedAt = null;
       },
       /** Ask for more time: everyone's timer gets EXTENSION_MS more. */
       extend({ state, playerId }) {
@@ -110,7 +126,7 @@ export function handoutLogic(handout: Handout, { minutes }: { minutes: number })
     },
     // The server ends the phase when the reading time runs out.
     deadline: {
-      at: (state) => (state.timeUp ? null : state.endsAt),
+      at: (state) => (state.timeUp || state.pausedAt ? null : state.endsAt),
       handler({ state }) {
         state.timeUp = true;
       },
@@ -118,6 +134,7 @@ export function handoutLogic(handout: Handout, { minutes }: { minutes: number })
     reopen({ state, time }) {
       if (!state.timeUp) throw new Error('everyone was done');
       state.timeUp = false;
+      state.pausedAt = null;
       state.endsAt = plus(time, EXTENSION_MS);
     },
     done: (state) => state.timeUp || Object.values(state.ready).every(Boolean),

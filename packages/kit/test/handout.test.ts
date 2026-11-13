@@ -34,6 +34,7 @@ describe('handoutLogic', () => {
     const s = logic.setup(parts, at(1000));
     expect(s).toEqual({
       endsAt: at(301_000),
+      pausedAt: null,
       timeUp: false,
       ready: { s1: false, s2: false },
       values: { a: { ship: '', note: '' }, b: {} },
@@ -97,5 +98,15 @@ describe('handoutLogic', () => {
     act(all, 'ready', 's1');
     act(all, 'ready', 's2');
     expect(() => logic.reopen!({ state: all, time: at(1) })).toThrow();
+  });
+  it('pauses for everyone and resume moves the end by the paused span', () => {
+    const s = logic.setup(parts, at(0));
+    act(s, 'pause', 's1', {}, at(100_000));
+    expect(logic.deadline!.at(s)).toBeNull();
+    expect(() => act(s, 'pause', 's2', {}, at(110_000))).toThrow();
+    act(s, 'resume', 's2', {}, at(160_000));
+    expect(s.pausedAt).toBeNull();
+    expect(s.endsAt).toEqual(at(360_000));
+    expect(() => act(s, 'resume', 's1', {}, at(170_000))).toThrow();
   });
 });
