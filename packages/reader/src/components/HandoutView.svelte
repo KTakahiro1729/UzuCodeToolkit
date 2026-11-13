@@ -21,7 +21,15 @@
   import STRINGS from '../strings.json';
 
   // `state` is renamed: the name clashes with the $state rune.
-  let { state: phase, me, part, names, send, handout }: PhaseViewProps<HandoutState> & { handout: Handout } = $props();
+  let {
+    state: phase,
+    me,
+    part,
+    names,
+    send,
+    handout,
+    guide,
+  }: PhaseViewProps<HandoutState> & { handout: Handout; guide?: string } = $props();
 
   const settings = $derived(settingsOf(handout, part));
   const done = $derived(phase.ready[me] === true);
@@ -51,7 +59,7 @@
 </script>
 
 <div class="handout" in:sceneIn|global out:sceneOut|global>
-  <HandoutTabs {handout} {part} partName={names[part] ?? ''} mark={!done && !filled}>
+  <HandoutTabs {handout} {part} {guide} partName={names[part] ?? ''} mark={!done && !filled}>
     {#snippet fields()}
       <div class="fields">
         {#each settings as f (f.id)}

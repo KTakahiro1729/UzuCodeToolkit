@@ -292,11 +292,15 @@ Decoration is out of scope, but it must not break the rules above:
   the chosen tab shares its white, as a folder tab, the others sit on the
   page. The text scrolls under the tab bar and starts from the top when the
   tab changes.
+- A guide (`guide`, see Guide) opens the first tab and scrolls away with its
+  text; it is not repeated on the other tabs.
 - Each setting is a name with an input under it. A setting that may stay
   blank says so after its name (`handout.optional`, in the quiet colour). The
   example, when there is one, sits in the empty input. The input starts one
   line tall and grows with its text, so a long example or answer shows whole.
-  Focus shows as a ring in the button's blue, not the browser's black.
+  The input is a white field with an edge (`--color-field`, `--color-line`,
+  `--radius-control`), so it reads as something to fill in, not as a greyed
+  control. Focus shows as a ring in the button's blue, not the browser's black.
 - While a setting that is not optional is still blank, the settings tab
   carries a small dot, the familiar sign for "something here needs you", since
   the done button stays greyed for a reason on another tab.
@@ -324,6 +328,16 @@ Decoration is out of scope, but it must not break the rules above:
   `handout.blank` in the quiet colour when it was left empty.
 - Text typed into a setting is the one text the bundled subsets cannot hold,
   so it may fall back to a system face.
+
+### Post-game handouts
+
+- When the post-game phase has handouts (`HandoutReviewView`), it shows every
+  part's handout and what its player filled in, so players can compare their
+  answers. A row of parts on top, yours chosen first and filled dark; under it
+  that part's handout in the same tabs as the handout sheet, read-only. The
+  part's own tab is labelled `handout.body`, since the part is already chosen
+  above. The tab stays when the part changes, so one setting can be read across
+  players. The footer holds the next button (the end button in the last phase).
 
 ### Game select
 

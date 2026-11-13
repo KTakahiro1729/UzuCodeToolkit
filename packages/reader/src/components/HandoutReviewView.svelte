@@ -10,7 +10,6 @@
   import type { PhaseViewProps } from '../flow';
   import { game } from '../store.svelte';
   import FooterActions from './FooterActions.svelte';
-  import Guide from './Guide.svelte';
   import HandoutSheet from './HandoutSheet.svelte';
   import { sceneIn, sceneOut } from './motion';
   import NextButton from './NextButton.svelte';
@@ -34,15 +33,14 @@
   const who = $derived(chosen ?? part);
 </script>
 
-<div class="review" class:guided={guide} in:sceneIn|global out:sceneOut|global>
-  {#if guide}<Guide text={guide} />{/if}
+<div class="review" in:sceneIn|global out:sceneOut|global>
   <div class="parts" role="tablist">
     {#each shown as p (p)}
       <button type="button" role="tab" aria-selected={p === who} onclick={() => (chosen = p)}>{names[p]}</button>
     {/each}
   </div>
   {#if handoutState}
-    <HandoutSheet {handout} state={handoutState} part={who} {names} ownLabel={STRINGS['handout.body']} />
+    <HandoutSheet {handout} state={handoutState} part={who} {names} ownLabel={STRINGS['handout.body']} {guide} />
   {/if}
 </div>
 <FooterActions>
@@ -56,9 +54,6 @@
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     gap: 0.6em;
-  }
-  .review.guided {
-    grid-template-rows: auto auto minmax(0, 1fr);
   }
   /* At the handout's reading width, its left edge shared with the tabs under it. */
   .parts {

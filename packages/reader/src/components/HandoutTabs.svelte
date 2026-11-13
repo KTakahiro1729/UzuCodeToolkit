@@ -2,12 +2,14 @@
   A handout in tabs, one text per tab, so a long handout does not run as one scroll: the shared
   text, your part's own text, how your part sees the others, and the settings (`fields`, given by
   the screen: inputs while reading, the values afterwards). The tab bar stays put; the text under
-  it scrolls, and starts from the top when the tab changes. `mark` puts a dot on the settings tab
+  it scrolls, and starts from the top when the tab changes. An optional `guide` (what to do now)
+  opens the first tab and scrolls away with its text. `mark` puts a dot on the settings tab
   while something there still needs you.
 -->
 <script lang="ts">
   import type { Handout } from '@uzu-toolkit/kit';
   import type { Snippet } from 'svelte';
+  import Guide from './Guide.svelte';
   // UI strings by key.
   import STRINGS from '../strings.json';
 
@@ -17,7 +19,8 @@
     partName,
     fields,
     mark = false,
-  }: { handout: Handout; part: string; partName: string; fields?: Snippet; mark?: boolean } = $props();
+    guide,
+  }: { handout: Handout; part: string; partName: string; fields?: Snippet; mark?: boolean; guide?: string } = $props();
 
   const own = $derived(handout.parts[part]);
   type Tab = 'common' | 'own' | 'impressions' | 'fields';
@@ -49,6 +52,7 @@
     {/each}
   </div>
   <div class="panel" class:first={current === tabs[0]?.id} role="tabpanel" bind:this={scroller}>
+    {#if guide && current === tabs[0]?.id}<Guide text={guide} />{/if}
     {#if current === 'common'}
       {#each handout.common as para}<p>{para}</p>{/each}
     {:else if current === 'own' && own}

@@ -16,10 +16,11 @@
     names,
     handout,
     ownLabel,
-  }: Pick<PhaseViewProps<HandoutState>, 'state' | 'part' | 'names'> & { handout: Handout; ownLabel?: string } = $props();
+    guide,
+  }: Pick<PhaseViewProps<HandoutState>, 'state' | 'part' | 'names'> & { handout: Handout; ownLabel?: string; guide?: string } = $props();
 </script>
 
-<HandoutTabs {handout} {part} partName={ownLabel ?? names[part] ?? ''}>
+<HandoutTabs {handout} {part} {guide} partName={ownLabel ?? names[part] ?? ''}>
   {#snippet fields()}
     <dl>
       {#each settingsOf(handout, part) as f (f.id)}
