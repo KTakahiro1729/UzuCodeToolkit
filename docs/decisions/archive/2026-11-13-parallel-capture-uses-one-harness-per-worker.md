@@ -1,3 +1,0 @@
-# Parallel capture uses one harness per worker and independent runs
-
-The harness keeps one shared game and ignores a non-numeric reset seed, so a shot list is cut into runs that start with a state-replacing (`fresh`) step; each run begins after a reset with a fixed numeric seed, in every mode, so output does not depend on the number of jobs. Not taken: portrait and landscape on separate pages (client UI state is not shared, steps would be played twice), snapshots of earlier state (no way to save a game's random position), one harness with several rooms (room key is fixed). Limit: speed-up is bounded by CPU and by the longest run (43 screens: 25.4 s → 15.9 s with 2, 13.8 s with 4).
