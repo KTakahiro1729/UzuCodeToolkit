@@ -1,6 +1,6 @@
 # UzuCodeToolkit
 
-Building blocks and samples for making murder-mystery games with [UZU Code](https://docs.code.uzu-app.com/).
+Building blocks and samples for making games with [UZU Code](https://docs.code.uzu-app.com/), aimed at murder mysteries. The way to use it: give an AI agent (ChatGPT first) the release URL of `@uzu-toolkit/toolkit` and a script, and it builds the work; read-throughs first, more phases later. The package carries the rules, docs, tools and a starting template (`packages/toolkit/README.md` is where the agent starts). Each author owns the licence of their own work; the toolkit's code is MIT.
 
 - `packages/kit`: read-through (each line's reader advances it), casting (one player can read several roles) and ruby. UI independent.
 - `packages/reader`: the read-through screens and server logic the samples share.

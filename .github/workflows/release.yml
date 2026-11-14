@@ -32,8 +32,12 @@ jobs:
           mkdir -p dist-pack
           npm pack -w packages/kit -w packages/reader -w packages/toolkit --pack-destination dist-pack
           ls dist-pack
+      - name: README as a standalone asset
+        env:
+          V: ${{ inputs.version }}
+        run: sed "s/VERSION/$V/g" packages/toolkit/README.md > dist-pack/README.md
       - name: Release
         env:
           GH_TOKEN: ${{ github.token }}
           V: ${{ inputs.version }}
-        run: gh release create "v$V" dist-pack/*.tgz --target "$GITHUB_SHA" --title "v$V" --generate-notes
+        run: gh release create "v$V" dist-pack/*.tgz dist-pack/README.md --target "$GITHUB_SHA" --title "v$V" --generate-notes
