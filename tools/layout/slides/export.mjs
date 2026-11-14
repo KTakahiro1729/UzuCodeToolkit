@@ -2,14 +2,16 @@
 // One slide per scene, at the reference size; each box holds "label id".
 // A pptx has one slide size, so each orientation gets its own file:
 // layout.pptx when the layout has one orientation, else layout-landscape.pptx and layout-portrait.pptx.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import JSZip from 'jszip';
 import pptxgen from 'pptxgenjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_LAYOUT = resolve(here, '../../../packages/reader/src/layouts/read-through.layout.json');
+// In the toolkit's repository the reader is at packages/reader; installed, it sits beside the toolkit package.
+const LAYOUTS = ['../../../packages/reader/src/layouts', '../../../../reader/src/layouts'].map((d) => resolve(here, d, 'read-through.layout.json'));
+export const DEFAULT_LAYOUT = LAYOUTS.find(existsSync) ?? LAYOUTS[0];
 const ORIENTATIONS = ['landscape', 'portrait'];
 /** Slide px are CSS px: 96 per inch, so 1 px = 9525 EMU exactly. */
 export const PX_PER_INCH = 96;

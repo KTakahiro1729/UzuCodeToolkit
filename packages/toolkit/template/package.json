@@ -11,6 +11,8 @@
     "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
     "lint": "stylelint --config node_modules/@uzu-toolkit/toolkit/.stylelintrc.json \"src/**/*.{css,svelte}\"",
+    "layout:export": "node node_modules/@uzu-toolkit/toolkit/tools/layout/slides/export.mjs",
+    "layout:import": "node node_modules/@uzu-toolkit/toolkit/tools/layout/slides/import.mjs",
     "fonts": "sh node_modules/@uzu-toolkit/toolkit/scripts/subset-fonts.sh ."
   },
   "engines": { "node": ">=22.12", "npm": ">=11" },

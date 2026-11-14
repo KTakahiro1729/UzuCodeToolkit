@@ -20,12 +20,14 @@
 // CLI:  node import.mjs <slides.pptx>... [--layout layout.json]   (rewrites the layout file when parts moved)
 // A deck may hold one orientation (the export writes one file per orientation); an orientation
 // with no slides in a deck is left alone.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import JSZip from 'jszip';
 
-const DEFAULT_LAYOUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../packages/reader/src/layouts/read-through.layout.json');
+// In the toolkit's repository the reader is at packages/reader; installed, it sits beside the toolkit package.
+const LAYOUTS = ['../../../packages/reader/src/layouts', '../../../../reader/src/layouts'].map((d) => resolve(dirname(fileURLToPath(import.meta.url)), d, 'read-through.layout.json'));
+const DEFAULT_LAYOUT = LAYOUTS.find(existsSync) ?? LAYOUTS[0];
 const ORIENTATIONS = ['landscape', 'portrait'];
 /** Moves smaller than this many reference px are rounding, not edits. */
 const TOLERANCE = 1;
