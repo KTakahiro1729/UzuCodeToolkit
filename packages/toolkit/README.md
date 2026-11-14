@@ -29,3 +29,7 @@ If you are not given a repository, make the work as a folder of files (the layou
 6. Hand the work over: push it to a branch of the author's repository if you were given one, otherwise as an archive of the folder.
 
 The author publishes with `uzu publish` (needs their account); do not.
+
+## What is in this package, and what is not
+
+`examples/hundred-arms/` is a finished two-player read-through (script, manifest, `src/`, a test); where a doc says `samples/<name>`, read `examples/<name>`. It has no font subsets (`npm run fonts` makes them). The owner's decision records (`docs/decisions/`), the PowerPoint export of layouts (`tools/layout/slides/`) and the toolkit's own tests are in the repository only (`KTakahiro1729/UzuCodeToolkit`).

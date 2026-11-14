@@ -14,5 +14,8 @@
   },
   "peerDependencies": {
     "@uzuhq/code-sdk": "^0.9.12"
-  }
+  },
+  "files": [
+    "src"
+  ]
 }
