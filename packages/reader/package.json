@@ -22,5 +22,12 @@
   "peerDependencies": {
     "@uzuhq/code-sdk": "^0.9.12",
     "svelte": "^5.57.0"
-  }
+  },
+  "files": [
+    "src",
+    "dev-harness.js",
+    "harness.mjs",
+    "preview.config.mjs",
+    "preview.stage.config.mjs"
+  ]
 }

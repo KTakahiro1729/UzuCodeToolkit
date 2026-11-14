@@ -1,0 +1,10 @@
+{
+  "out": "src/fonts",
+  "story": [
+    { "file": "script/script.json", "paths": ["title", "end", "afterword", "lines[*].text"] }
+  ],
+  "ui": [
+    { "file": "script/script.json", "paths": ["cast[*].label", "parts[*].name", "parts[*].description"] },
+    { "file": "node_modules/@uzu-toolkit/reader/src/strings.json" }
+  ]
+}

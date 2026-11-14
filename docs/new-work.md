@@ -18,11 +18,13 @@ Write down, for each thing the plan says, the part that answers it (plan-to-part
 
 Put them in one message: for each, two or three options with one recommended, so a line answers each. Ask only what the plan leaves open; if nothing is open, ask nothing. Do not wait for the answer to start what does not depend on it.
 
-**Do not ask** (fill with a default, list it in step 5): the wording of the introduction and the guides, labels, colours, art, small layout choices. The author fixes these from the screens.
+**Ask once, only when the plan names a look** (an era, a world, a mood): is it colours and typefaces only, or also pictures (a background, standing characters, frames) made from an order sheet by an image generator? Recommend colours and typefaces first; pictures are a second pass (step 2, "Pictures"). If the plan names no look, ask nothing and use the neutral defaults.
+
+**Do not ask** (fill with a default, list it in step 5): the wording of the introduction and the guides, labels, small layout choices. The author fixes these from the screens.
 
 ## 2. Lay out the work
 
-One folder, built from these files (see `samples/` for a single read-through work; the phases are the part a plan adds).
+One folder, built from these files (`template/` is a single read-through work; the phases are the part a plan adds).
 
 | File | What |
 |---|---|
@@ -34,10 +36,10 @@ One folder, built from these files (see `samples/` for a single read-through wor
 | `src/theme.css` | The work's colours and art, over the toolkit's neutral defaults |
 | `manifest.json` | `id`, `playerCount`, `orientation`, `serverActionLogicPath: "./src/logic.ts"`, `characters` with an icon each |
 | `fonts.config.json`, `src/fonts.css` | The font subsets (CLAUDE.md, Fonts); run `npm run fonts` once the text exists |
-| `index.html`, `vite.config.ts`, `svelte.config.js`, `tsconfig.json`, `package.json` | As in `samples/hundred-arms`; `vite.config.ts` adds `devHarness()` from `@uzu-toolkit/reader/dev-harness` |
+| `index.html`, `vite.config.ts`, `svelte.config.js`, `tsconfig.json`, `package.json` | As in `template/`; `vite.config.ts` has `devHarness()` from `@uzu-toolkit/reader/dev-harness` |
 | `test/` | A test for the logic, one that checks the script against the plan's text, and the fonts test |
 
-A work of one read-through is `startReader(script, readThroughLogic(script), orientation)`; a work of more phases is the two files below.
+The read-through's main screen is the stage one (`StageReadThrough`: standing characters, one dialogue frame, a log, drawn from a layout JSON and the work's own pictures). The bubble chat (`ReadThroughView` without `screen`, and `startReader`) is the other option, for a work that draws nothing. `template/` starts a work of one read-through on the stage screen; a work of more phases is the two files below.
 
 ```ts
 // src/logic.ts
@@ -64,6 +66,7 @@ export default flowLogic(
 ```ts
 // src/main.ts
 import { castScreen, EmptyView, type PhaseView, ReadThroughView, startFlow } from '@uzu-toolkit/reader';
+import { StageReadThrough } from '@uzu-toolkit/reader/stage';
 import opening from '../script/opening.json';
 import work from '../script/work.json';
 import './fonts.css';
@@ -73,7 +76,7 @@ import logic from './logic';
 /** Each phase's screen and its content, by the phase IDs in script/work.json. */
 const VIEW: Record<string, Omit<PhaseView, 'id' | 'label'>> = {
   intro: castScreen({ text: work.intro, cast: opening.parts }),
-  opening: { view: ReadThroughView, props: { script: opening } },
+  opening: { view: ReadThroughView, props: { script: opening, screen: StageReadThrough } },
   ending: { view: EmptyView },
 };
 
@@ -90,6 +93,15 @@ startFlow(logic, {
 More phases are more entries in the two tables: a handout is `handoutLogic(handouts, { minutes })` with `handoutScreen(handouts)`, a list of games `gameSelectPhase(games)` with `GameSelectView`, a phase not made yet `emptyPhase()` with `EmptyView`. A game's rules stay in the work, under `src/games/`. Never change the plan's wording in the data.
 
 A part you would write yourself (a screen, a timer, a turn rule) may already exist: look in plan-to-parts.md and `packages/*/src/index.ts` before writing it. A phase's own logic and screen are the work's when no part answers the plan; keep them in files named for what they are, so step 5 can list them.
+
+### Pictures (when the author chose them in step 1)
+
+A work with no pictures works: every part of the stage screen falls back to the colour tokens in `theme.css`. Pictures are added on top, in this order:
+
+1. Write the world in a few lines (era, place, colours, materials, mood) in a file, e.g. `world.md`. Example: 大正時代の洋館の応接間。漆黒と真鍮の色、和紙と革の質感、静かで少し寂しい雰囲気。
+2. Make the order sheet: `node node_modules/@uzu-toolkit/toolkit/tools/layout/brief/brief.mjs node_modules/@uzu-toolkit/reader/src/layouts/read-through.layout.json world.md --orientation landscape --out brief.md` (`--orientation portrait` for a portrait work). It lists each picture to make (file name, size, how it stretches) and one prompt per scene.
+3. Give `brief.md` to the author and ask them to have the pictures made by an image generator, and to send them back. You cannot make them yourself; say so.
+4. Put the returned pictures in `public/assets/` under the names in the sheet (`.webp`), run the checks and show the screens.
 
 ## 3. Check as you go
 

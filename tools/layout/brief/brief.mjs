@@ -5,13 +5,15 @@
 // CLI:  node brief.mjs [layout.json] [world.md] [--orientation landscape|portrait] [--out file]
 // The world file (optional) replaces the 【世界観】 hole. Without --orientation the sheet is for
 // landscape (portrait only when the layout has no landscape).
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const TEXT = JSON.parse(readFileSync(resolve(here, 'brief-text.json'), 'utf8'));
-export const DEFAULT_LAYOUT = resolve(here, '../../../packages/reader/src/layouts/read-through.layout.json');
+// In the toolkit's repository the reader is at packages/reader; installed, it sits beside the toolkit package.
+const LAYOUTS = ['../../../packages/reader/src/layouts', '../../../../reader/src/layouts'].map((d) => resolve(here, d, 'read-through.layout.json'));
+export const DEFAULT_LAYOUT = LAYOUTS.find(existsSync) ?? LAYOUTS[0];
 
 const fill = (template, values) => template.replace(/\{(\w+)\}/g, (m, k) => (k in values ? String(values[k]) : m));
 const pct = (n, of) => Math.round((n / of) * 1000) / 10;
