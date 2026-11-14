@@ -18,7 +18,7 @@ Write down, for each thing the plan says, the part that answers it (plan-to-part
 
 Put them in one message: for each, two or three options with one recommended, so a line answers each. Ask only what the plan leaves open; if nothing is open, ask nothing. Do not wait for the answer to start what does not depend on it.
 
-**Ask once, only when the plan names a look** (an era, a world, a mood): is it colours and typefaces only, or also pictures (a background, standing characters, frames) made from an order sheet by an image generator? Recommend colours and typefaces first; pictures are a second pass (step 2, "Pictures"). If the plan names no look, ask nothing and use the neutral defaults.
+**Ask once, only when the plan names a look** (an era, a world, a mood): is it colours and typefaces only, or also pictures (a background, standing characters, frames) made from an order sheet by image generation (yours, or the author's)? Recommend colours and typefaces first; pictures are a second pass (step 2, "Pictures"). If the plan names no look, ask nothing and use the neutral defaults.
 
 **Do not ask** (fill with a default, list it in step 5): the wording of the introduction and the guides, labels, small layout choices. The author fixes these from the screens.
 
@@ -100,8 +100,9 @@ A work with no pictures works: every part of the stage screen falls back to the 
 
 1. Write the world in a few lines (era, place, colours, materials, mood) in a file, e.g. `world.md`. Example: 大正時代の洋館の応接間。漆黒と真鍮の色、和紙と革の質感、静かで少し寂しい雰囲気。
 2. Make the order sheet: `node node_modules/@uzu-toolkit/toolkit/tools/layout/brief/brief.mjs node_modules/@uzu-toolkit/reader/src/layouts/read-through.layout.json world.md --orientation landscape --out brief.md` (`--orientation portrait` for a portrait work). It lists each picture to make (file name, size, how it stretches) and one prompt per scene. If the work has its own layout (below), give that file in place of the toolkit's: the picture sizes follow the boxes.
-3. Give `brief.md` to the author and ask them to have the pictures made by an image generator, and to send them back. You cannot make them yourself; say so.
-4. Put the returned pictures in `public/assets/` under the names in the sheet (`.webp`), run the checks and show the screens.
+3. Generate the pictures yourself with the image generation you have, one picture per entry of the sheet, in the sheet's order, each at the size and with the background the entry gives (transparent where it says so; no text in any picture). Make a part's `-mine` picture from its base picture, changing only the colour. Check each result against the entry (size, transparent edges with no leftover rectangle, nothing drawn that the sheet forbids) and make it again if it fails. Only when you have no image generation, give `brief.md` to the author, ask them to have the pictures made by an image generator and sent back, and say you could not make them.
+4. Put the pictures in `public/assets/` under the names in the sheet (`.webp`; convert a PNG with transparency kept), run the checks and show the screens.
+5. Set the text colours to the pictures. Text is set by code over the pictures, so a dark frame with dark text is unreadable and no check sees it. Open the screens with the pictures in, then in `src/theme.css` set the text colour of what sits on a picture (the line and names on the frame and plates, the label on the button and log panel: `--color-text`, `--color-mine-text`, `--color-text-quiet`) so each reaches 4.5:1 against the picture behind it, and show the screens again. Light pictures take dark text; dark pictures take light text. Colours that stay for parts with no picture (the tag, the log link) must still read on the background picture.
 
 ### Moving the boxes on slides (when the author wants a different arrangement)
 

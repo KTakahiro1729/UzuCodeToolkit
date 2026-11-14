@@ -1,0 +1,3 @@
+# Text colours follow a work's pictures by procedure, not by new code
+
+A work that sets pictures on the frame, nameplates, button and log panel must also set the text colours in its `theme.css` so the text reads on them (WCAG AA, 4.5:1). This is a step of the pictures procedure in `docs/new-work.md`, not a new option or check. The pictures are already first-class on the read-through screen (a layout part's `image`); letting other screens' parts take pictures (for example CSS variables for `Button` and `Sheet`) waits until a work asks for it. A check that measures contrast against a picture is possible later, if the procedure alone does not prevent unreadable text.
