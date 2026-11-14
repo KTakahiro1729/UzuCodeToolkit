@@ -19,7 +19,7 @@ const FILES = {
   'src/logic.ts': "export default { setup: () => ({}), actions: {} };\n",
 };
 /** A small good work with `changes` applied (a file set to null is removed). */
-const work = (changes: Record<string, string | null> = {}) => {
+const work = (changes: Record<string, string | Buffer | null> = {}) => {
   const dir = mkdtempSync(join(tmpdir(), 'work-check-'));
   roots.push(dir);
   for (const [f, text] of Object.entries({ ...FILES, ...changes })) {
@@ -131,5 +131,53 @@ describe('a seat that has left', () => {
     await allPhases({ phases, cwd: fixture('stuck'), drive: { second } });
     // With b gone, the others cannot (their `next` is rejected).
     await expect(allPhases({ phases, cwd: fixture('stuck'), away: 'b' })).rejects.toThrow(/phase second: next from a changed nothing.*with b away/);
+  });
+
+  describe('pictures', () => {
+    /** A WebP header the check can read (lossless, with or without alpha); the pixels are not there. */
+    const webp = (w: number, h: number, alpha = true): Buffer => {
+      const b = Buffer.alloc(30);
+      b.write('RIFF', 0, 'latin1');
+      b.writeUInt32LE(22, 4);
+      b.write('WEBPVP8L', 8, 'latin1');
+      b.writeUInt32LE(10, 16);
+      b[20] = 0x2f;
+      b.writeUInt32LE(((w - 1) | ((h - 1) << 14) | ((alpha ? 1 : 0) << 28)) >>> 0, 21);
+      return b;
+    };
+    const SET: [string, number, number, boolean][] = [
+      ['bg', 1748, 804, false],
+      ['frame', 1476, 280, true],
+      ['frame-mine', 1476, 280, true],
+      ['plate', 380, 64, true],
+      ['plate-mine', 380, 64, true],
+      ['button', 240, 88, true],
+      ['panel', 1476, 634, true],
+      ['stand-a', 700, 772, true],
+    ];
+    const SCRIPT = JSON.stringify({ cast: [{ id: 'a', label: 'A' }, { id: 'n', label: 'N', direction: true }], lines: [] });
+    const pictures = (set: typeof SET) => ({
+      'script/script.json': SCRIPT,
+      ...Object.fromEntries(set.map(([n, w, h, a]) => [`public/assets/${n}.webp`, webp(w, h, a)])),
+    });
+    const files = work;
+
+    it('ask nothing of a work with no picture, and of one with the whole set', () => {
+      expect(rules(checkWork(files({ 'script/script.json': SCRIPT })).errors)).toEqual([]);
+      const r = checkWork(files(pictures(SET)));
+      expect(r.errors).toEqual([]);
+      expect(r.warnings).toEqual([]);
+    });
+    it('name what a half-made set lacks', () => {
+      const r = checkWork(files(pictures(SET.filter(([n]) => n === 'bg' || n === 'frame'))));
+      expect(rules(r.errors)).toEqual(['picture-missing']);
+      for (const n of ['stand-a', 'plate', 'plate-mine', 'button', 'panel', 'frame-mine']) expect(r.errors[0].message).toContain(`${n}.webp`);
+      expect(r.errors[0].message).not.toContain('stand-n');
+    });
+    it('warn of a stretched picture and of a part with no alpha', () => {
+      const r = checkWork(files(pictures(SET.map(([n, w, h, a]) => (n === 'frame' ? [n, 1200, 220, a] : n === 'button' ? [n, w, h, false] : [n, w, h, a])))));
+      expect(r.errors).toEqual([]);
+      expect(r.warnings.map((f) => `${f.rule}`).sort()).toEqual(['picture-alpha', 'picture-ratio']);
+    });
   });
 });

@@ -10,6 +10,7 @@
 //   absolute-path    a src/href/url() that starts at the site root, or a file: or drive path.
 //   nondeterminism   Date.now, new Date, Math.random and the like in the server logic or what it imports; an
 //                    action runs in client prediction and on the server, and the two would differ.
+//   picture-missing  a work that ships some of the pictures its layout names lacks others (pictures.mjs).
 //   orientation      manifest.orientation is not landscape or portrait; the work locks or rotates the screen
 //                    itself; or the orientation it passes to startFlow()/run() differs from the manifest's.
 // Warnings (a choice the author may have good reason for; never fail):
@@ -22,6 +23,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { FONT_FILES, fontCodePoints } from '../fonts/fonts.mjs';
+import { checkPictures } from './pictures.mjs';
 
 const CODE = new Set(['.ts', '.js', '.mjs', '.svelte']);
 const STYLE = new Set(['.css', '.svelte', '.html']);
@@ -145,6 +147,9 @@ export function checkWork(dir) {
       for (const h of hits(raw, blank(raw, extname(f)), /\bDate\.now\s*\(|\bnew\s+Date\b|\bperformance\.now\s*\(|\bMath\.random\s*\(|\bcrypto\.(?:getRandomValues|randomUUID)\s*\(/g))
         add(errors, 'nondeterminism', f, h.line, `${h.match.replace(/\s*\($/, '')} in server logic: an action runs in prediction and on the server and would differ. Use the action's time, or a serverAction's random.`);
     }
+
+  // pictures: the set the layout names, once the work ships any of it (pictures.mjs)
+  for (const [list, rule, message] of checkPictures(dir, manifest)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message);
 
   // font-glyph: against the subsets the work's fonts.config.json builds
   const fontConfig = join(dir, 'fonts.config.json');
