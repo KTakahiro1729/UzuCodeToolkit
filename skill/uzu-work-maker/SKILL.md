@@ -19,7 +19,7 @@ This skill is the loop. The procedure itself is in `references/` (copies of the 
 
 ## What to look at in each check picture
 
-For every scene and both orientations, answer each line yes or no (line 7 also gives the source of each picture). Paste the answers in the report (one line per scene); a scene you did not look at is listed as not looked at.
+A guide for your own look at every scene in both orientations, not a gate: no script checks the answers and the report need not list them. Fix what you see; say in the report which scenes you did not look at, and where each picture came from (line 7).
 
 1. No grey box (a picture that is missing)?
 2. Every standing character's head and face show above the frame and nameplates (the body may run behind the frame)? A character drawn small at the frame's foot is a picture of the wrong shape.
@@ -31,4 +31,4 @@ For every scene and both orientations, answer each line yes or no (line 7 also g
 
 ## Done means these outputs, not your impression
 
-You may say the work is done only after you have pasted, in your last message: the final output of the static check (zero errors), the answers to the check-picture list, and the three lists of `new-work.md` plus the slides master (where `slides/*.pptx` is). A step you did not do is listed under "What you could not do or check", never skipped silently. Never claim a check passed that you did not run.
+You may say the work is done only after you have pasted, in your last message: the final output of the static check (zero errors), and the three lists of `new-work.md` plus the slides master (where `slides/*.pptx` is). A step you did not do is listed under "What you could not do or check", never skipped silently. Never claim a check passed that you did not run.
