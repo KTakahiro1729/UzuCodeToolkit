@@ -517,8 +517,13 @@
     line-height: calc(28 * var(--u));
   }
   /* Only your own lines' names take your colour. */
+  /* Your colour is a fill, not a text colour: your own roles keep the text colour and take it as an underline. */
   .rows li[data-mine='true'] .who {
-    color: var(--color-mine-current);
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-mine-current);
+    text-decoration-thickness: 0.2em;
+    text-underline-offset: 0.2em;
   }
   .rows .notice {
     display: block;

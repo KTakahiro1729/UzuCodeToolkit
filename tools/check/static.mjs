@@ -10,12 +10,14 @@
 //   absolute-path    a src/href/url() that starts at the site root, or a file: or drive path.
 //   nondeterminism   Date.now, new Date, Math.random and the like in the server logic or what it imports; an
 //                    action runs in client prediction and on the server, and the two would differ.
+//   picture-drawn-by-code  a script of the work draws pictures with a drawing library instead of an image generator (look.mjs).
 //   picture-missing  a work that ships some of the pictures its layout names lacks others (pictures.mjs).
 //   orientation      manifest.orientation is not landscape or portrait; the work locks or rotates the screen
 //                    itself; or the orientation it passes to startFlow()/run() differs from the manifest's.
 // Warnings (a choice the author may have good reason for; never fail):
 //   no-max-width     a portrait work with no max-width anywhere: a wide PC window stretches it.
 //   px-fixed         sizes written in px (the screen's em is what scales).
+//   layout-changed   the work's layout JSON moves a box of the guide's layout; theme-contrast  a text colour token under 4.5:1 on its surface (look.mjs).
 //   font-glyph       Japanese text in the work's JSON data or source that neither bundled font subset holds: it would be
 //                    drawn in a fallback font. (The listed sources of fonts.config.json are an error in the fonts test;
 //                    this scan finds text that no list names. A string that is never shown can trigger it, hence a warning.)
@@ -23,6 +25,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { FONT_FILES, fontCodePoints } from '../fonts/fonts.mjs';
+import { checkLook } from './look.mjs';
 import { checkPictures } from './pictures.mjs';
 
 const CODE = new Set(['.ts', '.js', '.mjs', '.svelte']);
@@ -150,6 +153,9 @@ export function checkWork(dir) {
 
   // pictures: the set the layout names, once the work ships any of it (pictures.mjs)
   for (const [list, rule, message] of checkPictures(dir, manifest)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message);
+
+  // look: pictures drawn by code, a layout moved from the guide's, text colours too close to their surface (look.mjs)
+  for (const [list, rule, message, file] of checkLook(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, file), 0, message);
 
   // font-glyph: against the subsets the work's fonts.config.json builds
   const fontConfig = join(dir, 'fonts.config.json');
