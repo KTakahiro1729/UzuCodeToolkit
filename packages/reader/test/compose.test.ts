@@ -36,7 +36,7 @@ describe('compose.py', () => {
     writeFileSync(join(dir, 'layout.json'), JSON.stringify(LAYOUT));
     writeFileSync(join(dir, 'script/script.json'), JSON.stringify({ cast: [{ id: 'a', label: 'A' }], lines: [] }));
     // A 50x50 red picture in a 100x200 box: contained it is 100x100, sitting on the bottom edge (y 100-200).
-    py(['-c', `from PIL import Image; Image.new('RGB',(50,50),(255,0,0)).save(r'${join(dir, 'public/assets/stand-a.webp')}')`]);
+    py(['-c', `from PIL import Image; Image.new('RGB',(50,50),(255,0,0)).save(r'${join(dir, 'public/assets/stand-a.webp')}', lossless=True)`]);
     const out = py([SCRIPT, dir, '--layout', join(dir, 'layout.json'), '--scale', '1', '--out', join(dir, 'out')]);
     expect(out).toContain('01-one-landscape.png');
     expect(out).toContain('frame: assets/frame.webp missing');
