@@ -153,7 +153,7 @@ describe('a seat that has left', () => {
       ['plate-mine', 380, 64, true],
       ['button', 240, 88, true],
       ['panel', 1476, 634, true],
-      ['stand-a', 700, 772, true],
+      ['stand-a', 326, 692, true],
     ];
     const SCRIPT = JSON.stringify({ cast: [{ id: 'a', label: 'A' }, { id: 'n', label: 'N', direction: true }], lines: [] });
     const pictures = (set: typeof SET) => ({
@@ -178,6 +178,13 @@ describe('a seat that has left', () => {
       const r = checkWork(files(pictures(SET.map(([n, w, h, a]) => (n === 'frame' ? [n, 1200, 220, a] : n === 'button' ? [n, w, h, false] : [n, w, h, a])))));
       expect(r.errors).toEqual([]);
       expect(r.warnings.map((f) => `${f.rule}`).sort()).toEqual(['picture-alpha', 'picture-ratio']);
+    });
+
+    it('warn of a standing picture too wide for its box, which the screen would draw small behind the frame', () => {
+      const r = checkWork(files(pictures(SET.map(([n, w, h, a]) => (n === 'stand-a' ? [n, 700, 772, a] : [n, w, h, a])))));
+      expect(r.errors).toEqual([]);
+      expect(r.warnings.map((f) => f.rule)).toEqual(['picture-ratio']);
+      expect(r.warnings[0].message).toContain('stand-a.webp');
     });
   });
 });

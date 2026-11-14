@@ -7,6 +7,7 @@
 // Warnings:
 //   picture-ratio    a picture whose width:height differs from its box's by more than 2% (it is stretched to the box).
 //                    Not checked for stretched parts (the nameplate), for the full-screen background (it is cropped to cover the screen) or when the work serves both orientations.
+//                    A standing picture is checked against the tallest box it is drawn in (25%).
 //   picture-alpha    a picture meant to be drawn over others has no alpha channel (a part with a transparent
 //                    background; the full-screen background is the one that may be opaque).
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -48,6 +49,7 @@ export function checkPictures(dir, manifest) {
     }
   const scriptFile = join(dir, 'script', 'script.json');
   const cast = existsSync(scriptFile) ? (JSON.parse(readFileSync(scriptFile, 'utf8')).cast ?? []) : [];
+  const roleEntry = orientations.length === 1 ? imageList(layout, orientations[0]).find((i) => i.role) : undefined;
   const hasRole = [...new Set(orientations.flatMap((o) => imageList(layout, o)).filter((i) => i.role).map((i) => i.image))];
   const names = [...wanted.keys(), ...hasRole.flatMap((p) => cast.filter((c) => !c.direction).map((c) => p.replace('{role}', c.id)))];
   const shown = (n) => existsSync(join(assets, `${n}.webp`));
@@ -68,8 +70,13 @@ export function checkPictures(dir, manifest) {
         out.push(['warnings', 'picture-ratio', `${name}.webp is ${info.width}×${info.height}; its box is ${img.width / 2}×${img.height / 2} (${img.width}×${img.height} at twice the size), so it would be stretched by ${(diff * 100).toFixed(1)}%.`]);
     }
   }
-  for (const n of names.filter((n) => n.startsWith('stand-') && shown(n)))
-    if (!webpInfo(readFileSync(join(assets, `${n}.webp`)))?.alpha)
+  for (const n of names.filter((n) => n.startsWith('stand-') && shown(n))) {
+    const info = webpInfo(readFileSync(join(assets, `${n}.webp`)));
+    if (!info?.alpha)
       out.push(['warnings', 'picture-alpha', `${n}.webp has no alpha channel, but a standing character is drawn over the background: its background should be transparent.`]);
+    // The screen draws it whole inside its box, so a picture much wider than the box is drawn small at the foot of it, behind the frame.
+    if (info && roleEntry && Math.abs(info.width / info.height / (roleEntry.width / roleEntry.height) - 1) > 0.25)
+      out.push(['warnings', 'picture-ratio', `${n}.webp is ${info.width}×${info.height}; a standing picture is drawn whole inside its box (${roleEntry.width / 2}×${roleEntry.height / 2}) and should be a tall figure of about ${roleEntry.width}×${roleEntry.height}, or it is drawn small and hidden behind the frame.`]);
+  }
   return out;
 }
