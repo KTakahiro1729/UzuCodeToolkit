@@ -17,7 +17,8 @@
     "fonts": "sh scripts/subset-fonts.sh",
     "layout:export": "node tools/layout/slides/export.mjs",
     "layout:import": "node tools/layout/slides/import.mjs",
-    "layout:brief": "node tools/layout/brief/brief.mjs"
+    "layout:brief": "node tools/layout/brief/brief.mjs",
+    "skill:build": "node tools/skill/build.mjs"
   },
   "engines": {
     "node": ">=22.12"

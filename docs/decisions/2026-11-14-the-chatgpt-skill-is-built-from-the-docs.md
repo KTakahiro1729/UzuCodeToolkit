@@ -1,0 +1,5 @@
+# The ChatGPT Skill is a thin loop built with the docs, and holds no tools
+
+ChatGPT cannot be handed `node_modules/@uzu-toolkit/toolkit/README.md` and the docs as a procedure it keeps to: it skips steps and calls the work done. `skill/uzu-work-maker/SKILL.md` is the loop and the gate for "done" (outputs to paste, not an impression). The procedure text is not duplicated: `npm run skill:build` (`tools/skill/build.mjs`) copies the docs into `references/` and writes `dist/uzu-work-maker.zip`, one top-level folder with `SKILL.md`, the shape OpenAI's Skills docs ask for (https://developers.openai.com/api/docs/guides/tools-skills: one folder, `SKILL.md` with `name` and `description`, zip up to 50 MB, 500 files).
+
+Not taken: scripts inside the skill (the tools are the toolkit's, in `tools/`, so the same ones serve every agent), and screenshots in the loop (ChatGPT's sandbox cannot run a headless browser in time; the loop uses the static check and composite pictures). Drawing pictures by code is forbidden in the procedure text, not by a check.
