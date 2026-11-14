@@ -18,7 +18,7 @@ This skill is the loop. The procedure itself is in `references/` (copies of the 
 
 ## What to look at in each check picture
 
-For every scene and both orientations, answer each line yes or no. Paste the answers in the report (one line per scene); a scene you did not look at is listed as not looked at.
+For every scene and both orientations, answer each line yes or no (line 7 also gives the source of each picture). Paste the answers in the report (one line per scene); a scene you did not look at is listed as not looked at.
 
 1. No grey box (a picture that is missing)?
 2. Every standing character's head and face show above the frame and nameplates (the body may run behind the frame)? A character drawn small at the frame's foot is a picture of the wrong shape.
@@ -26,6 +26,7 @@ For every scene and both orientations, answer each line yes or no. Paste the ans
 4. The surface text will sit on (frame, log panel, nameplate, button) is plain or softly shaded? Rules, stripes and patterns only at the edge, never under the text.
 5. A scene that takes your colour (`mine`) shows the `-mine` picture, and it differs from the base picture only in colour?
 6. Every box is where the guide puts it (you changed no box without the author asking)?
+7. Where each picture came from: was every one made by image generation, none drawn by code (PIL, canvas, SVG, a painting script)? Write one line per picture file: the prompt you gave the generator, or "not generated" and why. A picture that was not generated is replaced, left out, or asked of the author, and the report says so.
 
 ## Done means these outputs, not your impression
 
