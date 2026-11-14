@@ -16,9 +16,12 @@
 //   stand-ratio      a standing picture 25% or more off its box's ratio: drawn small at the foot of the box, behind the frame (pictures.mjs).
 //   picture-contrast the text colour is under 4.5:1 with the mean colour of a frame, plate or panel picture (picture-colors.mjs; needs python3 and Pillow).
 //   pictures-none    world.md exists, no picture is in public/assets/ and there is no brief.md (pictures.mjs).
+//   raw-colour       a colour written as a value in a style outside the theme file and custom properties (parts.mjs).
+//   raw-font         a typeface written in a style that does not come from a variable (parts.mjs).
 //   orientation      manifest.orientation is not landscape or portrait; the work locks or rotates the screen
 //                    itself; or the orientation it passes to startFlow()/run() differs from the manifest's.
 // Warnings (a choice the author may have good reason for; never fail):
+//   bare-button      a plain <button> in a work's screen instead of the toolkit's Button (parts.mjs).
 //   no-max-width     a portrait work with no max-width anywhere: a wide PC window stretches it.
 //   px-fixed         sizes written in px (the screen's em is what scales).
 //   layout-changed   the work's layout JSON moves a box of the guide's layout; theme-contrast  a text colour token under 4.5:1 on its surface (look.mjs).
@@ -31,6 +34,7 @@ import { dirname, extname, join, relative, resolve } from 'node:path';
 import { FONT_FILES, fontCodePoints } from '../fonts/fonts.mjs';
 import { checkLook } from './look.mjs';
 import { checkPictureColors } from './picture-colors.mjs';
+import { check as checkParts } from './parts.mjs';
 import { checkPictures } from './pictures.mjs';
 
 /** Errors a work may turn into warnings on purpose; the certification errors above can never be. */
@@ -167,6 +171,9 @@ export function checkWork(dir, { allow = [] } = {}) {
 
   // picture-contrast: the text colour against the pixels of the pictures it sits on (picture-colors.mjs)
   for (const [list, rule, message, , , fix] of checkPictureColors(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message, fix);
+
+  // parts: raw colours and typefaces, plain buttons (parts.mjs)
+  for (const [list, rule, message, file, line, fix] of checkParts(dir, { manifest, sources: texts })) add(list === 'errors' ? errors : warnings, rule, join(dir, file), line ?? 0, message, fix);
 
   // look: a layout moved from the guide's, text colours too close to their surface (look.mjs)
   for (const [list, rule, message, file, line, fix] of checkLook(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, file), line ?? 0, message, fix);

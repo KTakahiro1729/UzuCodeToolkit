@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [
+    {
+      "rule": "font-glyph",
+      "file": "script/script.json",
+      "line": 0,
+      "message": "5 character(s) in no font subset, drawn in a fallback font: 芥川龍之介. List the file in fonts.config.json and run npm run fonts."
+    }
+  ],
+  "next": [],
+  "shots": {
+    "mode": "none",
+    "reason": "switched off with --shots none",
+    "files": []
+  }
+}

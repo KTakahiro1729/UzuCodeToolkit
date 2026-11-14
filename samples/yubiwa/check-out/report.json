@@ -12,7 +12,7 @@
   "next": [],
   "shots": {
     "mode": "none",
-    "reason": "screen renderer not available (Cannot find module '/home/user/UzuCodeToolkit/tools/screen-preview/render.mjs' imported from /home/user/UzuCodeToolkit/tools/check/index.mjs)",
+    "reason": "switched off with --shots none",
     "files": []
   }
 }
