@@ -80,6 +80,8 @@ render(workDir: string, spec: {
   | { ok: false; reason: string } >     // never throws for a missing browser or a work that does not start
 ```
 
+The module also exports `screens(workDir): Promise<string[]>`, the keys of the work's shots list in order, which the check walks. `render` takes an optional `out` (a folder for the image) and returns `label` (the screen's label) beside `png`.
+
 ```bash
 node tools/screen-preview/render.mjs <work dir> --screen 02-opening --orientation landscape --out dir [--json]
 ```

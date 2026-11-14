@@ -103,7 +103,7 @@ export function checkWork(dir, { allow = [] } = {}) {
   dir = resolve(dir);
   const errors = [];
   const warnings = [];
-  const add = (list, rule, file, line, message) => list.push({ rule, file: relative(dir, file) || '.', line, message });
+  const add = (list, rule, file, line, message, fix) => list.push({ rule, file: relative(dir, file) || '.', line, message, ...(fix ? { fix } : {}) });
   const manifestFile = join(dir, 'manifest.json');
   const manifest = existsSync(manifestFile) ? JSON.parse(readFileSync(manifestFile, 'utf8')) : {};
   const indexFile = join(dir, 'index.html');
@@ -163,13 +163,13 @@ export function checkWork(dir, { allow = [] } = {}) {
     }
 
   // pictures: the set the layout names, once the work ships any of it (pictures.mjs)
-  for (const [list, rule, message] of checkPictures(dir, manifest)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message);
+  for (const [list, rule, message, , , fix] of checkPictures(dir, manifest)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message, fix);
 
   // picture-contrast: the text colour against the pixels of the pictures it sits on (picture-colors.mjs)
-  for (const [list, rule, message] of checkPictureColors(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message);
+  for (const [list, rule, message, , , fix] of checkPictureColors(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message, fix);
 
   // look: a layout moved from the guide's, text colours too close to their surface (look.mjs)
-  for (const [list, rule, message, file] of checkLook(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, file), 0, message);
+  for (const [list, rule, message, file, line, fix] of checkLook(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, file), line ?? 0, message, fix);
 
   // font-glyph: against the subsets the work's fonts.config.json builds
   const fontConfig = join(dir, 'fonts.config.json');
