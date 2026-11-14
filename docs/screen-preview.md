@@ -224,3 +224,32 @@ must be pressable as it stands: the fifth item of a `catalogue()` screen is a li
 of selectors (`[key, label, seat, steps, [btn('これで勝負')]]`). In `--check`, each
 is reported as `unreachable` if it is missing, past the viewport, or covered or
 cut off (what is hit at its centre is not the element), in both orientations.
+
+## One screen as a function: `render.mjs`
+
+[`render.mjs`](../tools/screen-preview/render.mjs) draws one screen of a work in one orientation and says where its
+parts are (the agreement is in [qa-contract.md](qa-contract.md), 3). The check's shots and the slide comparison use it.
+
+```bash
+node tools/screen-preview/render.mjs <work dir> --screen 02-opening --orientation landscape --out dir [--size device] [--json]
+```
+
+```js
+import { render } from './tools/screen-preview/render.mjs';
+const r = await render(workDir, { screen: '02-opening', orientation: 'portrait' /*, size, out */ });
+// r.ok: { png, width, height, em, boxes: [{ part, x, y, width, height }], messages }   r.ok === false: { reason }
+```
+
+The screen is a key (or number) of the work's shot list: its `shots.mjs`, else its `preview.config.mjs`, else the
+toolkit's read-through list. `out` is the folder for the image (default: a new one in the temp folder). The call never
+throws for a missing browser or a work that does not start; `ok: false` means no shot. `boxes` are every
+`data-uzu-part` (its first word) plus `main`, `phase` and `scroll`, in CSS px from the screen's top left; `em` is px per em.
+
+The renderer picks one of two ways, and the result has the same shape:
+
+| Way | How | Reaches a screen by | Limits |
+|---|---|---|---|
+| Harness | Starts the work's `npm run harness` (or uses `HARNESS`, a running one), then plays the screen with `capture.mjs` (`--boxes`, `--orient`) | The shot list's taps and steps, game state included; any seat | Needs the work's dev dependencies |
+| Standalone | Puts the work's build (`manifest.json` `output`, built first if missing) into `about:blank` with `setContent`, `<base href>` on a made-up origin and `page.route` answering from the folder: no navigation, no network. `window.FlutterHost` makes the SDK run its own single-player game | The shot list's taps, `click`, `fill`, `waitFor`, `wait` | One seat (`local_0`): a button of the other seat's turn is disabled and the taps stop there. A screen set up by a `state` step is `ok: false`. The harness's HUD overlay is not drawn. `messages` begins with `standalone: …` |
+
+The harness is tried first; the standalone page is used when it does not start (`RENDER_WAY=standalone` skips it).
