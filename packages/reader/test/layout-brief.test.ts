@@ -29,11 +29,11 @@ describe('image order sheet', () => {
     expect(() => pickOrientation({ ...layout, reference: { landscape: [10, 10] } }, 'portrait')).toThrow();
   });
 
-  it('lists one file per image, at twice its largest box', () => {
+  it('lists one file per image, at twice its largest box (a standing character: twice the tallest box)', () => {
     const files = Object.fromEntries(imageList(layout, 'landscape').map((i) => [i.file, [i.width, i.height]]));
     expect(files).toEqual({
       'assets/bg.webp': [1748, 804],
-      'assets/stand-{role}.webp': [700, 772],
+      'assets/stand-{role}.webp': [326, 692],
       'assets/frame.webp': [1476, 280],
       'assets/frame-mine.webp': [1476, 280],
       'assets/plate.webp': [380, 64],

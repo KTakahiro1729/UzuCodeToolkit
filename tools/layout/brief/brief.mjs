@@ -42,8 +42,12 @@ export function imageList(layout, orientation) {
   }
   const mineParts = new Set(layout.scenes.flatMap((s) => s.mine));
   const list = [...byImage].map(([image, boxes]) => {
-    const w = Math.max(...boxes.map((b) => b.box[2]));
-    const h = Math.max(...boxes.map((b) => b.box[3]));
+    // A standing character is drawn whole inside its box, so its picture takes the shape of the tallest box (a figure
+    // made for the wide one would be drawn small, at the foot of the narrow ones, and be hidden behind the frame).
+    const role = image.includes('{role}');
+    const sized = role ? [boxes.reduce((a, b) => (b.box[3] / b.box[2] > a.box[3] / a.box[2] ? b : a))] : boxes;
+    const w = Math.max(...sized.map((b) => b.box[2]));
+    const h = Math.max(...sized.map((b) => b.box[3]));
     const stretch = boxes.some((b) => b.stretch);
     return {
       image,
@@ -73,7 +77,8 @@ function imageEntry(img) {
   if (img.mineOf) lines.push(`- ${fill(t.mineUse, { file: img.mineOf })}`);
   if (img.role) lines.push(`- ${t.roleNote}`);
   const ratios = img.boxes.map((b) => b.box[2] / b.box[3]);
-  if (!img.stretch && Math.max(...ratios) / Math.min(...ratios) > 1.05) lines.push(`- ${t.variedNote}`);
+  if (img.role) lines.push(`- ${t.roleTall}`);
+  else if (!img.stretch && Math.max(...ratios) / Math.min(...ratios) > 1.05) lines.push(`- ${t.variedNote}`);
   const boxes = img.boxes.map((b) => fill(t.boxItem, { label: b.label, w: b.box[2], h: b.box[3] })).join('、');
   lines.push(`- ${fill(t.sharedLine, { boxes })}`);
   lines.push('', fill(t.partPrompt, { file: img.file, w: img.width, h: img.height }));
