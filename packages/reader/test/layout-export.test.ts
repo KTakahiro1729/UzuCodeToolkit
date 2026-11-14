@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import JSZip from 'jszip';
@@ -153,4 +153,20 @@ describe('the export command', () => {
     expect(existsSync(join(out, 'layout-portrait.pptx'))).toBe(true);
     rmSync(out, { recursive: true, force: true });
   }, 25_000);
+
+  it('with a pictures folder, a part with a picture is filled with it and the box stays the part', async () => {
+    const pics = mkdtempSync(join(dir, 'pics-'));
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==', 'base64');
+    for (const n of ['frame', 'frame-mine', 'stand-a']) writeFileSync(join(pics, `${n}.png`), png);
+    const [file] = await exportLayout(READ_THROUGH_LAYOUT, mkdtempSync(join(dir, 'img-')), pics);
+    const zip = await JSZip.loadAsync(readFileSync(file!));
+    expect(Object.keys(zip.files).filter((n) => n.startsWith('ppt/media/'))).toEqual(expect.arrayContaining(['ppt/media/uzu-frame.png', 'ppt/media/uzu-stand-a.png']));
+    const sps = (await zip.file('ppt/slides/slide1.xml')!.async('string')).split('<p:sp>').slice(1);
+    const frame = sps.find((sp) => sp.includes('descr="uzu:frame"'))!;
+    expect(frame).toContain('<a:blipFill>');
+    expect(sps.find((sp) => sp.includes('descr="uzu:plate1"'))).not.toContain('<a:blipFill>');
+    expect(sps.find((sp) => sp.includes('descr="uzu:c1"'))).toContain('<a:blipFill>');
+    const deck = await readDeck(file!);
+    expectBoxes(READ_THROUGH_LAYOUT, 'landscape', deck.slides);
+  });
 });
