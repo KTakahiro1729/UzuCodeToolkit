@@ -99,9 +99,20 @@ A part you would write yourself (a screen, a timer, a turn rule) may already exi
 A work with no pictures works: every part of the stage screen falls back to the colour tokens in `theme.css`. Pictures are added on top, in this order:
 
 1. Write the world in a few lines (era, place, colours, materials, mood) in a file, e.g. `world.md`. Example: 大正時代の洋館の応接間。漆黒と真鍮の色、和紙と革の質感、静かで少し寂しい雰囲気。
-2. Make the order sheet: `node node_modules/@uzu-toolkit/toolkit/tools/layout/brief/brief.mjs node_modules/@uzu-toolkit/reader/src/layouts/read-through.layout.json world.md --orientation landscape --out brief.md` (`--orientation portrait` for a portrait work). It lists each picture to make (file name, size, how it stretches) and one prompt per scene.
+2. Make the order sheet: `node node_modules/@uzu-toolkit/toolkit/tools/layout/brief/brief.mjs node_modules/@uzu-toolkit/reader/src/layouts/read-through.layout.json world.md --orientation landscape --out brief.md` (`--orientation portrait` for a portrait work). It lists each picture to make (file name, size, how it stretches) and one prompt per scene. If the work has its own layout (below), give that file in place of the toolkit's: the picture sizes follow the boxes.
 3. Give `brief.md` to the author and ask them to have the pictures made by an image generator, and to send them back. You cannot make them yourself; say so.
 4. Put the returned pictures in `public/assets/` under the names in the sheet (`.webp`), run the checks and show the screens.
+
+### Moving the boxes on slides (when the author wants a different arrangement)
+
+The stage screen's boxes (background, standing characters, frame, nameplates, buttons, log) are numbers in a layout JSON, and the pictures' sizes follow them. An author who wants a part elsewhere or another size should not have to read numbers: the layout goes out as slides, the author moves boxes in PowerPoint or Google Slides, and the slides come back in. Do this once the author has said so, and before the order sheet (a picture made for a box that then moves has to be made again). A work that keeps UZU's arrangement skips it.
+
+1. Copy the layout into the work: `cp node_modules/@uzu-toolkit/reader/src/layouts/read-through.layout.json src/read-through.layout.json`, and pass it to the screen: `import layout from './read-through.layout.json'` and `props: { script, screen: StageReadThrough, layout }` in `main.ts`. `npm run typecheck` fails if it does not fit.
+2. Write the slides: `npm run layout:export -- src/read-through.layout.json slides` (one slide per scene; landscape and portrait each get a file; the folder must exist). Give the `.pptx` to the author and say what to do: move or resize the boxes, do not delete or rename them, and send the file back.
+3. Read them back: `npm run layout:import -- slides/layout-landscape.pptx --layout src/read-through.layout.json` (also the portrait file if the work has both). It rewrites the JSON for moved boxes and **only lists** the rest: a new box (a new part needs code, tell the author it is not done), a vanished box, or a part moved differently on two slides (a conflict, not applied; ask the author which one they mean).
+4. Run the checks and show the screens (step 3). Then make the order sheet from this layout file (step "Pictures", 2).
+
+Without a shell, tell the author this is the step you could not run, give them the layout JSON and the slides command, and say the boxes stay as UZU's until they do. Slides are placeholders for places, not the work's art; the format is in [design/layout.md](design/layout.md).
 
 ## 3. Check as you go
 

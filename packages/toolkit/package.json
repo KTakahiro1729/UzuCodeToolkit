@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "UzuCodeToolkit as one install: it depends on the kit and the reader, and carries README, CLAUDE.md, docs, tools, scripts and a work template.",
+  "description": "UzuCodeToolkit as one install: it depends on the kit and the reader, and carries README, CLAUDE.md, docs, tools (the PowerPoint round trip of layouts needs jszip and pptxgenjs, listed here), scripts and a work template.",
   "files": [
     "README.md",
     "template",
@@ -17,5 +17,9 @@
   ],
   "scripts": {
     "prepack": "node pack-assets.mjs"
+  },
+  "dependencies": {
+    "jszip": "^3.10.2",
+    "pptxgenjs": "^4.0.1"
   }
 }
