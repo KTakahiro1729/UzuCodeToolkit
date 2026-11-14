@@ -18,6 +18,9 @@
 // (default 600 s), stops and says which screen and step it was on.
 // --jobs n plays independent runs of screens at the same time, each against a harness of its own
 // (HARNESS lists their URLs, comma separated; missing ones are the last port + 1, + 2, ...).
+// --boxes <file> writes, for each screen and orientation played, its size, px per em and the boxes of its marked parts
+// (data-uzu-part, the three data-uzu-* marks) as JSON, with the page's console and network errors; --orient landscape|portrait
+// plays only that orientation. Both are for tools/screen-preview/render.mjs.
 // See docs/screen-preview.md.
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -50,6 +53,8 @@ const showTimes = args.includes('--times');
 const pngDir = flag('--png');
 const JOBS = Math.max(1, Math.floor(Number(flag('--jobs') ?? 1)) || 1);
 const configFile = flag('--config');
+const boxesFile = flag('--boxes');
+const orientOnly = flag('--orient');
 const sizeArg = flag('--size') ?? 'device';
 const orientationArg = flag('--orientation');
 
@@ -233,6 +238,10 @@ const reachable = (el) => {
   return hit && el.contains(hit) ? null : 'covered or cut off';
 };
 const player = config.player ?? 0;
+const markedBoxes = `(${readFileSync(here('boxes.js'), 'utf8')})()`; // for --boxes
+const boxes = {};
+const messages = [];
+const note = (line) => { if (!messages.includes(line)) messages.push(line); };
 const SEED = 20261113; // for the harness's random numbers (any number: what matters is that it is the same).
 if (pngDir) mkdirSync(pngDir, { recursive: true });
 
@@ -243,6 +252,12 @@ async function startWorker(HARNESS) {
   // PNGs are for people to look at: twice the pixels.
   const context = await browser.newContext({ viewport: { width: 1400, height: 900 }, reducedMotion: 'reduce', deviceScaleFactor: pngDir ? 2 : 1 });
   const page = await context.newPage();
+  if (boxesFile) {
+    page.on('console', (m) => m.type() === 'error' && note(`console: ${m.text()}`));
+    page.on('pageerror', (e) => note(`page error: ${e.message}`));
+    page.on('requestfailed', (r) => note(`request failed: ${r.url()}`));
+    page.on('response', (r) => r.status() >= 400 && note(`${r.status()}: ${r.url()}`));
+  }
 
 /**
  * A seat's screen, looked up afresh each time: the harness may reload a player's frame (after a
@@ -435,6 +450,7 @@ async function run(steps, screenSeat, key) {
     for (const [o, size] of Object.entries(SIZE_SETS[sizeName])) {
       const first = si === 0;
       // A check looks only at the work's own orientation (the PC window is the exception: it is wide whatever the work is).
+      if (orientOnly && o !== orientOnly) continue;
       if (check && !(pngDir || wantPage) && checkOrientation && sizeName !== 'desktop' && o !== checkOrientation) continue;
       const tag = sizeNames.length > 1 ? `${sizeName} ${o}` : o;
       w.where = `${s.key} ${tag}`;
@@ -460,6 +476,10 @@ async function run(steps, screenSeat, key) {
           const file = join(pngDir, `${s.key}-${o}.png`);
           await timed('png', page.screenshot.bind(page))({ path: file, clip: { x: 0, y: 0, ...size } });
           lines.push(`wrote ${file}`);
+        }
+        if (boxesFile && first) {
+          const m = await timed('boxes', onSeat)(at, (f) => f.evaluate(markedBoxes));
+          (boxes[s.key] ??= {})[o] = { width: size.width, height: size.height, ...m };
         }
         if (wantPage && first) doc[o] = await timed('snapshot', onSeat)(at, (f) => snapshot(f, s.parts ?? []));
       });
@@ -505,6 +525,7 @@ if (showTimes) {
   console.log(`times (ms; a step includes its settle and sync): ${Object.entries(spent).map(([k, v]) => `${k} ${Math.round(v)}`).join(', ')}, total ${Math.round(total)}, jobs ${jobs}`);
 }
 await browser.close();
+if (boxesFile) writeFileSync(boxesFile, JSON.stringify({ screens: boxes, messages }));
 if (!wantPage) process.exit(check && spills ? 1 : 0);
 
 const dirty = execSync('git status --porcelain').toString().trim() ? ' + local changes' : '';

@@ -6,6 +6,8 @@ export interface Finding {
   /** 0 when the finding is about the whole file or work. */
   line: number;
   message: string;
+  /** The one next step, imperative; goes to `next` in the check report. */
+  fix?: string;
 }
 export const ALLOWABLE: string[];
 export function checkWork(dir: string, options?: { allow?: string[] }): { errors: Finding[]; warnings: Finding[] };
