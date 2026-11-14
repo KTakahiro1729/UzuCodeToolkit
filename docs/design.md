@@ -97,7 +97,7 @@ Decoration is out of scope, but it must not break the rules above:
   tokens in its own stylesheet, and a colour only its screens use (such as a
   chess board's) becomes a token there too.
 - Every text colour meets WCAG AA (4.5:1) on its background.
-- No gradients, edge fades, shadows or glows in what the toolkit draws (its default look). A work's own images (backgrounds, characters, frames, nameplates, buttons) are its look and are free of this; text on them still meets AA.
+- Text set on a work's own images (backgrounds, characters, frames, nameplates, buttons) still meets AA.
 - No colour, size or weight that competes with the focus.
 
 ### Look by role
@@ -132,15 +132,15 @@ shows a control is there).
 - A destructive action (one that loses what a player made) is a secondary
   button whose label and edge take a danger colour, never the primary. None is
   built yet; add a token when the first one is.
-- Shadows stay out (Limits on decoration): fill and edge carry the roles.
+- Fill and edge carry the roles.
 
 ### Type
 
 - Two roles, as CSS variables in `theme.css`: story text (script lines, title,
-  end mark, afterword) in Shippori Mincho (`--font-body`); UI text (top band,
-  speaker names, the advance button) in BIZ UDPGothic (`--font-ui`), a
-  universal-design gothic made for telling characters apart, so short labels
-  stay legible at small sizes. Both are bundled subsets; no system fonts.
+  end mark, afterword) in `--font-body`; UI text (top band, speaker names, the
+  advance button) in `--font-ui`. Which typefaces they hold is the work's; the
+  fonts a work bundles are subsets of the characters it shows (CLAUDE.md,
+  Fonts).
 - No text below 16px, except ruby: it gives the reading of the word under it
   at half the text size (owner's decision).
 
