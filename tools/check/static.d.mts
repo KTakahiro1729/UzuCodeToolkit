@@ -1,5 +1,5 @@
 export interface Finding {
-  /** The check's name (first-frame, file-name, external-url, absolute-path, nondeterminism, orientation, ...). */
+  /** The check's name (first-frame, file-name, external-url, absolute-path, nondeterminism, orientation, picture-missing, ...). */
   rule: string;
   /** Relative to the work's folder. */
   file: string;
