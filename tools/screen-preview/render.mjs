@@ -29,6 +29,12 @@ function configFor(workDir) {
     ?? join(toolkitRoot, 'packages/reader/preview.config.mjs');
 }
 
+/** The keys of the work's shots list, in order (what `render` can draw). */
+export async function screens(workDir) {
+  const config = (await import(pathToFileURL(configFor(resolve(workDir))).href)).default;
+  return (config.screens ?? []).map((s) => (Array.isArray(s) ? s[0] : s.key));
+}
+
 /** Starts the work's harness and resolves with its URL and a function that stops it. */
 function startHarness(workDir) {
   return new Promise((resolveStart, reject) => {

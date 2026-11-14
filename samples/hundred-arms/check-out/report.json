@@ -11,8 +11,20 @@
   ],
   "next": [],
   "shots": {
-    "mode": "none",
-    "reason": "switched off with --shots none",
-    "files": []
+    "mode": "browser",
+    "files": [
+      {
+        "key": "reading",
+        "label": "reading",
+        "orientation": "landscape",
+        "path": "check-out/shots/reading-landscape.png"
+      },
+      {
+        "key": "end",
+        "label": "end",
+        "orientation": "landscape",
+        "path": "check-out/shots/end-landscape.png"
+      }
+    ]
   }
 }
