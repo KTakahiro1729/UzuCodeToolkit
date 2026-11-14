@@ -137,10 +137,10 @@ shows a control is there).
 ### Type
 
 - Two roles, as CSS variables in `theme.css`: story text (script lines, title,
-  end mark, afterword) in Shippori Mincho (`--font-body`); UI text (top band,
-  speaker names, the advance button) in BIZ UDPGothic (`--font-ui`), a
-  universal-design gothic made for telling characters apart, so short labels
-  stay legible at small sizes. Both are bundled subsets; no system fonts.
+  end mark, afterword) in `--font-body`; UI text (top band, speaker names, the
+  advance button) in `--font-ui`. Which typefaces they hold is the work's; the
+  fonts a work bundles are subsets of the characters it shows (CLAUDE.md,
+  Fonts).
 - No text below 16px, except ruby: it gives the reading of the word under it
   at half the text size (owner's decision).
 
