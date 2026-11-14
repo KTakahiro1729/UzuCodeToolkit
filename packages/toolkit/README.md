@@ -19,6 +19,8 @@ The package is the only thing you are certain to have. If `npm i` fails (no netw
 
 If you are not given a repository, make the work as a folder of files (the layout below, without `node_modules/` and `dist/`) and hand it over as one archive. You will probably not be able to run the checks; that is expected. Say in your report which of `npm test`, `npm run typecheck`, `npm run lint`, `npm run build` and the harness you ran, which you could not, and why. The author runs them. Never claim a check passed that you did not run.
 
+If the author gave you the offline bundle instead (`uzu-toolkit-offline-VERSION.zip`, a work template with `node_modules/` already installed), open it and read its `START-HERE.md`: steps 1 and 2 below are done, and what can and cannot run without a network is listed there. The bundle is built for 64-bit Linux and Node 22.12 or newer.
+
 ## Making a work from a plan, starting with nothing but this package
 
 1. In a new folder, copy `template/` into the work's root (rename `gitignore` to `.gitignore`; keep `.github/workflows/verify.yml` and `AGENTS.md`). `template/` is a read-through on the stage screen. Put the release URL of this package in `package.json` (`dependencies["@uzu-toolkit/toolkit"]`) and set the work's name, title, `manifest.json` and the orientation.
