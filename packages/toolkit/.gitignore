@@ -1,0 +1,6 @@
+CLAUDE.md
+docs/
+scripts/
+tools/
+.stylelintrc.json
+*.tgz
