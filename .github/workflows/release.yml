@@ -1,0 +1,37 @@
+name: Release
+# Run by hand (Actions > Release > Run workflow) with a version such as 0.2.0. Packs the three
+# packages at that version and attaches the tarballs to a new GitHub release `v<version>`, which
+# a work installs from by URL (docs/decisions/2026-11-14-the-toolkit-is-shipped-as-release-tarballs.md).
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version without the v, e.g. 0.2.0
+        required: true
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Set the version
+        env:
+          V: ${{ inputs.version }}
+        run: |
+          echo "$V" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'
+          for p in kit reader dev; do npm pkg set "version=$V" -w "packages/$p"; done
+          npm pkg set "dependencies.@uzu-toolkit/kit=$V" -w packages/reader
+      - name: Pack
+        run: |
+          mkdir -p dist-pack
+          npm pack -w packages/kit -w packages/reader -w packages/dev --pack-destination dist-pack
+          ls dist-pack
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ inputs.version }}
+        run: gh release create "v$V" dist-pack/*.tgz --target "$GITHUB_SHA" --title "v$V" --generate-notes

@@ -1,6 +1,6 @@
 # Making a work from a plan
 
-For the agent that builds a work from an author's plan. The plan is free-form; there is no format to match. The author's part is the plan and a reaction to the screens; yours is everything between. A work lives in its own repository and takes this toolkit as the submodule `toolkit/` (the steps below assume it; inside this repository a sample is the same, one folder deeper).
+For the agent that builds a work from an author's plan. The plan is free-form; there is no format to match. The author's part is the plan and a reaction to the screens; yours is everything between. A work lives in its own repository and installs this toolkit from a GitHub release: `@uzu-toolkit/kit`, `@uzu-toolkit/reader` and `@uzu-toolkit/dev` as release URLs in its `package.json` (see docs/decisions/2026-11-14-the-toolkit-is-shipped-as-release-tarballs.md). `dev` holds this file, CLAUDE.md, the docs, the scripts and the tools; they land under `node_modules/@uzu-toolkit/dev/`, and `packages/reader` under `node_modules/@uzu-toolkit/reader/`. Older works still take the toolkit as the submodule `toolkit/`. Inside this repository a sample is the same, one folder deeper.
 
 Read, in this order, and nothing more until you need it: this file, [plan-to-parts.md](plan-to-parts.md), then [design.md](design.md) and only the spec in `design/` for a screen you change.
 
