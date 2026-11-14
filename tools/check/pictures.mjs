@@ -4,10 +4,12 @@
 // Reads only the first bytes of each WebP; no image library, so it runs wherever Node does.
 //   picture-missing  a picture the layout names (and `-mine` for a part that takes your colour; `stand-<cast id>` for
 //                    each cast entry that is not a stage direction) is not in public/assets/, while others are.
+//   stand-ratio      a standing picture whose width:height is more than 25% off its box's (it is drawn small at the foot of the box, behind the frame).
+//   pictures-none    world.md exists, no picture is in public/assets/, and there is no brief.md.
 // Warnings:
 //   picture-ratio    a picture whose width:height differs from its box's by more than 2% (it is stretched to the box).
 //                    Not checked for stretched parts (the nameplate), for the full-screen background (it is cropped to cover the screen) or when the work serves both orientations.
-//                    A standing picture is checked against the tallest box it is drawn in (25%).
+//                    A standing picture is checked against the tallest box it is drawn in (stand-ratio).
 //   picture-alpha    a picture meant to be drawn over others has no alpha channel (a part with a transparent
 //                    background; the full-screen background is the one that may be opaque).
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -53,7 +55,12 @@ export function checkPictures(dir, manifest) {
   const hasRole = [...new Set(orientations.flatMap((o) => imageList(layout, o)).filter((i) => i.role).map((i) => i.image))];
   const names = [...wanted.keys(), ...hasRole.flatMap((p) => cast.filter((c) => !c.direction).map((c) => p.replace('{role}', c.id)))];
   const shown = (n) => existsSync(join(assets, `${n}.webp`));
-  if (!names.some(shown)) return out;
+  if (!names.some(shown)) {
+    // A world was written (the order sheet's first step) but no picture came and no order sheet to have them made: the work was left without either.
+    if (existsSync(join(dir, 'world.md')) && !existsSync(join(dir, 'brief.md')))
+      out.push(['errors', 'pictures-none', 'world.md describes a look, but public/assets/ has no picture and there is no brief.md. Make the pictures from the order sheet, or make the order sheet (docs/new-work.md, "Pictures") so the author can have them made, and say why in the report.']);
+    return out;
+  }
 
   const missing = names.filter((n) => !shown(n));
   if (missing.length)
@@ -76,7 +83,7 @@ export function checkPictures(dir, manifest) {
       out.push(['warnings', 'picture-alpha', `${n}.webp has no alpha channel, but a standing character is drawn over the background: its background should be transparent.`]);
     // The screen draws it whole inside its box, so a picture much wider than the box is drawn small at the foot of it, behind the frame.
     if (info && roleEntry && Math.abs(info.width / info.height / (roleEntry.width / roleEntry.height) - 1) > 0.25)
-      out.push(['warnings', 'picture-ratio', `${n}.webp is ${info.width}×${info.height}; a standing picture is drawn whole inside its box (${roleEntry.width / 2}×${roleEntry.height / 2}) and should be a tall figure of about ${roleEntry.width}×${roleEntry.height}, or it is drawn small and hidden behind the frame.`]);
+      out.push(['errors', 'stand-ratio', `${n}.webp is ${info.width}×${info.height}; a standing picture is drawn whole inside its box (${roleEntry.width / 2}×${roleEntry.height / 2}) and should be a tall figure of about ${roleEntry.width}×${roleEntry.height}, or it is drawn small and hidden behind the frame.`]);
   }
   return out;
 }

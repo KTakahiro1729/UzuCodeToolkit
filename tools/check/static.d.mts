@@ -1,5 +1,5 @@
 export interface Finding {
-  /** The check's name (first-frame, file-name, external-url, absolute-path, nondeterminism, orientation, picture-missing, ...). */
+  /** The check's name (first-frame, file-name, external-url, absolute-path, nondeterminism, orientation, picture-missing, stand-ratio, picture-contrast, pictures-none, ...). */
   rule: string;
   /** Relative to the work's folder. */
   file: string;
@@ -7,5 +7,6 @@ export interface Finding {
   line: number;
   message: string;
 }
-export function checkWork(dir: string): { errors: Finding[]; warnings: Finding[] };
+export const ALLOWABLE: string[];
+export function checkWork(dir: string, options?: { allow?: string[] }): { errors: Finding[]; warnings: Finding[] };
 export function format(f: Finding): string;
