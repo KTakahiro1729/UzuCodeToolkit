@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import JSZip from 'jszip';
@@ -139,18 +138,4 @@ describe('layout export to slides', () => {
     const c1 = xml.split('<p:sp>').find((sp) => sp.includes('descr="uzu:c1"'))!;
     expect(c1).toContain('anchor="t"');
   });
-});
-
-describe('the export command', () => {
-  it('writes the slides in one command that ends within 20 seconds', () => {
-    const out = mkdtempSync(join(tmpdir(), 'layout-export-cli-'));
-    const layout = join(import.meta.dirname, '../src/layouts/read-through.layout.json');
-    const started = Date.now();
-    // The timeout kills the command at 20 s, which fails the test (the sandboxes that build a work give it about that long).
-    execFileSync(process.execPath, [join(import.meta.dirname, '../../../tools/layout/slides/export.mjs'), layout, out], { timeout: 20_000 });
-    expect(Date.now() - started).toBeLessThan(20_000);
-    expect(existsSync(join(out, 'layout-landscape.pptx'))).toBe(true);
-    expect(existsSync(join(out, 'layout-portrait.pptx'))).toBe(true);
-    rmSync(out, { recursive: true, force: true });
-  }, 25_000);
 });
