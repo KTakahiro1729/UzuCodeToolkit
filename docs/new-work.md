@@ -102,6 +102,7 @@ A work with no pictures works: every part of the stage screen falls back to the 
 2. Make the order sheet: `node node_modules/@uzu-toolkit/toolkit/tools/layout/brief/brief.mjs node_modules/@uzu-toolkit/reader/src/layouts/read-through.layout.json world.md --orientation landscape --out brief.md` (`--orientation portrait` for a portrait work). It lists each picture to make (file name, size, how it stretches) and one prompt per scene. If the work has its own layout (below), give that file in place of the toolkit's: the picture sizes follow the boxes.
 3. Give `brief.md` to the author and ask them to have the pictures made by an image generator, and to send them back. You cannot make them yourself; say so.
 4. Put the returned pictures in `public/assets/` under the names in the sheet (`.webp`), run the checks and show the screens.
+5. Set the text colours to the pictures. Text is set by code over the pictures, so a dark frame with dark text is unreadable and no check sees it. Open the screens with the pictures in, then in `src/theme.css` set the text colour of what sits on a picture (the line and names on the frame and plates, the label on the button and log panel: `--color-text`, `--color-mine-text`, `--color-text-quiet`) so each reaches 4.5:1 against the picture behind it, and show the screens again. Light pictures take dark text; dark pictures take light text. Colours that stay for parts with no picture (the tag, the log link) must still read on the background picture.
 
 ### Moving the boxes on slides (when the author wants a different arrangement)
 
