@@ -2,7 +2,9 @@
 // One slide per scene, at the reference size; each box holds "label id".
 // A pptx has one slide size, so each orientation gets its own file:
 // layout.pptx when the layout has one orientation, else layout-landscape.pptx and layout-portrait.pptx.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+// With --images <dir>, a box whose part has a picture there (<dir>/<image>.png) is filled with it;
+// the box stays the part's own shape, so moving, resizing or swapping the picture reads back as before.
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import JSZip from 'jszip';
@@ -104,35 +106,83 @@ export function buildDeck(layout, orientation) {
 }
 
 /**
- * The deck as a pptx file's bytes. pptxgenjs ignores alt text on text shapes, so each shape's part
- * id (its name) is copied into descr="uzu:ID" in the slide XML.
+ * The picture file for a part in a scene, or undefined: `<image>.png` in `dir`, `<image>-mine.png`
+ * when the scene paints the part as yours. For `{role}` (a standing picture) the n-th such part of
+ * the layout takes the n-th `stand-*.png` there, round again when there are fewer: a slide is a
+ * place, not a role, so two people on the stage get two pictures.
  */
-export async function deckBytes(layout, orientation) {
+function pictureFor(dir, layout, id, mine) {
+  const part = layout.parts[id];
+  if (!dir || !part?.image) return undefined;
+  let base = part.image;
+  if (base.includes('{role}')) {
+    const stands = readdirSync(dir).filter((f) => /^stand-.*\.png$/.test(f) && !/-mine\.png$/.test(f)).sort();
+    const nth = Object.keys(layout.parts).filter((k) => layout.parts[k].image?.includes('{role}')).indexOf(id);
+    base = stands.length ? stands[nth % stands.length].replace(/\.png$/, '') : undefined;
+  }
+  if (!base) return undefined;
+  for (const name of mine ? [`${base}-mine`, base] : [base]) if (existsSync(join(dir, `${name}.png`))) return join(dir, `${name}.png`);
+  return undefined;
+}
+
+/**
+ * The deck as a pptx file's bytes. pptxgenjs ignores alt text on text shapes, so each shape's part
+ * id (its name) is copied into descr="uzu:ID" in the slide XML. With `imagesDir`, a part's box is
+ * filled with its picture (a picture fill of the same shape, not a picture shape: the box stays the
+ * part, whatever the author does to the picture).
+ */
+export async function deckBytes(layout, orientation, imagesDir) {
   const zip = await JSZip.loadAsync(await buildDeck(layout, orientation).write({ outputType: 'nodebuffer' }));
+  const media = new Map();
   for (const name of Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n))) {
-    const xml = await zip.file(name).async('string');
-    zip.file(name, xml.replace(/<p:cNvPr id="(\d+)" name="([A-Za-z][A-Za-z0-9]*)">/g, `<p:cNvPr id="$1" name="$2" descr="${ID_PREFIX}$2">`));
+    const scene = layout.scenes[Number(name.match(/(\d+)\.xml$/)[1]) - 1];
+    const relName = name.replace('slides/', 'slides/_rels/') + '.rels';
+    let rels = await zip.file(relName).async('string');
+    let n = 0;
+    const xml = (await zip.file(name).async('string'))
+      .replace(/<p:cNvPr id="(\d+)" name="([A-Za-z][A-Za-z0-9]*)">/g, `<p:cNvPr id="$1" name="$2" descr="${ID_PREFIX}$2">`)
+      .replace(/<p:sp>[\s\S]*?<\/p:sp>/g, (sp) => {
+        const id = sp.match(/descr="uzu:([^"]+)"/)?.[1];
+        const file = id && pictureFor(imagesDir, layout, id, scene?.mine.includes(id));
+        if (!file) return sp;
+        const target = `uzu-${file.split(/[\\/]/).pop()}`;
+        if (!media.has(target)) media.set(target, readFileSync(file));
+        const rid = `rIdUzu${++n}`;
+        rels = rels.replace('</Relationships>', `<Relationship Id="${rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/${target}"/></Relationships>`);
+        return sp.replace(/(<\/a:prstGeom>)<a:solidFill>[\s\S]*?<\/a:solidFill>/, `$1<a:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>`);
+      });
+    zip.file(name, xml);
+    zip.file(relName, rels);
+  }
+  for (const [target, bytes] of media) zip.file(`ppt/media/${target}`, bytes);
+  if (media.size) {
+    const ct = await zip.file('[Content_Types].xml').async('string');
+    if (!/Extension="png"/.test(ct)) zip.file('[Content_Types].xml', ct.replace(/<Override/, '<Default Extension="png" ContentType="image/png"/><Override'));
   }
   return zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
 }
 
 /** Writes the decks into outDir; returns the file paths written. */
-export async function exportLayout(layout, outDir) {
+export async function exportLayout(layout, outDir, imagesDir) {
   const orientations = orientationsOf(layout);
   if (orientations.length === 0) throw new Error(`layout ${layout.screen}: no reference size`);
   const written = [];
   for (const o of orientations) {
     const file = join(outDir, orientations.length === 1 ? 'layout.pptx' : `layout-${o}.pptx`);
-    writeFileSync(file, await deckBytes(layout, o));
+    writeFileSync(file, await deckBytes(layout, o, imagesDir));
     written.push(file);
   }
   return written;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [srcArg, outArg] = process.argv.slice(2);
+  const args = process.argv.slice(2);
+  const at = args.indexOf('--images');
+  const imagesDir = at >= 0 ? args.splice(at, 2)[1] : undefined;
+  if (at >= 0 && (!imagesDir || !existsSync(imagesDir))) throw new Error('--images needs a folder of .png pictures');
+  const [srcArg, outArg] = args;
   const src = srcArg || DEFAULT_LAYOUT;
   const outDir = outArg || '.';
   const layout = JSON.parse(readFileSync(src, 'utf8'));
-  for (const f of await exportLayout(layout, outDir)) console.log(f);
+  for (const f of await exportLayout(layout, outDir, imagesDir)) console.log(f);
 }

@@ -1,6 +1,8 @@
 // Static checks for what no one sees on screen but certification or the game's sync cares about
 // (https://docs.code.uzu-app.com/certification). Reads a work's source; runs nothing.
-//   node tools/check/static.mjs <work folder>        exits 1 on any error; warnings only print
+//   node tools/check/static.mjs <work folder> [--allow rule,rule]   exits 1 on any error; warnings only print
+// `--allow` (in a test: `checkWork(dir, { allow })`) turns the named rules from errors into warnings, for a work that means it
+// (ALLOWABLE below). The report then says why (a rule allowed is a line in "What you could not do or check").
 // In a test: `expect(checkWork(dir).errors).toEqual([])`. Types: static.d.mts.
 //
 // Errors (a defect the author cannot see, and certification or online play breaks on):
@@ -11,6 +13,9 @@
 //   nondeterminism   Date.now, new Date, Math.random and the like in the server logic or what it imports; an
 //                    action runs in client prediction and on the server, and the two would differ.
 //   picture-missing  a work that ships some of the pictures its layout names lacks others (pictures.mjs).
+//   stand-ratio      a standing picture 25% or more off its box's ratio: drawn small at the foot of the box, behind the frame (pictures.mjs).
+//   picture-contrast the text colour is under 4.5:1 with the mean colour of a frame, plate or panel picture (picture-colors.mjs; needs python3 and Pillow).
+//   pictures-none    world.md exists, no picture is in public/assets/ and there is no brief.md (pictures.mjs).
 //   orientation      manifest.orientation is not landscape or portrait; the work locks or rotates the screen
 //                    itself; or the orientation it passes to startFlow()/run() differs from the manifest's.
 // Warnings (a choice the author may have good reason for; never fail):
@@ -25,7 +30,11 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { FONT_FILES, fontCodePoints } from '../fonts/fonts.mjs';
 import { checkLook } from './look.mjs';
+import { checkPictureColors } from './picture-colors.mjs';
 import { checkPictures } from './pictures.mjs';
+
+/** Errors a work may turn into warnings on purpose; the certification errors above can never be. */
+export const ALLOWABLE = ['pictures-none', 'picture-contrast', 'stand-ratio'];
 
 const CODE = new Set(['.ts', '.js', '.mjs', '.svelte']);
 const STYLE = new Set(['.css', '.svelte', '.html']);
@@ -85,9 +94,12 @@ const unfont = (text, have, skip) => [...new Set([...text].filter((c) => JAPANES
 
 /**
  * @param {string} dir The work's folder (where manifest.json is).
+ * @param {{ allow?: string[] }} [options] Rules of ALLOWABLE to report as warnings instead of errors.
  * @returns {{ errors: Finding[], warnings: Finding[] }}
  */
-export function checkWork(dir) {
+export function checkWork(dir, { allow = [] } = {}) {
+  const unknown = allow.filter((r) => !ALLOWABLE.includes(r));
+  if (unknown.length) throw new Error(`cannot allow ${unknown.join(', ')}; only ${ALLOWABLE.join(', ')} can be allowed.`);
   dir = resolve(dir);
   const errors = [];
   const warnings = [];
@@ -153,6 +165,9 @@ export function checkWork(dir) {
   // pictures: the set the layout names, once the work ships any of it (pictures.mjs)
   for (const [list, rule, message] of checkPictures(dir, manifest)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message);
 
+  // picture-contrast: the text colour against the pixels of the pictures it sits on (picture-colors.mjs)
+  for (const [list, rule, message] of checkPictureColors(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, 'public', 'assets'), 0, message);
+
   // look: a layout moved from the guide's, text colours too close to their surface (look.mjs)
   for (const [list, rule, message, file] of checkLook(dir)) add(list === 'errors' ? errors : warnings, rule, join(dir, file), 0, message);
 
@@ -177,15 +192,22 @@ export function checkWork(dir) {
     }
   }
 
-  return { errors, warnings };
+  const allowed = errors.filter((e) => allow.includes(e.rule));
+  return {
+    errors: errors.filter((e) => !allow.includes(e.rule)),
+    warnings: [...warnings, ...allowed.map((e) => ({ ...e, message: `(allowed) ${e.message}` }))],
+  };
 }
 
 export const format = ({ rule, file, line, message }) => `${rule}  ${file}${line ? `:${line}` : ''}  ${message}`;
 
 if (process.argv[1] && resolve(process.argv[1]) === new URL(import.meta.url).pathname) {
-  const dir = process.argv[2];
-  if (!dir) throw new Error('usage: node tools/check/static.mjs <work folder>');
-  const { errors, warnings } = checkWork(dir);
+  const args = process.argv.slice(2);
+  const at = args.indexOf('--allow');
+  const allow = at < 0 ? [] : (args.splice(at, 2)[1] ?? '').split(',').filter(Boolean);
+  const dir = args[0];
+  if (!dir) throw new Error('usage: node tools/check/static.mjs <work folder> [--allow rule,rule]');
+  const { errors, warnings } = checkWork(dir, { allow });
   for (const w of warnings) console.log(`warning  ${format(w)}`);
   for (const e of errors) console.log(`ERROR    ${format(e)}`);
   console.log(`${errors.length} error(s), ${warnings.length} warning(s)`);

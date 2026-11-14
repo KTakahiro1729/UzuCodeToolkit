@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
@@ -180,11 +181,45 @@ describe('a seat that has left', () => {
       expect(r.warnings.map((f) => `${f.rule}`).sort()).toEqual(['picture-alpha', 'picture-ratio']);
     });
 
-    it('warn of a standing picture too wide for its box, which the screen would draw small behind the frame', () => {
-      const r = checkWork(files(pictures(SET.map(([n, w, h, a]) => (n === 'stand-a' ? [n, 700, 772, a] : [n, w, h, a])))));
-      expect(r.errors).toEqual([]);
-      expect(r.warnings.map((f) => f.rule)).toEqual(['picture-ratio']);
-      expect(r.warnings[0].message).toContain('stand-a.webp');
+    it('fails a standing picture too wide for its box, which the screen would draw small behind the frame', () => {
+      const wide = files(pictures(SET.map(([n, w, h, a]) => (n === 'stand-a' ? [n, 700, 772, a] : [n, w, h, a]))));
+      const r = checkWork(wide);
+      expect(r.warnings).toEqual([]);
+      expect(rules(r.errors)).toEqual(['stand-ratio']);
+      expect(r.errors[0].message).toContain('stand-a.webp');
+      // The same work, on purpose: a warning, with the reason it is one.
+      const on = checkWork(wide, { allow: ['stand-ratio'] });
+      expect(on.errors).toEqual([]);
+      expect(on.warnings[0].message).toMatch(/^\(allowed\) stand-a\.webp/);
+      expect(() => checkWork(wide, { allow: ['first-frame'] })).toThrow(/cannot allow first-frame/);
+    });
+
+    it('fails a work with a world, no picture and no order sheet; either one passes it', () => {
+      const bare = { 'script/script.json': SCRIPT, 'world.md': 'Taisho.' };
+      expect(rules(checkWork(files(bare)).errors)).toEqual(['pictures-none']);
+      expect(checkWork(files({ ...bare, 'brief.md': '# order sheet' })).errors).toEqual([]);
+      expect(checkWork(files(bare), { allow: ['pictures-none'] }).errors).toEqual([]);
+    });
+
+    describe('text colour against the pixels', () => {
+      // Real pixels, made by Pillow when it is there: a frame of one colour.
+      const png = (rgb: [number, number, number]) => {
+        const out = join(mkdtempSync(join(tmpdir(), 'pix-')), 'frame.webp');
+        roots.push(dirname(out));
+        const r = spawnSync('python3', ['-c', `from PIL import Image; Image.new('RGBA',(100,40),(${rgb.join(',')},255)).save(${JSON.stringify(out)})`]);
+        return r.status === 0 ? readFileSync(out) : null;
+      };
+      const probe = png([40, 40, 40]);
+      it.skipIf(!probe)('fails a dark frame under dark text (and passes a light one), and can be allowed', () => {
+        const theme = ':root { --color-text: #24292f; }\n';
+        const dark = work({ 'src/theme.css': theme, 'public/assets/frame.webp': probe! });
+        const r = checkWork(dark);
+        expect(rules(r.errors)).toContain('picture-contrast');
+        expect(r.errors.find((e) => e.rule === 'picture-contrast')!.message).toMatch(/frame\.webp averages #282828.*:1/);
+        expect(rules(checkWork(dark, { allow: ['picture-contrast'] }).errors)).not.toContain('picture-contrast');
+        const light = work({ 'src/theme.css': theme, 'public/assets/frame.webp': png([240, 240, 240])! });
+        expect(rules(checkWork(light).errors)).not.toContain('picture-contrast');
+      });
     });
   });
 

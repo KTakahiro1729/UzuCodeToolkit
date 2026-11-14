@@ -10,7 +10,7 @@
 //   n-th slide is the n-th scene of the layout.
 // - A shape counts only if it has a box (an explicit position) and either a part's alt text or
 //   text. Text that is empty or starts with `#` marks a caption or decoration and is ignored;
-//   pictures and shapes inside groups are not read.
+//   shapes inside groups are not read. A picture shape (not a box's picture fill) is reported as new.
 // - A box's alignment is that of its first paragraph (left when none is given); it is read only
 //   for parts that have `align` (parts with text).
 // - A box is placed on the reference screen: the slide is scaled to the reference size.
@@ -92,6 +92,15 @@ export async function readSlides(buffer) {
       const align = ALIGN[attrs(body.match(/<a:pPr\b[^>]*>/)?.[0] ?? '').algn] ?? 'left';
       shapes.push({ text, ...(id ? { id } : {}), align, x: Number(o.x), y: Number(o.y), w: Number(e.cx), h: Number(e.cy) });
     }
+    // A picture put on a slide (not a box's fill) is never a part: it is reported as new.
+    for (const pic of xml.matchAll(/<p:pic\b[\s\S]*?<\/p:pic>/g)) {
+      const off = pic[0].match(/<a:off\b[^>]*>/);
+      const ext = pic[0].match(/<a:ext\b[^>]*>/);
+      if (!off || !ext) continue;
+      const o = attrs(off[0]);
+      const e = attrs(ext[0]);
+      shapes.push({ text: 'picture', picture: true, align: 'left', x: Number(o.x), y: Number(o.y), w: Number(e.cx), h: Number(e.cy) });
+    }
     slides.push({ shapes });
   }
   return { width, height, slides };
@@ -138,7 +147,7 @@ export async function importSlides(layout, buffer) {
       for (const shape of slide.shapes) {
         const rect = [shape.x / width * refW, shape.y / height * refH, shape.w / width * refW, shape.h / height * refH].map(Math.round);
         const known = (t) => layout.parts[t] || layout.reserved?.[t];
-        const token = shape.id && known(shape.id) ? shape.id : (shape.text.match(/[A-Za-z][A-Za-z0-9]*/g) ?? []).find(known);
+        const token = shape.picture ? undefined : shape.id && known(shape.id) ? shape.id : (shape.text.match(/[A-Za-z][A-Za-z0-9]*/g) ?? []).find(known);
         if (token) {
           if (!seen.has(token)) seen.set(token, []);
           seen.get(token).push({ rect, align: shape.align });
