@@ -1,7 +1,5 @@
 # The toolkit takes what reads a plan, or prevents an error no eye can see
 
-Replaces `archive/2026-11-13-the-conditions-for-adding-to-the-toolkit-are-not.md`.
-
 The toolkit's goal: an author hands over a plan and gets a work of enough quality, without checking every screen. A new addition goes into the toolkit only if it meets one of these:
 
 1. **It is a part for a concept that murder-mystery plans commonly contain.** Phases, the cast, the script, handouts, information only one part sees, the part that may move the game on, a list of games, and chapters left empty. The toolkit sets no format for the plan: the author writes it freely, and the agent reads it and picks the parts (docs/plan-to-parts.md).

@@ -1,5 +1,0 @@
-# A button's label and note are one line each, and a test keeps it so
-
-The owner does not want the second line of a button (the note) to wrap. The main button has a fixed width, which holds about 7 full-width characters of the note on a 390px phone, so every `status.*` string is at most 7 (`packages/reader/test/notes.test.ts`; half-width characters count half, `{name}` counts 4, `{n}` 1). The notes were shortened to fit: 他の人待ち, 押すと全員進む, 選ぶと押せます, `{name}待ち` (the facilitator), あと{n}人で進む. It changes the wording in "The footer is one row" and "Phase progress follows the official guide". A work that overrides a note keeps to the same length. Where: `strings.json`, `packages/reader/test/notes.test.ts`, `docs/design.md` (Footer, the note).
-
-The label (upper line) is held to the same 7 characters: the test covers every `button.*` string but the secondary ones, and `fitsButton(label, note)` / `textWidth` / `MAX_BUTTON_TEXT` are exported from the reader so a work's own test catches its labels and notes the same way.
