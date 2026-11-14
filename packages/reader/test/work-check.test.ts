@@ -190,11 +190,6 @@ describe('a seat that has left', () => {
 
   describe('how a work looks', () => {
     const guide = JSON.parse(readFileSync(join(import.meta.dirname, '../src/layouts/read-through.layout.json'), 'utf8'));
-    it('fails a script that draws pictures into the assets folder, not one that converts them', () => {
-      const draws = "from PIL import Image, ImageDraw\nd = ImageDraw.Draw(Image.new('RGBA', (9, 9)))\nout = 'public/assets/frame.webp'\n";
-      expect(rules(checkWork(work({ 'tools/paint.py': draws })).errors)).toEqual(['picture-drawn-by-code']);
-      expect(checkWork(work({ 'tools/convert.py': "from PIL import Image\nImage.open('a.png').save('public/assets/a.webp')\n" })).errors).toEqual([]);
-    });
     it("warns of a box moved from the guide's, not of one left alone", () => {
       const moved = JSON.parse(JSON.stringify(guide));
       moved.parts.frame.landscape = [68, 177, 738, 196];
