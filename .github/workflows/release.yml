@@ -2,6 +2,7 @@ name: Release
 # Run by hand (Actions > Release > Run workflow) with a version such as 0.2.0. Packs the three
 # packages (the toolkit one depends on the other two by URL, so a work installs only it) at that version and attaches the tarballs to a new GitHub release `v<version>`, which
 # a work installs from by URL (docs/decisions/2026-11-14-the-toolkit-is-shipped-as-release-tarballs.md).
+# Then it installs a work template from that release and attaches it as a zip with node_modules/ (the offline bundle).
 on:
   workflow_dispatch:
     inputs:
@@ -41,3 +42,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           V: ${{ inputs.version }}
         run: gh release create "v$V" dist-pack/*.tgz dist-pack/README.md --target "$GITHUB_SHA" --title "v$V" --generate-notes
+      # The offline bundle installs from the release just made, so it is built after it.
+      - name: Offline bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ inputs.version }}
+        run: |
+          npm install -g npm@11
+          node packages/toolkit/make-offline-bundle.mjs "$V" bundle/uzu-work-starter
+          (cd bundle && zip -qr "../dist-pack/uzu-toolkit-offline-$V.zip" uzu-work-starter)
+          ls -l dist-pack/*.zip
+          gh release upload "v$V" "dist-pack/uzu-toolkit-offline-$V.zip"
