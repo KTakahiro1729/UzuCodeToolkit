@@ -1,0 +1,20 @@
+{
+  "name": "@uzu-toolkit/toolkit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "UzuCodeToolkit as one install: it depends on the kit and the reader, and carries README, CLAUDE.md, docs, tools, scripts and a work template.",
+  "files": [
+    "README.md",
+    "template",
+    "CLAUDE.md",
+    "docs",
+    "scripts",
+    "tools",
+    ".stylelintrc.json"
+  ],
+  "scripts": {
+    "prepack": "node pack-assets.mjs"
+  }
+}

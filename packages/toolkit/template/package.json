@@ -1,0 +1,33 @@
+{
+  "name": "WORK-NAME",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "harness": "node node_modules/@uzu-toolkit/reader/harness.mjs",
+    "build": "tsc --noEmit && vite build",
+    "publish": "uzu publish",
+    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run",
+    "lint": "stylelint --config node_modules/@uzu-toolkit/toolkit/.stylelintrc.json \"src/**/*.{css,svelte}\"",
+    "fonts": "sh node_modules/@uzu-toolkit/toolkit/scripts/subset-fonts.sh ."
+  },
+  "engines": { "node": ">=22.12", "npm": ">=11" },
+  "dependencies": {
+    "@uzu-toolkit/toolkit": "RELEASE-URL-OF-THE-TOOLKIT-TARBALL",
+    "@uzuhq/code-sdk": "^0.9.12"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@types/node": "^22.0.0",
+    "@uzuhq/code-cli": "^0.7.14",
+    "postcss-html": "^1.8.1",
+    "stylelint": "^18.0.0",
+    "svelte": "^5.57.0",
+    "svelte-check": "^4.7.0",
+    "typescript": "^5.7.0",
+    "vite": "^8.3.0",
+    "vitest": "^4.1.0"
+  }
+}

@@ -1,6 +1,6 @@
 name: Release
 # Run by hand (Actions > Release > Run workflow) with a version such as 0.2.0. Packs the three
-# packages at that version and attaches the tarballs to a new GitHub release `v<version>`, which
+# packages (the toolkit one depends on the other two by URL, so a work installs only it) at that version and attaches the tarballs to a new GitHub release `v<version>`, which
 # a work installs from by URL (docs/decisions/2026-11-14-the-toolkit-is-shipped-as-release-tarballs.md).
 on:
   workflow_dispatch:
@@ -18,17 +18,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Set the version
+      - name: Set the version and the tarball URLs
         env:
           V: ${{ inputs.version }}
         run: |
           echo "$V" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'
-          for p in kit reader dev; do npm pkg set "version=$V" -w "packages/$p"; done
-          npm pkg set "dependencies.@uzu-toolkit/kit=$V" -w packages/reader
+          U="https://github.com/$GITHUB_REPOSITORY/releases/download/v$V/uzu-toolkit"
+          for p in kit reader toolkit; do npm pkg set "version=$V" -w "packages/$p"; done
+          npm pkg set "dependencies.@uzu-toolkit/kit=$U-kit-$V.tgz" -w packages/reader
+          npm pkg set "dependencies.@uzu-toolkit/kit=$U-kit-$V.tgz" "dependencies.@uzu-toolkit/reader=$U-reader-$V.tgz" -w packages/toolkit
       - name: Pack
         run: |
           mkdir -p dist-pack
-          npm pack -w packages/kit -w packages/reader -w packages/dev --pack-destination dist-pack
+          npm pack -w packages/kit -w packages/reader -w packages/toolkit --pack-destination dist-pack
           ls dist-pack
       - name: Release
         env:

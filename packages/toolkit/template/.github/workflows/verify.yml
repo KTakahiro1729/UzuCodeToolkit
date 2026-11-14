@@ -1,0 +1,23 @@
+name: Verify work
+# Runs on every push, so a branch is checked without a pull request.
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install (npm 11)
+        run: npm install -g npm@11 && npm ci
+      - name: Tests
+        run: npm test
+      - name: Types
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
+      - name: CSS checks
+        run: npm run lint
