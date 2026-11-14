@@ -1,0 +1,9 @@
+/*
+ * This work's colours, over the toolkit's neutral defaults (node_modules/@uzu-toolkit/reader/src/theme.css
+ * lists every token). Set only what the plan's look needs; every text colour keeps WCAG AA (4.5:1)
+ * on its background. The stage screen draws from these when a picture is missing, so a work with
+ * no pictures still reads well.
+ */
+:root {
+  /* --color-bg: ...; --color-text: ...; --color-bubble: ...; --color-mine-current: ...; */
+}

@@ -1,0 +1,12 @@
+{
+  "id": "WORK-ID",
+  "build": "npm run build",
+  "output": "dist",
+  "playerCount": 2,
+  "orientation": "landscape",
+  "serverActionLogicPath": "./src/logic.ts",
+  "characters": [
+    { "id": "PART-ID", "name": "PART NAME", "description": "ONE LINE", "icon": "./public/assets/icon-PART-ID.webp" }
+  ],
+  "dev": { "command": "npm run dev" }
+}
