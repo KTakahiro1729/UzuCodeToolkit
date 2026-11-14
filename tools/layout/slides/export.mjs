@@ -107,13 +107,19 @@ export function buildDeck(layout, orientation) {
 
 /**
  * The picture file for a part in a scene, or undefined: `<image>.png` in `dir`, `<image>-mine.png`
- * when the scene paints the part as yours, and for `{role}` (the speaker's standing picture) the
- * first `stand-*.png` there is: a slide is a place, not a role.
+ * when the scene paints the part as yours. For `{role}` (a standing picture) the n-th such part of
+ * the layout takes the n-th `stand-*.png` there, round again when there are fewer: a slide is a
+ * place, not a role, so two people on the stage get two pictures.
  */
-function pictureFor(dir, part, mine) {
+function pictureFor(dir, layout, id, mine) {
+  const part = layout.parts[id];
   if (!dir || !part?.image) return undefined;
-  const stands = () => readdirSync(dir).filter((f) => /^stand-.*\.png$/.test(f) && !/-mine\.png$/.test(f)).sort();
-  const base = part.image.includes('{role}') ? stands()[0]?.replace(/\.png$/, '') : part.image;
+  let base = part.image;
+  if (base.includes('{role}')) {
+    const stands = readdirSync(dir).filter((f) => /^stand-.*\.png$/.test(f) && !/-mine\.png$/.test(f)).sort();
+    const nth = Object.keys(layout.parts).filter((k) => layout.parts[k].image?.includes('{role}')).indexOf(id);
+    base = stands.length ? stands[nth % stands.length].replace(/\.png$/, '') : undefined;
+  }
   if (!base) return undefined;
   for (const name of mine ? [`${base}-mine`, base] : [base]) if (existsSync(join(dir, `${name}.png`))) return join(dir, `${name}.png`);
   return undefined;
@@ -137,7 +143,7 @@ export async function deckBytes(layout, orientation, imagesDir) {
       .replace(/<p:cNvPr id="(\d+)" name="([A-Za-z][A-Za-z0-9]*)">/g, `<p:cNvPr id="$1" name="$2" descr="${ID_PREFIX}$2">`)
       .replace(/<p:sp>[\s\S]*?<\/p:sp>/g, (sp) => {
         const id = sp.match(/descr="uzu:([^"]+)"/)?.[1];
-        const file = id && pictureFor(imagesDir, layout.parts[id], scene?.mine.includes(id));
+        const file = id && pictureFor(imagesDir, layout, id, scene?.mine.includes(id));
         if (!file) return sp;
         const target = `uzu-${file.split(/[\\/]/).pop()}`;
         if (!media.has(target)) media.set(target, readFileSync(file));
